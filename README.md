@@ -1,12 +1,11 @@
 # ComputeFHE
 
-ComputeFHE is a C++ project for experimenting with **Fully Homomorphic Encryption over Torus (TFHE)** operations using the [OpenFHE](https://github.com/openfheorg/openfhe-development) library.  
-It provides implementations of arithmetic operators, gate logic, and optimized evaluation techniques on encrypted data.
+ComputeFHE is a C++ project for arithmetic operations over **Fully Homomorphic Encryption over Torus (TFHE)** using the [OpenFHE](https://github.com/openfheorg/openfhe-development) library.  
+It provides implementations of standard and optimized arithmetic operators and gate logic operations on encrypted data.
 
 ## Features
 - Homomorphic arithmetic and logic gate implementations
-- Optimized variants for faster evaluation
-- Configurable experiments for timing and noise growth analysis
+- Optimized variants for faster computation
 - Clean CMake-based build system
 
 ## Requirements

@@ -1,12 +1,12 @@
-#include "ComputeFHE.h"
+#include "CFHE_Test.h"
 
 #include <iostream>
 using namespace std;
 
 int main()
 {
-    ComputeFHE::TestAll();
-    ComputeFHE::TestAllNoise();
+    CFHE_Test::TestAll();
+    CFHE_Test::TestAllNoise();
 
     return EXIT_SUCCESS;
 }

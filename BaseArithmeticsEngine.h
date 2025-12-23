@@ -53,28 +53,4 @@ public:
     virtual FixedPoint Mul(const FixedPoint &a, const FixedPoint &b) = 0;
 
     FixedPoint ToggleMSB(const FixedPoint &a);
-
-    TestReport TestHalfAdder();
-    TestReport TestFullAdder();
-    TestReport TestXOR3();
-    TestReport TestMulAdd();
-    TestReport TestAdd(uint n_digits);
-    TestReport TestAddC(uint n_digits);
-    TestReport TestAddNC(uint n_digits);
-    TestReport TestSub(uint n_digits);
-    TestReport TestSubC(uint n_digits);
-    TestReport TestSubNC(uint n_digits);
-    TestReport TestNeg(uint n_digits);
-    TestReport TestCmpNotEq(uint n_digits);
-    TestReport TestCmpEq(uint n_digits);
-    TestReport TestCmpLTEq_U(uint n_digits);
-    TestReport TestCmpGT_U(uint n_digits);
-    TestReport TestCmpGTEq_U(uint n_digits);
-    TestReport TestCmpLT_U(uint n_digits);
-    TestReport TestCmpLTEq(uint n_digits);
-    TestReport TestCmpGT(uint n_digits);
-    TestReport TestCmpGTEq(uint n_digits);
-    TestReport TestCmpLT(uint n_digits);
-    TestReport TestFullMul(uint n_digits);
-    TestReport TestMul(uint n_digits);
 };

@@ -61,4 +61,6 @@ add_executable( computefhe  main.cpp
                             ComputeFHE.cpp
                             BaseArithmeticsEngine.cpp
                             AEGateLogic.cpp
-                            AEOptimized.cpp )
+                            AEOptimized.cpp
+                            CFHE_Test.cpp
+                            CFHE_AE_Test.cpp )

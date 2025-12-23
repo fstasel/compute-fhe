@@ -41,10 +41,10 @@ LWECiphertext BaseArithmeticsEngine::GetConstantTrue()
     return COPY_CT(constant_true);
 }
 
-FixedPoint BaseArithmeticsEngine::ToggleMSB(const FixedPoint &a)
+CFixedPoint BaseArithmeticsEngine::ToggleMSB(const CFixedPoint &a)
 {
     auto &cc = cfhe_base->GetBinFHEContext();
-    FixedPoint t = FixedPoint(a);
+    CFixedPoint t = CFixedPoint(a);
     t.back() = cc.EvalNOT(t.back());
     return t;
 }

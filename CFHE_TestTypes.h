@@ -3,6 +3,7 @@
 enum TestType
 {
     TT_ENCRYPT_DECRYPT,
+    TT_PFIXP_ENCRYPT_DECRYPT,
     TT_HA,
     TT_FA,
     TT_XOR3,
@@ -34,6 +35,8 @@ inline const char *ToString(TestType v)
     {
     case TT_ENCRYPT_DECRYPT:
         return "ENCRYPT_DECRYPT";
+    case TT_PFIXP_ENCRYPT_DECRYPT:
+        return "PFIXP_ENCRYPT_DECRYPT";
     case TT_HA:
         return "HA";
     case TT_FA:

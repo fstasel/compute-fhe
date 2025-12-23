@@ -53,12 +53,12 @@ LWECiphertext AEGateLogic::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a, 
     return sum;
 }
 
-FixedPoint AEGateLogic::Add(const FixedPoint &a, const FixedPoint &b)
+CFixedPoint AEGateLogic::Add(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     size_t n_digit = a.size();
 
-    FixedPoint out(n_digit);
+    CFixedPoint out(n_digit);
     HalfAdder(a[0], b[0], out[0], carry);
     for (uint8_t i = 1; i < n_digit; i++)
     {
@@ -67,12 +67,12 @@ FixedPoint AEGateLogic::Add(const FixedPoint &a, const FixedPoint &b)
     return out;
 }
 
-FixedPoint AEGateLogic::AddC(const FixedPoint &a, const FixedPoint &b)
+CFixedPoint AEGateLogic::AddC(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     size_t n_digit = a.size();
 
-    FixedPoint out(n_digit);
+    CFixedPoint out(n_digit);
     for (uint8_t i = 0; i < n_digit; i++)
     {
         FullAdder(a[i], b[i], carry, out[i], carry);
@@ -80,12 +80,12 @@ FixedPoint AEGateLogic::AddC(const FixedPoint &a, const FixedPoint &b)
     return out;
 }
 
-FixedPoint AEGateLogic::AddNC(const FixedPoint &a, const FixedPoint &b)
+CFixedPoint AEGateLogic::AddNC(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     size_t n_digit = a.size();
 
-    FixedPoint out(n_digit);
+    CFixedPoint out(n_digit);
     HalfAdder(a[0], b[0], out[0], carry);
     for (uint8_t i = 1; i < n_digit; i++)
     {
@@ -101,13 +101,13 @@ FixedPoint AEGateLogic::AddNC(const FixedPoint &a, const FixedPoint &b)
     return out;
 }
 
-FixedPoint AEGateLogic::Sub(const FixedPoint &a, const FixedPoint &b)
+CFixedPoint AEGateLogic::Sub(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    FixedPoint out(n_digit);
+    CFixedPoint out(n_digit);
     HalfSubtractor(a[0], b[0], out[0], carry);
     for (uint8_t i = 1; i < n_digit; i++)
     {
@@ -117,13 +117,13 @@ FixedPoint AEGateLogic::Sub(const FixedPoint &a, const FixedPoint &b)
     return out;
 }
 
-FixedPoint AEGateLogic::SubC(const FixedPoint &a, const FixedPoint &b)
+CFixedPoint AEGateLogic::SubC(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    FixedPoint out(n_digit);
+    CFixedPoint out(n_digit);
     for (uint8_t i = 0; i < n_digit; i++)
     {
         LWECiphertext inv = cc.EvalNOT(b[i]);
@@ -132,13 +132,13 @@ FixedPoint AEGateLogic::SubC(const FixedPoint &a, const FixedPoint &b)
     return out;
 }
 
-FixedPoint AEGateLogic::SubNC(const FixedPoint &a, const FixedPoint &b)
+CFixedPoint AEGateLogic::SubNC(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    FixedPoint out(n_digit);
+    CFixedPoint out(n_digit);
     HalfSubtractor(a[0], b[0], out[0], carry);
     for (uint8_t i = 1; i < n_digit; i++)
     {
@@ -155,12 +155,12 @@ FixedPoint AEGateLogic::SubNC(const FixedPoint &a, const FixedPoint &b)
     return out;
 }
 
-FixedPoint AEGateLogic::Neg(const FixedPoint &a)
+CFixedPoint AEGateLogic::Neg(const CFixedPoint &a)
 {
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    FixedPoint out(n_digit);
+    CFixedPoint out(n_digit);
     out[0] = COPY_CT(a[0]);
     LWECiphertext c = cc.EvalNOT(a[0]);
     for (uint8_t i = 1; i < n_digit; i++)
@@ -178,7 +178,7 @@ FixedPoint AEGateLogic::Neg(const FixedPoint &a)
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpNotEq(const FixedPoint &a, const FixedPoint &b)
+LWECiphertext AEGateLogic::CmpNotEq(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -193,7 +193,7 @@ LWECiphertext AEGateLogic::CmpNotEq(const FixedPoint &a, const FixedPoint &b)
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpEq(const FixedPoint &a, const FixedPoint &b)
+LWECiphertext AEGateLogic::CmpEq(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -208,7 +208,7 @@ LWECiphertext AEGateLogic::CmpEq(const FixedPoint &a, const FixedPoint &b)
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b)
+LWECiphertext AEGateLogic::CmpLTEq_U(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -227,7 +227,7 @@ LWECiphertext AEGateLogic::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b)
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpGT_U(const FixedPoint &a, const FixedPoint &b)
+LWECiphertext AEGateLogic::CmpGT_U(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -246,37 +246,37 @@ LWECiphertext AEGateLogic::CmpGT_U(const FixedPoint &a, const FixedPoint &b)
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpGTEq_U(const FixedPoint &a, const FixedPoint &b)
+LWECiphertext AEGateLogic::CmpGTEq_U(const CFixedPoint &a, const CFixedPoint &b)
 {
     return CmpLTEq_U(b, a);
 }
 
-LWECiphertext AEGateLogic::CmpLT_U(const FixedPoint &a, const FixedPoint &b)
+LWECiphertext AEGateLogic::CmpLT_U(const CFixedPoint &a, const CFixedPoint &b)
 {
     return CmpGT_U(b, a);
 }
 
-LWECiphertext AEGateLogic::CmpLTEq(const FixedPoint &a, const FixedPoint &b)
+LWECiphertext AEGateLogic::CmpLTEq(const CFixedPoint &a, const CFixedPoint &b)
 {
     return CmpLTEq_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-LWECiphertext AEGateLogic::CmpGT(const FixedPoint &a, const FixedPoint &b)
+LWECiphertext AEGateLogic::CmpGT(const CFixedPoint &a, const CFixedPoint &b)
 {
     return CmpGT_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-LWECiphertext AEGateLogic::CmpGTEq(const FixedPoint &a, const FixedPoint &b)
+LWECiphertext AEGateLogic::CmpGTEq(const CFixedPoint &a, const CFixedPoint &b)
 {
     return CmpGTEq_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-LWECiphertext AEGateLogic::CmpLT(const FixedPoint &a, const FixedPoint &b)
+LWECiphertext AEGateLogic::CmpLT(const CFixedPoint &a, const CFixedPoint &b)
 {
     return CmpLT_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-FixedPoint AEGateLogic::FullMul(const FixedPoint &a, const FixedPoint &b)
+CFixedPoint AEGateLogic::FullMul(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -284,7 +284,7 @@ FixedPoint AEGateLogic::FullMul(const FixedPoint &a, const FixedPoint &b)
 
     // int bs = 0;
 
-    FixedPoint out((n_digit == 1) ? 1 : (n_digit << 1));
+    CFixedPoint out((n_digit == 1) ? 1 : (n_digit << 1));
     for (uint8_t i = 0; i < n_digit; i++)
     {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);
@@ -322,7 +322,7 @@ FixedPoint AEGateLogic::FullMul(const FixedPoint &a, const FixedPoint &b)
     return out;
 }
 
-FixedPoint AEGateLogic::Mul(const FixedPoint &a, const FixedPoint &b)
+CFixedPoint AEGateLogic::Mul(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -330,7 +330,7 @@ FixedPoint AEGateLogic::Mul(const FixedPoint &a, const FixedPoint &b)
 
     // int bs = 0;
 
-    FixedPoint out(n_digit);
+    CFixedPoint out(n_digit);
     for (uint8_t i = 0; i < n_digit; i++)
     {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);

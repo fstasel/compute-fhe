@@ -22,7 +22,7 @@ TestReport CFHE_Test::TestHalfAdder()
     report.test_result = (result_sum == expected_sum && result_carry == expected_carry) ? TR_SUCCESS
                                                                                         : TR_FAIL;
     PrintTestReport(report, n1, n2, result_sum + (result_carry << 1),
-                               expected_sum + (expected_carry << 1));
+                    expected_sum + (expected_carry << 1));
     return report;
 }
 
@@ -46,7 +46,7 @@ TestReport CFHE_Test::TestFullAdder()
     report.test_result = (result_sum == expected_sum && result_carry == expected_carry) ? TR_SUCCESS
                                                                                         : TR_FAIL;
     PrintTestReport(report, n1, n2, n3, result_sum + (result_carry << 1),
-                               expected_sum + (expected_carry << 1));
+                    expected_sum + (expected_carry << 1));
     return report;
 }
 
@@ -91,7 +91,7 @@ TestReport CFHE_Test::TestMulAdd()
                              ? TR_SUCCESS
                              : TR_FAIL;
     PrintTestReport(report, n1, n2, n3, result_sum + (result_carry << 1),
-                               expected_sum + (expected_carry << 1));
+                    expected_sum + (expected_carry << 1));
     return report;
 }
 
@@ -100,11 +100,11 @@ TestReport CFHE_Test::TestAdd(uint n_digits)
     TestReport report;
     uint n1 = CreateRandomNumber();
     uint n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 + n2) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->Add(ct_n1, ct_n2);
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->Add(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -118,12 +118,12 @@ TestReport CFHE_Test::TestAddC(uint n_digits)
     uint n1 = CreateRandomNumber();
     uint n2 = CreateRandomNumber();
     uint n3 = CreateRandomNumber() % 2;
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 + n2 + n3) & ((1UL << n_digits) - 1);
     cfhe_base->GetArithmeticsEngine()->SetCarry(cfhe_base->EncryptBool(n3, GetTestFresh()));
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->AddC(ct_n1, ct_n2);
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->AddC(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -136,11 +136,11 @@ TestReport CFHE_Test::TestAddNC(uint n_digits)
     TestReport report;
     uint n1 = CreateRandomNumber();
     uint n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 + n2) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->AddNC(ct_n1, ct_n2);
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->AddNC(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -153,11 +153,11 @@ TestReport CFHE_Test::TestSub(uint n_digits)
     TestReport report;
     uint n1 = CreateRandomNumber();
     uint n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 + (UINT32_MAX - n2 + 1)) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->Sub(ct_n1, ct_n2);
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->Sub(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -171,12 +171,12 @@ TestReport CFHE_Test::TestSubC(uint n_digits)
     uint n1 = CreateRandomNumber();
     uint n2 = CreateRandomNumber();
     uint n3 = CreateRandomNumber() % 2;
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 + (UINT32_MAX - n2 + n3)) & ((1UL << n_digits) - 1);
     cfhe_base->GetArithmeticsEngine()->SetCarry(cfhe_base->EncryptBool(n3, GetTestFresh()));
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->SubC(ct_n1, ct_n2);
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->SubC(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -189,11 +189,11 @@ TestReport CFHE_Test::TestSubNC(uint n_digits)
     TestReport report;
     uint n1 = CreateRandomNumber();
     uint n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 + (UINT32_MAX - n2 + 1)) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->SubNC(ct_n1, ct_n2);
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->SubNC(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -205,10 +205,10 @@ TestReport CFHE_Test::TestNeg(uint n_digits)
 {
     TestReport report;
     uint n = CreateRandomNumber();
-    FixedPoint ct_n = cfhe_base->EncryptInt(n, n_digits, GetTestFresh());
+    CFixedPoint ct_n = cfhe_base->EncryptInt(n, n_digits, GetTestFresh());
     uint expected = (UINT32_MAX - n + 1) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->Neg(ct_n);
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->Neg(ct_n);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -221,8 +221,8 @@ TestReport CFHE_Test::TestCmpNotEq(uint n_digits)
     TestReport report;
     uint n1 = CreateRandomNumber();
     uint n2 = (CreateRandomNumber() % 2 == 0) ? CreateRandomNumber() : n1;
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 != n2) ? 1 : 0;
     StartTimer();
     LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->CmpNotEq(ct_n1, ct_n2);
@@ -238,8 +238,8 @@ TestReport CFHE_Test::TestCmpEq(uint n_digits)
     TestReport report;
     uint n1 = CreateRandomNumber();
     uint n2 = (CreateRandomNumber() % 2 == 0) ? CreateRandomNumber() : n1;
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 == n2) ? 1 : 0;
     StartTimer();
     LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->CmpEq(ct_n1, ct_n2);
@@ -255,8 +255,8 @@ TestReport CFHE_Test::TestCmpLTEq_U(uint n_digits)
     TestReport report;
     uint n1 = CreateRandomNumber();
     uint n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 <= n2) ? 1 : 0;
     StartTimer();
     LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->CmpLTEq_U(ct_n1, ct_n2);
@@ -272,8 +272,8 @@ TestReport CFHE_Test::TestCmpGT_U(uint n_digits)
     TestReport report;
     uint n1 = CreateRandomNumber();
     uint n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 > n2) ? 1 : 0;
     StartTimer();
     LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->CmpGT_U(ct_n1, ct_n2);
@@ -289,8 +289,8 @@ TestReport CFHE_Test::TestCmpGTEq_U(uint n_digits)
     TestReport report;
     uint n1 = CreateRandomNumber();
     uint n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 >= n2) ? 1 : 0;
     StartTimer();
     LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->CmpGTEq_U(ct_n1, ct_n2);
@@ -306,8 +306,8 @@ TestReport CFHE_Test::TestCmpLT_U(uint n_digits)
     TestReport report;
     uint n1 = CreateRandomNumber();
     uint n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 < n2) ? 1 : 0;
     StartTimer();
     LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->CmpLT_U(ct_n1, ct_n2);
@@ -323,8 +323,8 @@ TestReport CFHE_Test::TestCmpLTEq(uint n_digits)
     TestReport report;
     int64_t n1 = CreateRandomNumber();
     int64_t n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     int64_t bound = 1UL << n_digits;
     int64_t max_val = (1UL << (n_digits - 1)) - 1;
     n1 = (n1 > max_val) ? (n1 - bound) : n1;
@@ -344,8 +344,8 @@ TestReport CFHE_Test::TestCmpGT(uint n_digits)
     TestReport report;
     int64_t n1 = CreateRandomNumber();
     int64_t n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     int64_t bound = 1UL << n_digits;
     int64_t max_val = (1UL << (n_digits - 1)) - 1;
     n1 = (n1 > max_val) ? (n1 - bound) : n1;
@@ -365,8 +365,8 @@ TestReport CFHE_Test::TestCmpGTEq(uint n_digits)
     TestReport report;
     int64_t n1 = CreateRandomNumber();
     int64_t n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     int64_t bound = 1UL << n_digits;
     int64_t max_val = (1UL << (n_digits - 1)) - 1;
     n1 = (n1 > max_val) ? (n1 - bound) : n1;
@@ -386,8 +386,8 @@ TestReport CFHE_Test::TestCmpLT(uint n_digits)
     TestReport report;
     int64_t n1 = CreateRandomNumber();
     int64_t n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     int64_t bound = 1UL << n_digits;
     int64_t max_val = (1UL << (n_digits - 1)) - 1;
     n1 = (n1 > max_val) ? (n1 - bound) : n1;
@@ -407,11 +407,11 @@ TestReport CFHE_Test::TestFullMul(uint n_digits)
     TestReport report;
     uint n1 = CreateRandomNumber();
     uint n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = n1 * n2;
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->FullMul(ct_n1, ct_n2);
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->FullMul(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -424,11 +424,11 @@ TestReport CFHE_Test::TestMul(uint n_digits)
     TestReport report;
     uint n1 = CreateRandomNumber();
     uint n2 = CreateRandomNumber();
-    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
-    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 * n2) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->Mul(ct_n1, ct_n2);
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->Mul(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;

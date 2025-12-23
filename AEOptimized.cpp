@@ -43,7 +43,7 @@ LWECiphertext AEOptimized::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a, 
     return ma_2b;
 }
 
-// LWECiphertext AEOptimized::CmpNotEq(const FixedPoint &a, const FixedPoint &b)
+// LWECiphertext AEOptimized::CmpNotEq(const CFixedPoint &a, const CFixedPoint &b)
 // {
 //     assert(a.size() == b.size());
 //     auto &cc = cfhe_base->GetBinFHEContext();
@@ -67,7 +67,7 @@ LWECiphertext AEOptimized::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a, 
 //     return out;
 // }
 
-// LWECiphertext AEOptimized::CmpEq(const FixedPoint &a, const FixedPoint &b)
+// LWECiphertext AEOptimized::CmpEq(const CFixedPoint &a, const CFixedPoint &b)
 // {
 //     assert(a.size() == b.size());
 //     auto &cc = cfhe_base->GetBinFHEContext();
@@ -91,7 +91,7 @@ LWECiphertext AEOptimized::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a, 
 //     return out;
 // }
 
-LWECiphertext AEOptimized::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b)
+LWECiphertext AEOptimized::CmpLTEq_U(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -107,7 +107,7 @@ LWECiphertext AEOptimized::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b)
     return c;
 }
 
-LWECiphertext AEOptimized::CmpGT_U(const FixedPoint &a, const FixedPoint &b)
+LWECiphertext AEOptimized::CmpGT_U(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -123,7 +123,7 @@ LWECiphertext AEOptimized::CmpGT_U(const FixedPoint &a, const FixedPoint &b)
     return c;
 }
 
-FixedPoint AEOptimized::FullMul(const FixedPoint &a, const FixedPoint &b)
+CFixedPoint AEOptimized::FullMul(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -131,7 +131,7 @@ FixedPoint AEOptimized::FullMul(const FixedPoint &a, const FixedPoint &b)
 
     // int bs = 0;
 
-    FixedPoint out((n_digit == 1) ? 1 : (n_digit << 1));
+    CFixedPoint out((n_digit == 1) ? 1 : (n_digit << 1));
     for (uint8_t i = 0; i < n_digit; i++)
     {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);
@@ -169,7 +169,7 @@ FixedPoint AEOptimized::FullMul(const FixedPoint &a, const FixedPoint &b)
     return out;
 }
 
-FixedPoint AEOptimized::Mul(const FixedPoint &a, const FixedPoint &b)
+CFixedPoint AEOptimized::Mul(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -177,7 +177,7 @@ FixedPoint AEOptimized::Mul(const FixedPoint &a, const FixedPoint &b)
 
     // int bs = 0;
 
-    FixedPoint out(n_digit);
+    CFixedPoint out(n_digit);
     for (uint8_t i = 0; i < n_digit; i++)
     {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);

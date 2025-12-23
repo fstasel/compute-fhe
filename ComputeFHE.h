@@ -9,7 +9,8 @@
 
 using namespace lbcrypto;
 using namespace std;
-using FixedPoint = vector<LWECiphertext>;
+using CFixedPoint = vector<LWECiphertext>;
+using PFixedPoint = vector<LWEPlaintext>;
 
 class BaseArithmeticsEngine;
 
@@ -39,8 +40,12 @@ public:
     const LWEPrivateKey &GetLWEPrivateKey();
     void generateKeys();
 
-    FixedPoint EncryptInt(uint pt, size_t n_digits = 8, bool fresh = true);
-    uint DecryptInt(const FixedPoint &ct, size_t n_digits = 0);
+    uint PFixedPoint2uint(const PFixedPoint pt);
+    PFixedPoint uint2PFixedPoint(uint pt, size_t n_digits = 8);
+    CFixedPoint EncryptInt(uint pt, size_t n_digits = 8, bool fresh = true);
+    uint DecryptInt(const CFixedPoint &ct, size_t n_digits = 0);
+    CFixedPoint EncryptInt(PFixedPoint pt, size_t n_digits = 0, bool fresh = true);
+    void DecryptInt(const CFixedPoint &ct, PFixedPoint &pt, size_t n_digits = 0);
     LWECiphertext EncryptBool(uint pt, bool fresh = true);
     uint DecryptBool(ConstLWECiphertext &ct);
 

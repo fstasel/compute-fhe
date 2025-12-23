@@ -100,7 +100,8 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
     TestReport report;
     for (uint trial = 0; trial < num_test; trial++)
     {
-        if(regenerate_keys) {
+        if (regenerate_keys)
+        {
             regenerateKeys();
         }
         //
@@ -108,6 +109,10 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
         {
         case TT_ENCRYPT_DECRYPT:
             report = TestEncryptDecrypt(n_digits);
+            break;
+
+        case TT_PFIXP_ENCRYPT_DECRYPT:
+            report = TestPFixedPointEncryptDecrypt(n_digits);
             break;
 
         case TT_HA:
@@ -229,8 +234,24 @@ TestReport CFHE_Test::TestEncryptDecrypt(size_t n_digits)
     TestReport report;
     uint n = CreateRandomNumber();
     StartTimer();
-    FixedPoint ct = cfhe_base->EncryptInt(n, n_digits, test_fresh);
+    CFixedPoint ct = cfhe_base->EncryptInt(n, n_digits, test_fresh);
     uint result = cfhe_base->DecryptInt(ct);
+    report.delta_t = ReadTimer();
+    report.test_result = (n == result) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n, result);
+    return report;
+}
+
+TestReport CFHE_Test::TestPFixedPointEncryptDecrypt(size_t n_digits)
+{
+    TestReport report;
+    uint n = CreateRandomNumber();
+    StartTimer();
+    PFixedPoint pt = cfhe_base->uint2PFixedPoint(n, n_digits);
+    CFixedPoint ct = cfhe_base->EncryptInt(pt, n_digits, test_fresh);
+    PFixedPoint pt_result;
+    cfhe_base->DecryptInt(ct, pt_result);
+    uint result = cfhe_base->PFixedPoint2uint(pt_result);
     report.delta_t = ReadTimer();
     report.test_result = (n == result) ? TR_SUCCESS : TR_FAIL;
     PrintTestReport(report, n, result);
@@ -326,7 +347,8 @@ void CFHE_Test::StartNoiseTest()
 
     for (uint trial = 1; trial <= num_test; trial++)
     {
-        if(regenerate_keys) {
+        if (regenerate_keys)
+        {
             regenerateKeys();
         }
         //
@@ -361,7 +383,8 @@ void CFHE_Test::StartNoiseTest()
 
 void CFHE_Test::StartTest()
 {
-    // StartTest(TT_ENCRYPT_DECRYPT);
+    // Test(TT_ENCRYPT_DECRYPT);
+    // Test(TT_PFIXP_ENCRYPT_DECRYPT);
     Test(TT_HA, 1);
     Test(TT_FA, 1);
     Test(TT_XOR3, 1);

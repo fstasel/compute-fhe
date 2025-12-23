@@ -63,6 +63,27 @@ void ComputeFHE::generateKeys()
     cc.BTKeyGen(sk);
 }
 
+uint ComputeFHE::PFixedPoint2uint(const PFixedPoint pt)
+{
+    uint32_t out = 0;
+    for (size_t i = 0; i < pt.size(); i++)
+    {
+        out += (pt[i] % 2) * (1UL << i);
+    }
+    return out;
+}
+
+PFixedPoint ComputeFHE::uint2PFixedPoint(uint pt, size_t n_digits)
+{
+    PFixedPoint out(n_digits);
+    for (size_t i = 0; i < n_digits; i++)
+    {
+        out[i] = pt % 2;
+        pt /= 2;
+    }
+    return out;
+}
+
 double ComputeFHE::extractNoise(ConstLWECiphertext &ct)
 {
     // OpenFHE Decryption routine
@@ -153,9 +174,9 @@ const LWEPrivateKey &ComputeFHE::GetLWEPrivateKey()
     return sk;
 }
 
-FixedPoint ComputeFHE::EncryptInt(uint pt, size_t n_digits, bool fresh)
+CFixedPoint ComputeFHE::EncryptInt(uint pt, size_t n_digits, bool fresh)
 {
-    FixedPoint out(n_digits);
+    CFixedPoint out(n_digits);
     for (size_t i = 0; i < n_digits; i++)
     {
         out[i] = cc.Encrypt(sk, pt % 2, FRESH);
@@ -168,7 +189,7 @@ FixedPoint ComputeFHE::EncryptInt(uint pt, size_t n_digits, bool fresh)
     return out;
 }
 
-uint ComputeFHE::DecryptInt(const FixedPoint &ct, size_t n_digits)
+uint ComputeFHE::DecryptInt(const CFixedPoint &ct, size_t n_digits)
 {
     uint32_t out = 0;
     LWEPlaintext result;
@@ -179,6 +200,35 @@ uint ComputeFHE::DecryptInt(const FixedPoint &ct, size_t n_digits)
         out += result * (1UL << i);
     }
     return out;
+}
+
+CFixedPoint ComputeFHE::EncryptInt(PFixedPoint pt, size_t n_digits, bool fresh)
+{
+    n_digits = (n_digits == 0) ? pt.size() : n_digits;
+    CFixedPoint ct(n_digits);
+    for (size_t i = 0; i < n_digits; i++)
+    {
+        ct[i] = cc.Encrypt(sk, pt[i] % 2, FRESH);
+        if (!fresh)
+        {
+            ct[i] = cc.Bootstrap(ct[i]);
+        }
+    }
+    return ct;
+}
+
+void ComputeFHE::DecryptInt(const CFixedPoint &ct, PFixedPoint &pt, size_t n_digits)
+{
+    n_digits = (n_digits == 0) ? ct.size() : n_digits;
+    pt.clear();
+    if (n_digits > 0)
+    {
+        pt.resize(n_digits);
+        for (size_t i = 0; i < n_digits; i++)
+        {
+            cc.Decrypt(sk, ct[i], &pt[i]);
+        }
+    }
 }
 
 LWECiphertext ComputeFHE::EncryptBool(uint pt, bool fresh)

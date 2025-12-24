@@ -119,6 +119,10 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
             report = TestHalfAdder();
             break;
 
+        case TT_HA_PC:
+            report = TestHalfAdder_PC();
+            break;
+
         case TT_FA:
             report = TestFullAdder();
             break;
@@ -209,6 +213,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
 
         default:
             report = TestReport();
+            cerr << "Unknown test" << endl;
         }
         if (report.test_result == TR_FAIL)
         {

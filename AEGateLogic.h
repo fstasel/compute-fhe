@@ -9,6 +9,10 @@ public:
 
     void HalfAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
                    LWECiphertext &sum, LWECiphertext &carry_out);
+    void HalfAdder(ConstLWECiphertext &a, const LWEPlaintext &b,
+                   LWECiphertext &sum, LWECiphertext &carry_out_ct,
+                   LWEPlaintext &carry_out_pt, bool &is_carry_ct);
+
     void HalfSubtractor(ConstLWECiphertext &a, ConstLWECiphertext &b,
                         LWECiphertext &sum, LWECiphertext &carry_out);
     void FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c,

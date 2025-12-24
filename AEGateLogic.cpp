@@ -13,6 +13,25 @@ void AEGateLogic::HalfAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
     carry_out = cc.EvalBinGate(AND, a, b);
 }
 
+void AEGateLogic::HalfAdder(ConstLWECiphertext &a, const LWEPlaintext &b,
+                            LWECiphertext &sum, LWECiphertext &carry_out_ct,
+                            LWEPlaintext &carry_out_pt, bool &is_carry_ct)
+{
+    if (b == 0)
+    {
+        sum = COPY_CT(a);
+        carry_out_pt = 0;
+        is_carry_ct = false;
+    }
+    else
+    {
+        auto &cc = cfhe_base->GetBinFHEContext();
+        sum = cc.EvalNOT(a);
+        carry_out_ct = COPY_CT(a);
+        is_carry_ct = true;
+    }
+}
+
 void AEGateLogic::HalfSubtractor(ConstLWECiphertext &a, ConstLWECiphertext &b,
                                  LWECiphertext &sum, LWECiphertext &carry_out)
 {

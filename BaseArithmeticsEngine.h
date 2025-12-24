@@ -10,6 +10,9 @@ class BaseArithmeticsEngine
 {
 protected:
     LWECiphertext carry;
+    LWEPlaintext carry_pt = 0;
+    bool is_lastcarry_ct = false;
+
     ComputeFHE *cfhe_base;
 
 public:
@@ -17,9 +20,13 @@ public:
     virtual ~BaseArithmeticsEngine();
 
     LWECiphertext GetCarry();
+    void SetCarry(LWEPlaintext value);
     void SetCarry(LWECiphertext value);
     void SetCarry();
     void ResetCarry();
+    bool isLastCarryCT();
+    void SetIsLastCarryCT(bool val);
+
     LWECiphertext GetConstantFalse();
     LWECiphertext GetConstantTrue();
 
@@ -43,9 +50,16 @@ public:
     virtual LWECiphertext XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c) = 0;
     virtual LWECiphertext MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a, ConstLWECiphertext &b,
                                  LWECiphertext *carry_out = nullptr) = 0;
+
     virtual CFixedPoint Add(const CFixedPoint &a, const CFixedPoint &b) = 0;
+    virtual CFixedPoint Add(const CFixedPoint &a, const PFixedPoint &b) = 0;
+
     virtual CFixedPoint AddC(const CFixedPoint &a, const CFixedPoint &b) = 0;
+    virtual CFixedPoint AddC(const CFixedPoint &a, const PFixedPoint &b) = 0;
+
     virtual CFixedPoint AddNC(const CFixedPoint &a, const CFixedPoint &b) = 0;
+    virtual CFixedPoint AddNC(const CFixedPoint &a, const PFixedPoint &b) = 0;
+
     virtual CFixedPoint Sub(const CFixedPoint &a, const CFixedPoint &b) = 0;
     virtual CFixedPoint SubC(const CFixedPoint &a, const CFixedPoint &b) = 0;
     virtual CFixedPoint SubNC(const CFixedPoint &a, const CFixedPoint &b) = 0;

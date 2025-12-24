@@ -61,8 +61,11 @@ public:
     TestReport TestXOR3();
     TestReport TestMulAdd();
     TestReport TestAdd(uint n_digits);
+    TestReport TestPAdd(uint n_digits);
     TestReport TestAddC(uint n_digits);
+    TestReport TestPAddC(uint n_digits);
     TestReport TestAddNC(uint n_digits);
+    TestReport TestPAddNC(uint n_digits);
     TestReport TestSub(uint n_digits);
     TestReport TestSubC(uint n_digits);
     TestReport TestSubNC(uint n_digits);

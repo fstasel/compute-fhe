@@ -147,12 +147,24 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
             report = TestAdd(n_digits);
             break;
 
+        case TT_PADD:
+            report = TestPAdd(n_digits);
+            break;
+
         case TT_ADDC:
             report = TestAddC(n_digits);
             break;
 
+        case TT_PADDC:
+            report = TestPAddC(n_digits);
+            break;
+
         case TT_ADD_NC:
             report = TestAddNC(n_digits);
+            break;
+
+        case TT_PADD_NC:
+            report = TestPAddNC(n_digits);
             break;
 
         case TT_SUB:
@@ -408,8 +420,11 @@ void CFHE_Test::StartTest()
     for (uint d = 2; d <= 4U; d <<= 1)
     {
         Test(TT_ADD, d);
+        Test(TT_PADD, d);
         Test(TT_ADDC, d);
+        Test(TT_PADDC, d);
         Test(TT_ADD_NC, d);
+        Test(TT_PADD_NC, d);
         Test(TT_SUB, d);
         Test(TT_SUBC, d);
         Test(TT_SUB_NC, d);

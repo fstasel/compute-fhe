@@ -12,8 +12,11 @@ enum TestType
     TT_XOR3,
     TT_MULADD,
     TT_ADD,
+    TT_PADD,
     TT_ADDC,
+    TT_PADDC,
     TT_ADD_NC,
+    TT_PADD_NC,
     TT_SUB,
     TT_SUBC,
     TT_SUB_NC,
@@ -56,10 +59,16 @@ inline const char *ToString(TestType v)
         return "MULADD";
     case TT_ADD:
         return "ADD";
+    case TT_PADD:
+        return "PADD";
     case TT_ADDC:
         return "ADDC";
+    case TT_PADDC:
+        return "PADDC";
     case TT_ADD_NC:
         return "ADD_NC";
+    case TT_PADD_NC:
+        return "PADD_NC";
     case TT_SUB:
         return "SUB";
     case TT_SUBC:

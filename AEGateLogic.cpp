@@ -120,6 +120,27 @@ CFixedPoint AEGateLogic::Add(const CFixedPoint &a, const CFixedPoint &b)
     return out;
 }
 
+CFixedPoint AEGateLogic::Add(const CFixedPoint &a, const PFixedPoint &b)
+{
+    assert(a.size() == b.size());
+    size_t n_digit = a.size();
+
+    CFixedPoint out(n_digit);
+    HalfAdder(a[0], b[0], out[0], carry, carry_pt, is_lastcarry_ct);
+    for (uint8_t i = 1; i < n_digit; i++)
+    {
+        if (is_lastcarry_ct)
+        {
+            FullAdder(a[i], carry, b[i], out[i], carry);
+        }
+        else
+        {
+            FullAdder(a[i], b[i], carry_pt, out[i], carry, carry_pt, is_lastcarry_ct);
+        }
+    }
+    return out;
+}
+
 CFixedPoint AEGateLogic::AddC(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
@@ -129,6 +150,26 @@ CFixedPoint AEGateLogic::AddC(const CFixedPoint &a, const CFixedPoint &b)
     for (uint8_t i = 0; i < n_digit; i++)
     {
         FullAdder(a[i], b[i], carry, out[i], carry);
+    }
+    return out;
+}
+
+CFixedPoint AEGateLogic::AddC(const CFixedPoint &a, const PFixedPoint &b)
+{
+    assert(a.size() == b.size());
+    size_t n_digit = a.size();
+
+    CFixedPoint out(n_digit);
+    for (uint8_t i = 0; i < n_digit; i++)
+    {
+        if (is_lastcarry_ct)
+        {
+            FullAdder(a[i], carry, b[i], out[i], carry);
+        }
+        else
+        {
+            FullAdder(a[i], b[i], carry_pt, out[i], carry, carry_pt, is_lastcarry_ct);
+        }
     }
     return out;
 }
@@ -149,6 +190,49 @@ CFixedPoint AEGateLogic::AddNC(const CFixedPoint &a, const CFixedPoint &b)
         else
         {
             out[i] = XOR3(a[i], b[i], carry);
+        }
+    }
+    return out;
+}
+
+CFixedPoint AEGateLogic::AddNC(const CFixedPoint &a, const PFixedPoint &b)
+{
+    assert(a.size() == b.size());
+    auto &cc = cfhe_base->GetBinFHEContext();
+    size_t n_digit = a.size();
+
+    CFixedPoint out(n_digit);
+    HalfAdder(a[0], b[0], out[0], carry, carry_pt, is_lastcarry_ct);
+    for (uint8_t i = 1; i < n_digit; i++)
+    {
+        if (i < n_digit - 1)
+        {
+            if (is_lastcarry_ct)
+            {
+                FullAdder(a[i], carry, b[i], out[i], carry);
+            }
+            else
+            {
+                FullAdder(a[i], b[i], carry_pt, out[i], carry, carry_pt, is_lastcarry_ct);
+            }
+        }
+        else
+        {
+            if (is_lastcarry_ct)
+            {
+                out[i] = cc.EvalBinGate(b[i] ? XNOR : XOR, a[i], carry);
+            }
+            else
+            {
+                if (b[i] == carry_pt)
+                {
+                    out[i] = COPY_CT(a[i]);
+                }
+                else
+                {
+                    out[i] = cc.EvalNOT(a[i]);
+                }
+            }
         }
     }
     return out;

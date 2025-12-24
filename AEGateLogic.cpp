@@ -70,6 +70,21 @@ void AEGateLogic::FullAdder(ConstLWECiphertext &a, const LWEPlaintext &b, const 
     }
 }
 
+void AEGateLogic::FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b, const LWEPlaintext &c, LWECiphertext &sum, LWECiphertext &carry_out)
+{
+    auto &cc = cfhe_base->GetBinFHEContext();
+    if (c == 0)
+    {
+        sum = cc.EvalBinGate(XOR, a, b);
+        carry_out = cc.EvalBinGate(AND, a, b);
+    }
+    else
+    {
+        sum = cc.EvalBinGate(XNOR, a, b);
+        carry_out = cc.EvalBinGate(OR, a, b);
+    }
+}
+
 LWECiphertext AEGateLogic::XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c)
 {
     auto &cc = cfhe_base->GetBinFHEContext();

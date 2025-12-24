@@ -37,6 +37,8 @@ public:
     virtual void FullAdder(ConstLWECiphertext &a, const LWEPlaintext &b, const LWEPlaintext &c,
                            LWECiphertext &sum, LWECiphertext &carry_out_ct,
                            LWEPlaintext &carry_out_pt, bool &is_carry_ct) = 0;
+    virtual void FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b, const LWEPlaintext &c,
+                           LWECiphertext &sum, LWECiphertext &carry_out) = 0;
 
     virtual LWECiphertext XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c) = 0;
     virtual LWECiphertext MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a, ConstLWECiphertext &b,

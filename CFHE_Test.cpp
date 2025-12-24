@@ -129,7 +129,11 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
 
         case TT_FA_CPP:
             report = TestFullAdder_CPP();
-            break; 
+            break;
+
+        case TT_FA_CCP:
+            report = TestFullAdder_CCP();
+            break;
 
         case TT_XOR3:
             report = TestXOR3();
@@ -395,7 +399,10 @@ void CFHE_Test::StartTest()
     // Test(TT_ENCRYPT_DECRYPT);
     // Test(TT_PFIXP_ENCRYPT_DECRYPT);
     Test(TT_HA, 1);
+    Test(TT_HA_CP, 1);
     Test(TT_FA, 1);
+    Test(TT_FA_CPP, 1);
+    Test(TT_FA_CCP, 1);
     Test(TT_XOR3, 1);
     Test(TT_MULADD, 1);
     for (uint d = 2; d <= 4U; d <<= 1)

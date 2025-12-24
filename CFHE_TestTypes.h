@@ -8,6 +8,7 @@ enum TestType
     TT_HA_CP,
     TT_FA,
     TT_FA_CPP,
+    TT_FA_CCP,
     TT_XOR3,
     TT_MULADD,
     TT_ADD,
@@ -47,6 +48,8 @@ inline const char *ToString(TestType v)
         return "FA";
     case TT_FA_CPP:
         return "FA_CPP";
+    case TT_FA_CCP:
+        return "FA_CCP";
     case TT_XOR3:
         return "XOR3";
     case TT_MULADD:

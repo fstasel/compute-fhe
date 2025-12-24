@@ -57,6 +57,7 @@ public:
     TestReport TestHalfAdder_CP();
     TestReport TestFullAdder();
     TestReport TestFullAdder_CPP();
+    TestReport TestFullAdder_CCP();
     TestReport TestXOR3();
     TestReport TestMulAdd();
     TestReport TestAdd(uint n_digits);

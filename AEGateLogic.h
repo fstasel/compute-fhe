@@ -15,11 +15,14 @@ public:
 
     void HalfSubtractor(ConstLWECiphertext &a, ConstLWECiphertext &b,
                         LWECiphertext &sum, LWECiphertext &carry_out);
+
     void FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c,
                    LWECiphertext &sum, LWECiphertext &carry_out);
     void FullAdder(ConstLWECiphertext &a, const LWEPlaintext &b, const LWEPlaintext &c,
                    LWECiphertext &sum, LWECiphertext &carry_out_ct,
                    LWEPlaintext &carry_out_pt, bool &is_carry_ct);
+    void FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b, const LWEPlaintext &c,
+                   LWECiphertext &sum, LWECiphertext &carry_out);
 
     LWECiphertext XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c);
     LWECiphertext MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a, ConstLWECiphertext &b,

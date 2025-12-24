@@ -119,13 +119,17 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
             report = TestHalfAdder();
             break;
 
-        case TT_HA_PC:
-            report = TestHalfAdder_PC();
+        case TT_HA_CP:
+            report = TestHalfAdder_CP();
             break;
 
         case TT_FA:
             report = TestFullAdder();
             break;
+
+        case TT_FA_CPP:
+            report = TestFullAdder_CPP();
+            break; 
 
         case TT_XOR3:
             report = TestXOR3();

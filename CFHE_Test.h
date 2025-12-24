@@ -54,8 +54,9 @@ public:
     void PrintTestReport(TestReport report, int64_t n1, int64_t n2, int64_t n3, int64_t result, int64_t expected);
 
     TestReport TestHalfAdder();
-    TestReport TestHalfAdder_PC();
+    TestReport TestHalfAdder_CP();
     TestReport TestFullAdder();
+    TestReport TestFullAdder_CPP();
     TestReport TestXOR3();
     TestReport TestMulAdd();
     TestReport TestAdd(uint n_digits);

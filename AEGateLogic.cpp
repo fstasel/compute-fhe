@@ -51,6 +51,25 @@ void AEGateLogic::FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstL
     carry_out = cc.EvalBinGate(OR, carry1, carry2);
 }
 
+void AEGateLogic::FullAdder(ConstLWECiphertext &a, const LWEPlaintext &b, const LWEPlaintext &c,
+                            LWECiphertext &sum, LWECiphertext &carry_out_ct,
+                            LWEPlaintext &carry_out_pt, bool &is_carry_ct)
+{
+    if (b == c)
+    {
+        sum = COPY_CT(a);
+        carry_out_pt = b;
+        is_carry_ct = false;
+    }
+    else
+    {
+        auto &cc = cfhe_base->GetBinFHEContext();
+        sum = cc.EvalNOT(a);
+        carry_out_ct = COPY_CT(a);
+        is_carry_ct = true;
+    }
+}
+
 LWECiphertext AEGateLogic::XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c)
 {
     auto &cc = cfhe_base->GetBinFHEContext();

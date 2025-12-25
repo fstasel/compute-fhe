@@ -74,3 +74,13 @@ LWECiphertext BaseArithmeticsEngine::PXOR(ConstLWECiphertext &a, const LWEPlaint
 {
     return (b == 0) ? COPY_CT(a) : cfhe_base->GetBinFHEContext().EvalNOT(a);
 }
+
+PFixedPoint BaseArithmeticsEngine::Neg(const PFixedPoint &a)
+{
+    return PFixedPoint(cfhe_base->uint2PFixedPoint(UINT32_MAX - cfhe_base->PFixedPoint2uint(a) + 1U));
+}
+
+PFixedPoint BaseArithmeticsEngine::Not(const PFixedPoint &a)
+{
+    return PFixedPoint(cfhe_base->uint2PFixedPoint(UINT32_MAX - cfhe_base->PFixedPoint2uint(a)));
+}

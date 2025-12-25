@@ -62,8 +62,14 @@ public:
     virtual CFixedPoint AddNC(const CFixedPoint &a, const PFixedPoint &b) = 0;
 
     virtual CFixedPoint Sub(const CFixedPoint &a, const CFixedPoint &b) = 0;
+    virtual CFixedPoint Sub(const CFixedPoint &a, const PFixedPoint &b) = 0;
+
     virtual CFixedPoint SubC(const CFixedPoint &a, const CFixedPoint &b) = 0;
+    virtual CFixedPoint SubC(const CFixedPoint &a, const PFixedPoint &b) = 0;
+    
     virtual CFixedPoint SubNC(const CFixedPoint &a, const CFixedPoint &b) = 0;
+    virtual CFixedPoint SubNC(const CFixedPoint &a, const PFixedPoint &b) = 0;
+
     virtual CFixedPoint Neg(const CFixedPoint &a) = 0;
     virtual LWECiphertext CmpNotEq(const CFixedPoint &a, const CFixedPoint &b) = 0;
     virtual LWECiphertext CmpEq(const CFixedPoint &a, const CFixedPoint &b) = 0;
@@ -80,4 +86,6 @@ public:
 
     CFixedPoint ToggleMSB(const CFixedPoint &a);
     LWECiphertext PXOR(ConstLWECiphertext &a, const LWEPlaintext &b);
+    PFixedPoint Neg(const PFixedPoint &a);
+    PFixedPoint Not(const PFixedPoint &a);
 };

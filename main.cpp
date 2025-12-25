@@ -12,7 +12,7 @@ int main()
     t.SetNumTest(100);
     t.SetVerbosity(4);
     t.SetRegenerateKeys(false);
-    t.Test(TT_PADD_NC, 8);
+    t.Test(TT_CPSUB_NC, 4);
 
     return EXIT_SUCCESS;
 }

@@ -262,6 +262,11 @@ CFixedPoint AEGateLogic::Sub(const CFixedPoint &a, const CFixedPoint &b)
     return out;
 }
 
+CFixedPoint AEGateLogic::Sub(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return Add(a, BaseArithmeticsEngine::Neg(b));
+}
+
 CFixedPoint AEGateLogic::SubC(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
@@ -275,6 +280,11 @@ CFixedPoint AEGateLogic::SubC(const CFixedPoint &a, const CFixedPoint &b)
         FullAdder(a[i], inv, carry, out[i], carry);
     }
     return out;
+}
+
+CFixedPoint AEGateLogic::SubC(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return AddC(a, BaseArithmeticsEngine::Not(b));
 }
 
 CFixedPoint AEGateLogic::SubNC(const CFixedPoint &a, const CFixedPoint &b)
@@ -298,6 +308,11 @@ CFixedPoint AEGateLogic::SubNC(const CFixedPoint &a, const CFixedPoint &b)
         }
     }
     return out;
+}
+
+CFixedPoint AEGateLogic::SubNC(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return AddNC(a, BaseArithmeticsEngine::Neg(b));
 }
 
 CFixedPoint AEGateLogic::Neg(const CFixedPoint &a)

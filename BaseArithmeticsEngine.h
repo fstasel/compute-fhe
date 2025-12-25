@@ -50,6 +50,7 @@ public:
     virtual LWECiphertext XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c) = 0;
     virtual LWECiphertext MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a, ConstLWECiphertext &b,
                                  LWECiphertext *carry_out = nullptr) = 0;
+    virtual LWECiphertext DigitSum(ConstLWECiphertext &e1, ConstLWECiphertext &e0, ConstLWECiphertext &s0) = 0;
 
     virtual CFixedPoint Add(const CFixedPoint &a, const CFixedPoint &b) = 0;
     virtual CFixedPoint Add(const CFixedPoint &a, const PFixedPoint &b) = 0;
@@ -78,4 +79,5 @@ public:
     virtual CFixedPoint Mul(const CFixedPoint &a, const CFixedPoint &b) = 0;
 
     CFixedPoint ToggleMSB(const CFixedPoint &a);
+    LWECiphertext PXOR(ConstLWECiphertext &a, const LWEPlaintext &b);
 };

@@ -106,6 +106,14 @@ LWECiphertext AEGateLogic::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a, 
     return sum;
 }
 
+LWECiphertext AEGateLogic::DigitSum(ConstLWECiphertext &e1, ConstLWECiphertext &e0, ConstLWECiphertext &s0)
+{
+    auto &cc = cfhe_base->GetBinFHEContext();
+    LWECiphertext t = cc.EvalBinGate(AND, e0, cc.EvalNOT(s0));
+    LWECiphertext s1 = cc.EvalBinGate(XOR, e1, t);
+    return s1;
+}
+
 CFixedPoint AEGateLogic::Add(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());

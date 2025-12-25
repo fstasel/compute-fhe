@@ -27,6 +27,7 @@ public:
     LWECiphertext XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c);
     LWECiphertext MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a, ConstLWECiphertext &b,
                          LWECiphertext *carry_out = nullptr);
+    LWECiphertext DigitSum(ConstLWECiphertext &e1, ConstLWECiphertext &e0, ConstLWECiphertext &s0);
 
     CFixedPoint Add(const CFixedPoint &a, const CFixedPoint &b);
     CFixedPoint Add(const CFixedPoint &a, const PFixedPoint &b);

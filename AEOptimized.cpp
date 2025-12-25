@@ -43,6 +43,17 @@ LWECiphertext AEOptimized::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a, 
     return ma_2b;
 }
 
+LWECiphertext AEOptimized::DigitSum(ConstLWECiphertext &e1, ConstLWECiphertext &e0, ConstLWECiphertext &s0)
+{
+    auto &cc = cfhe_base->GetBinFHEContext();
+    auto &lwe = cc.GetLWEScheme();
+    LWECiphertext s0_2e1_e0 = COPY_CT(e1);
+    lwe->EvalAddEq(s0_2e1_e0, s0_2e1_e0);
+    lwe->EvalSubEq(s0_2e1_e0, e0);
+    s0_2e1_e0 = cc.EvalBinGate(AND, s0_2e1_e0, s0);
+    return s0_2e1_e0;
+}
+
 // LWECiphertext AEOptimized::CmpNotEq(const CFixedPoint &a, const CFixedPoint &b)
 // {
 //     assert(a.size() == b.size());
@@ -212,5 +223,91 @@ CFixedPoint AEOptimized::Mul(const CFixedPoint &a, const CFixedPoint &b)
         }
     }
     // cout << "BS = " << bs << endl;
+    return out;
+}
+
+CFixedPoint AEOptimized::Add(const CFixedPoint &a, const PFixedPoint &b)
+{
+    assert(a.size() == b.size());
+    size_t n_digit = a.size();
+
+    CFixedPoint out(n_digit);
+    HalfAdder(a[0], b[0], out[0], carry, carry_pt, is_lastcarry_ct);
+    for (uint8_t i = 1; i < n_digit; i++)
+    {
+        if (is_lastcarry_ct)
+        {
+            out[i] = PXOR(DigitSum(PXOR(a[i], b[i - 1]), PXOR(a[i - 1], b[i - 1]), PXOR(out[i - 1], b[i - 1])), b[i]);
+        }
+        else
+        {
+            AEGateLogic::FullAdder(a[i], b[i], carry_pt, out[i], carry, carry_pt, is_lastcarry_ct);
+        }
+    }
+    return out;
+}
+
+CFixedPoint AEOptimized::AddC(const CFixedPoint &a, const PFixedPoint &b)
+{
+    assert(a.size() == b.size());
+    size_t n_digit = a.size();
+
+    CFixedPoint out(n_digit);
+    if (is_lastcarry_ct)
+    {
+        AEGateLogic::FullAdder(a[0], carry, b[0], out[0], carry);
+    }
+    else
+    {
+        AEGateLogic::FullAdder(a[0], b[0], carry_pt, out[0], carry, carry_pt, is_lastcarry_ct);
+    }
+    for (uint8_t i = 1; i < n_digit; i++)
+    {
+        if (is_lastcarry_ct)
+        {
+            out[i] = PXOR(DigitSum(PXOR(a[i], b[i - 1]), PXOR(a[i - 1], b[i - 1]), PXOR(out[i - 1], b[i - 1])), b[i]);
+        }
+        else
+        {
+            AEGateLogic::FullAdder(a[i], b[i], carry_pt, out[i], carry, carry_pt, is_lastcarry_ct);
+        }
+    }
+    return out;
+}
+
+CFixedPoint AEOptimized::AddNC(const CFixedPoint &a, const PFixedPoint &b)
+{
+    assert(a.size() == b.size());
+    auto &cc = cfhe_base->GetBinFHEContext();
+    size_t n_digit = a.size();
+
+    CFixedPoint out(n_digit);
+    HalfAdder(a[0], b[0], out[0], carry, carry_pt, is_lastcarry_ct);
+    for (uint8_t i = 1; i < n_digit; i++)
+    {
+        if (is_lastcarry_ct)
+        {
+            out[i] = PXOR(DigitSum(PXOR(a[i], b[i - 1]), PXOR(a[i - 1], b[i - 1]), PXOR(out[i - 1], b[i - 1])), b[i]);
+        }
+        else
+        {
+            if (i < n_digit - 1)
+            {
+                AEGateLogic::FullAdder(a[i], b[i], carry_pt, out[i], carry, carry_pt, is_lastcarry_ct);
+            }
+            else
+            {
+                if (b[i] == carry_pt)
+                {
+                    out[i] = COPY_CT(a[i]);
+                }
+                else
+                {
+
+                    out[i] = cc.EvalNOT(a[i]);
+                }
+            }
+        }
+    }
     return out;
 }

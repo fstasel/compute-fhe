@@ -8,11 +8,11 @@ int main()
     // CFHE_Test::TestAll();
     // CFHE_Test::TestAllNoise();
 
-    CFHE_Test t(CCPARAM_STD128, AE_GATELOGIC);
+    CFHE_Test t(CCPARAM_STD128_3, AE_OPTIMIZED);
     t.SetNumTest(100);
     t.SetVerbosity(4);
     t.SetRegenerateKeys(false);
-    t.Test(TT_PADD, 4);
+    t.Test(TT_PADD_NC, 8);
 
     return EXIT_SUCCESS;
 }

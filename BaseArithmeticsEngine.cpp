@@ -69,3 +69,8 @@ CFixedPoint BaseArithmeticsEngine::ToggleMSB(const CFixedPoint &a)
     t.back() = cc.EvalNOT(t.back());
     return t;
 }
+
+LWECiphertext BaseArithmeticsEngine::PXOR(ConstLWECiphertext &a, const LWEPlaintext &b)
+{
+    return (b == 0) ? COPY_CT(a) : cfhe_base->GetBinFHEContext().EvalNOT(a);
+}

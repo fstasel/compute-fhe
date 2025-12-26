@@ -68,10 +68,13 @@ public:
     TestReport TestPAddNC(uint n_digits);
     TestReport TestSub(uint n_digits);
     TestReport TestCPSub(uint n_digits);
+    TestReport TestPSub(uint n_digits);
     TestReport TestSubC(uint n_digits);
     TestReport TestCPSubC(uint n_digits);
+    TestReport TestPSubC(uint n_digits);
     TestReport TestSubNC(uint n_digits);
     TestReport TestCPSubNC(uint n_digits);
+    TestReport TestPSubNC(uint n_digits);
     TestReport TestNeg(uint n_digits);
     TestReport TestCmpNotEq(uint n_digits);
     TestReport TestCmpEq(uint n_digits);

@@ -15,6 +15,9 @@ public:
 
     void HalfSubtractor(ConstLWECiphertext &a, ConstLWECiphertext &b,
                         LWECiphertext &sum, LWECiphertext &carry_out);
+    void HalfSubtractor(const LWEPlaintext &a, ConstLWECiphertext &b,
+                        LWECiphertext &sum, LWECiphertext &carry_out_ct,
+                        LWEPlaintext &carry_out_pt, bool &is_carry_ct);
 
     void FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c,
                    LWECiphertext &sum, LWECiphertext &carry_out);
@@ -40,12 +43,15 @@ public:
 
     CFixedPoint Sub(const CFixedPoint &a, const CFixedPoint &b);
     CFixedPoint Sub(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint Sub(const PFixedPoint &a, const CFixedPoint &b);
 
     CFixedPoint SubC(const CFixedPoint &a, const CFixedPoint &b);
     CFixedPoint SubC(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint SubC(const PFixedPoint &a, const CFixedPoint &b);
 
     CFixedPoint SubNC(const CFixedPoint &a, const CFixedPoint &b);
     CFixedPoint SubNC(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint SubNC(const PFixedPoint &a, const CFixedPoint &b);
 
     CFixedPoint Neg(const CFixedPoint &a);
     LWECiphertext CmpNotEq(const CFixedPoint &a, const CFixedPoint &b);

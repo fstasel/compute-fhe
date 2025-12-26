@@ -40,6 +40,24 @@ void AEGateLogic::HalfSubtractor(ConstLWECiphertext &a, ConstLWECiphertext &b,
     carry_out = cc.EvalBinGate(OR, a, cc.EvalNOT(b));
 }
 
+void AEGateLogic::HalfSubtractor(const LWEPlaintext &a, ConstLWECiphertext &b, LWECiphertext &sum, LWECiphertext &carry_out_ct, LWEPlaintext &carry_out_pt, bool &is_carry_ct)
+{
+    auto &cc = cfhe_base->GetBinFHEContext();
+    LWECiphertext not_b = cc.EvalNOT(b);
+    if (a == 0)
+    {
+        sum = COPY_CT(b);
+        carry_out_ct = not_b;
+        is_carry_ct = true;
+    }
+    else
+    {
+        sum = not_b;
+        carry_out_pt = 1;
+        is_carry_ct = false;
+    }
+}
+
 void AEGateLogic::FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c,
                             LWECiphertext &sum, LWECiphertext &carry_out)
 {
@@ -267,6 +285,28 @@ CFixedPoint AEGateLogic::Sub(const CFixedPoint &a, const PFixedPoint &b)
     return Add(a, BaseArithmeticsEngine::Neg(b));
 }
 
+CFixedPoint AEGateLogic::Sub(const PFixedPoint &a, const CFixedPoint &b)
+{
+    assert(a.size() == b.size());
+    auto &cc = cfhe_base->GetBinFHEContext();
+    size_t n_digit = a.size();
+
+    CFixedPoint out(n_digit);
+    HalfSubtractor(a[0], b[0], out[0], carry, carry_pt, is_lastcarry_ct);
+    for (uint8_t i = 1; i < n_digit; i++)
+    {
+        if (is_lastcarry_ct)
+        {
+            FullAdder(cc.EvalNOT(b[i]), carry, a[i], out[i], carry);
+        }
+        else
+        {
+            FullAdder(cc.EvalNOT(b[i]), a[i], carry_pt, out[i], carry, carry_pt, is_lastcarry_ct);
+        }
+    }
+    return out;
+}
+
 CFixedPoint AEGateLogic::SubC(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
@@ -285,6 +325,27 @@ CFixedPoint AEGateLogic::SubC(const CFixedPoint &a, const CFixedPoint &b)
 CFixedPoint AEGateLogic::SubC(const CFixedPoint &a, const PFixedPoint &b)
 {
     return AddC(a, BaseArithmeticsEngine::Not(b));
+}
+
+CFixedPoint AEGateLogic::SubC(const PFixedPoint &a, const CFixedPoint &b)
+{
+    assert(a.size() == b.size());
+    auto &cc = cfhe_base->GetBinFHEContext();
+    size_t n_digit = a.size();
+
+    CFixedPoint out(n_digit);
+    for (uint8_t i = 0; i < n_digit; i++)
+    {
+        if (is_lastcarry_ct)
+        {
+            FullAdder(cc.EvalNOT(b[i]), carry, a[i], out[i], carry);
+        }
+        else
+        {
+            FullAdder(cc.EvalNOT(b[i]), a[i], carry_pt, out[i], carry, carry_pt, is_lastcarry_ct);
+        }
+    }
+    return out;
 }
 
 CFixedPoint AEGateLogic::SubNC(const CFixedPoint &a, const CFixedPoint &b)
@@ -313,6 +374,49 @@ CFixedPoint AEGateLogic::SubNC(const CFixedPoint &a, const CFixedPoint &b)
 CFixedPoint AEGateLogic::SubNC(const CFixedPoint &a, const PFixedPoint &b)
 {
     return AddNC(a, BaseArithmeticsEngine::Neg(b));
+}
+
+CFixedPoint AEGateLogic::SubNC(const PFixedPoint &a, const CFixedPoint &b)
+{
+    assert(a.size() == b.size());
+    auto &cc = cfhe_base->GetBinFHEContext();
+    size_t n_digit = a.size();
+
+    CFixedPoint out(n_digit);
+    HalfSubtractor(a[0], b[0], out[0], carry, carry_pt, is_lastcarry_ct);
+    for (uint8_t i = 1; i < n_digit; i++)
+    {
+        if (i < n_digit - 1)
+        {
+            if (is_lastcarry_ct)
+            {
+                FullAdder(cc.EvalNOT(b[i]), carry, a[i], out[i], carry);
+            }
+            else
+            {
+                FullAdder(cc.EvalNOT(b[i]), a[i], carry_pt, out[i], carry, carry_pt, is_lastcarry_ct);
+            }
+        }
+        else
+        {
+            if (is_lastcarry_ct)
+            {
+                out[i] = cc.EvalBinGate(a[i] ? XOR : XNOR, b[i], carry);
+            }
+            else
+            {
+                if (a[i] != carry_pt)
+                {
+                    out[i] = COPY_CT(b[i]);
+                }
+                else
+                {
+                    out[i] = cc.EvalNOT(b[i]);
+                }
+            }
+        }
+    }
+    return out;
 }
 
 CFixedPoint AEGateLogic::Neg(const CFixedPoint &a)

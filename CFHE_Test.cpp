@@ -175,6 +175,10 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
             report = TestCPSub(n_digits);
             break;
 
+        case TT_PSUB:
+            report = TestPSub(n_digits);
+            break;
+
         case TT_SUBC:
             report = TestSubC(n_digits);
             break;
@@ -183,12 +187,20 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
             report = TestCPSubC(n_digits);
             break;
 
+        case TT_PSUBC:
+            report = TestPSubC(n_digits);
+            break;
+
         case TT_SUB_NC:
             report = TestSubNC(n_digits);
             break;
 
         case TT_CPSUB_NC:
             report = TestCPSubNC(n_digits);
+            break;
+
+        case TT_PSUB_NC:
+            report = TestPSubNC(n_digits);
             break;
 
         case TT_NEG:
@@ -439,8 +451,10 @@ void CFHE_Test::StartTest()
         Test(TT_PADD_NC, d);
         Test(TT_SUB, d);
         Test(TT_CPSUB, d);
+        Test(TT_PSUB, d);
         Test(TT_SUBC, d);
         Test(TT_CPSUBC, d);
+        Test(TT_PSUBC, d);
         Test(TT_SUB_NC, d);
         Test(TT_CPSUB_NC, d);
         Test(TT_NEG, d);

@@ -54,54 +54,6 @@ LWECiphertext AEOptimized::DigitSum(ConstLWECiphertext &e1, ConstLWECiphertext &
     return s0_2e1_e0;
 }
 
-// LWECiphertext AEOptimized::CmpNotEq(const CFixedPoint &a, const CFixedPoint &b)
-// {
-//     assert(a.size() == b.size());
-//     auto &cc = cfhe_base->GetBinFHEContext();
-//     size_t n_digit = a.size();
-
-//     LWECiphertext out = cc.EvalBinGate(XOR, a[0], b[0]);
-//     for (uint8_t i = 1; i < n_digit; i += 2)
-//     {
-//         if (i + 1U < n_digit)
-//         {
-//             LWECiphertext eq1 = cc.EvalBinGate(XOR, a[i], b[i]);
-//             LWECiphertext eq2 = cc.EvalBinGate(XOR, a[i + 1], b[i + 1]);
-//             out = cc.EvalBinGate(OR3, {out, eq1, eq2});
-//         }
-//         else
-//         {
-//             LWECiphertext eq = cc.EvalBinGate(XOR, a[i], b[i]);
-//             out = cc.EvalBinGate(OR, out, eq);
-//         }
-//     }
-//     return out;
-// }
-
-// LWECiphertext AEOptimized::CmpEq(const CFixedPoint &a, const CFixedPoint &b)
-// {
-//     assert(a.size() == b.size());
-//     auto &cc = cfhe_base->GetBinFHEContext();
-//     size_t n_digit = a.size();
-
-//     LWECiphertext out = cc.EvalBinGate(XNOR, a[0], b[0]);
-//     for (uint8_t i = 1; i < n_digit; i += 2)
-//     {
-//         if (i + 1U < n_digit)
-//         {
-//             LWECiphertext eq1 = cc.EvalBinGate(XNOR, a[i], b[i]);
-//             LWECiphertext eq2 = cc.EvalBinGate(XNOR, a[i + 1], b[i + 1]);
-//             out = cc.EvalBinGate(AND3, {out, eq1, eq2});
-//         }
-//         else
-//         {
-//             LWECiphertext eq = cc.EvalBinGate(XNOR, a[i], b[i]);
-//             out = cc.EvalBinGate(AND3, out, eq);
-//         }
-//     }
-//     return out;
-// }
-
 LWECiphertext AEOptimized::CmpLTEq_U(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
@@ -140,13 +92,10 @@ CFixedPoint AEOptimized::FullMul(const CFixedPoint &a, const CFixedPoint &b)
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    // int bs = 0;
-
     CFixedPoint out((n_digit == 1) ? 1 : (n_digit << 1));
     for (uint8_t i = 0; i < n_digit; i++)
     {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);
-        // bs++;
     }
     for (uint8_t j = 1; j < n_digit; j++)
     {
@@ -155,28 +104,23 @@ CFixedPoint AEOptimized::FullMul(const CFixedPoint &a, const CFixedPoint &b)
             if (i == 0)
             {
                 out[i + j] = MulAdd(a[i], b[j], out[i + j], &carry);
-                // bs += 2;
             }
             else if (i < n_digit - 1)
             {
                 LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
                 FullAdder(out[i + j], p, carry, out[i + j], carry);
-                // bs += 3;
             }
             else if (j == 1)
             {
                 out[i + j] = MulAdd(a[i], b[j], carry, &out[i + j + 1]);
-                // bs += 2;
             }
             else
             {
                 LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
                 FullAdder(out[i + j], p, carry, out[i + j], out[i + j + 1]);
-                // bs += 3;
             }
         }
     }
-    // cout << "BS = " << bs << endl;
     return out;
 }
 
@@ -186,13 +130,10 @@ CFixedPoint AEOptimized::Mul(const CFixedPoint &a, const CFixedPoint &b)
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    // int bs = 0;
-
     CFixedPoint out(n_digit);
     for (uint8_t i = 0; i < n_digit; i++)
     {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);
-        // bs++;
     }
     for (uint8_t j = 1; j < n_digit; j++)
     {
@@ -201,28 +142,23 @@ CFixedPoint AEOptimized::Mul(const CFixedPoint &a, const CFixedPoint &b)
             if (i == 0 && j < n_digit - 1)
             {
                 out[i + j] = MulAdd(a[i], b[j], out[i + j], &carry);
-                // bs += 2;
             }
             else if (i < n_digit - j - 1)
             {
                 LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
                 FullAdder(out[i + j], p, carry, out[i + j], carry);
-                // bs += 3;
             }
             else if (j < n_digit - 1)
             {
                 LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
                 out[i + j] = XOR3(out[i + j], carry, p);
-                // bs += 2;
             }
             else
             {
                 out[i + j] = MulAdd(a[i], b[j], out[i + j]);
-                // bs++;
             }
         }
     }
-    // cout << "BS = " << bs << endl;
     return out;
 }
 

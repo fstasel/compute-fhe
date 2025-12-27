@@ -23,4 +23,7 @@ public:
     CFixedPoint Add(const CFixedPoint &a, const PFixedPoint &b);
     CFixedPoint AddC(const CFixedPoint &a, const PFixedPoint &b);
     CFixedPoint AddNC(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint Sub(const PFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint SubC(const PFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint SubNC(const PFixedPoint &a, const CFixedPoint &b);
 };

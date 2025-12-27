@@ -92,6 +92,7 @@ public:
 
     CFixedPoint ToggleMSB(const CFixedPoint &a);
     LWECiphertext PXOR(ConstLWECiphertext &a, const LWEPlaintext &b);
+    LWECiphertext PXNOR(ConstLWECiphertext &a, const LWEPlaintext &b);
     PFixedPoint Neg(const PFixedPoint &a);
     PFixedPoint Not(const PFixedPoint &a);
 };

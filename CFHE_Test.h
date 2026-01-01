@@ -87,6 +87,7 @@ public:
     TestReport TestCmpGTEq(uint n_digits);
     TestReport TestCmpLT(uint n_digits);
     TestReport TestFullMul(uint n_digits);
+    TestReport TestPFullMul(uint n_digits);
     TestReport TestMul(uint n_digits);
 
     void StartNoiseTest();

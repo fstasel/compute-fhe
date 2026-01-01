@@ -577,6 +577,72 @@ CFixedPoint AEGateLogic::FullMul(const CFixedPoint &a, const CFixedPoint &b)
     return out;
 }
 
+CFixedPoint AEGateLogic::FullMul(const CFixedPoint &a, const PFixedPoint &b)
+{
+    CFixedPoint out, acc;
+    uint num_zeros = 0;
+    if (a.size() == 0 || b.size() == 0)
+    {
+        out.push_back(GetConstantFalse());
+        return out;
+    }
+    for (uint8_t i = 0; i < b.size(); i++)
+    {
+        if (b[i] == 0)
+        {
+            if (acc.size() == 0)
+            {
+                num_zeros++;
+            }
+            else
+            {
+                out.push_back(COPY_CT(acc.front()));
+                acc.erase(acc.begin());
+            }
+        }
+        else if (acc.size() == 0)
+        {
+            for (uint8_t j = 0; j < num_zeros; j++)
+            {
+                out.push_back(GetConstantFalse());
+            }
+            num_zeros = 0;
+            out.push_back(COPY_CT(a[0]));
+            for (uint8_t j = 1; j < a.size(); j++)
+            {
+                acc.push_back(a[j]);
+            }
+        }
+        else
+        {
+            size_t s = acc.size();
+            acc = Add(acc, CFixedPoint(a.begin(), a.begin() + s));
+            SetIsLastCarryCT(true);
+            out.push_back(COPY_CT(acc.front()));
+            acc.erase(acc.begin());
+            if (a.size() > s)
+            {
+                CFixedPoint sum = AddC(CFixedPoint(a.begin() + s, a.end()), PFixedPoint(a.size() - s, 0));
+                for (size_t j = 0; j < sum.size(); j++)
+                {
+                    acc.push_back(sum[j]);
+                }
+            }
+            acc.push_back(COPY_CT(carry));
+        }
+    }
+    for (size_t j = 0; j < acc.size(); j++)
+    {
+        out.push_back(COPY_CT(acc[j]));
+    }
+    if (out.size() == 0)
+    {
+        out.push_back(GetConstantFalse());
+    }
+    cout << "Size of FullMul result: " << out.size() << endl;
+    return out;
+}
+
 CFixedPoint AEGateLogic::Mul(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
@@ -587,7 +653,7 @@ CFixedPoint AEGateLogic::Mul(const CFixedPoint &a, const CFixedPoint &b)
     for (uint8_t i = 0; i < n_digit; i++)
     {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);
-   }
+    }
     for (uint8_t j = 1; j < n_digit; j++)
     {
         for (uint8_t i = 0; i < n_digit - j; i++)
@@ -613,4 +679,71 @@ CFixedPoint AEGateLogic::Mul(const CFixedPoint &a, const CFixedPoint &b)
         }
     }
     return out;
+}
+
+uint AEGateLogic::Get_CtCtAdd_Cost(size_t n_bits)
+{
+    return (n_bits > 0) ? 5 * n_bits - 3 : 0;
+}
+
+uint AEGateLogic::Get_CtPtAddC_Cost(size_t n_bits)
+{
+    return (n_bits > 0) ? 2 * n_bits : 0;
+}
+
+uint AEGateLogic::Get_PtCtSub_Cost(size_t n_bits)
+{
+    return (n_bits > 0) ? 2 * n_bits - 2 : 0;
+}
+
+uint AEGateLogic::Get_CtPtSubC_Cost(size_t n_bits)
+{
+    return Get_CtPtAddC_Cost(n_bits);
+}
+
+uint AEGateLogic::Get_PtFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits)
+{
+    uint cost = 0;
+    size_t num_carry = 0;
+    size_t r = 1;
+    size_t start = 0;
+    for (start = 0; start < pt.size(); start++)
+    {
+        if (pt[start] == 0)
+        {
+            continue;
+        }
+        else
+        {
+            start++;
+            break;
+        }
+    }
+    for (size_t i = start; i < pt.size(); i++)
+    {
+        if (pt[i] == 0)
+        {
+            r++;
+            continue;
+        }
+        else if (r >= ct_n_bits + num_carry)
+        {
+            num_carry = 0;
+            r = 1;
+        }
+        else
+        {
+            cost += Get_CtCtAdd_Cost(ct_n_bits + num_carry - r);
+            cost += Get_CtPtAddC_Cost(r - num_carry);
+            num_carry = 1;
+            r = 1;
+        }
+    }
+
+    return cost;
+}
+
+uint AEGateLogic::Get_Pt2sCompFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits)
+{
+    return Get_PtFullMul_Cost(BaseArithmeticsEngine::Neg(pt), ct_n_bits) + Get_PtCtSub_Cost(pt.size()) + Get_CtPtSubC_Cost(pt.size());
 }

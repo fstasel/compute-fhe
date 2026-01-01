@@ -14,6 +14,11 @@ LWECiphertext BaseArithmeticsEngine::GetCarry()
     return carry;
 }
 
+LWEPlaintext BaseArithmeticsEngine::GetCarryPT()
+{
+    return carry_pt;
+}
+
 void BaseArithmeticsEngine::SetCarry(LWEPlaintext value)
 {
     carry_pt = value;
@@ -82,10 +87,10 @@ LWECiphertext BaseArithmeticsEngine::PXNOR(ConstLWECiphertext &a, const LWEPlain
 
 PFixedPoint BaseArithmeticsEngine::Neg(const PFixedPoint &a)
 {
-    return PFixedPoint(cfhe_base->uint2PFixedPoint(UINT32_MAX - cfhe_base->PFixedPoint2uint(a) + 1U));
+    return PFixedPoint(cfhe_base->uint2PFixedPoint(UINT32_MAX - cfhe_base->PFixedPoint2uint(a) + 1U, a.size()));
 }
 
 PFixedPoint BaseArithmeticsEngine::Not(const PFixedPoint &a)
 {
-    return PFixedPoint(cfhe_base->uint2PFixedPoint(UINT32_MAX - cfhe_base->PFixedPoint2uint(a)));
+    return PFixedPoint(cfhe_base->uint2PFixedPoint(UINT32_MAX - cfhe_base->PFixedPoint2uint(a), a.size()));
 }

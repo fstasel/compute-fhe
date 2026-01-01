@@ -38,6 +38,7 @@ enum TestType
     TT_CMPGTEQ,
     TT_CMPLT,
     TT_FULLMUL,
+    TT_PFULLMUL,
     TT_MUL
 };
 
@@ -117,6 +118,8 @@ inline const char *ToString(TestType v)
         return "CMPLT";
     case TT_FULLMUL:
         return "FULLMUL";
+    case TT_PFULLMUL:
+        return "PFULLMUL";
     case TT_MUL:
         return "MUL";
     default:

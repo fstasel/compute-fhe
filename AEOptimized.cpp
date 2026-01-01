@@ -165,6 +165,7 @@ CFixedPoint AEOptimized::Mul(const CFixedPoint &a, const CFixedPoint &b)
 CFixedPoint AEOptimized::Add(const CFixedPoint &a, const PFixedPoint &b)
 {
     assert(a.size() == b.size());
+    auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
     CFixedPoint out(n_digit);
@@ -174,6 +175,17 @@ CFixedPoint AEOptimized::Add(const CFixedPoint &a, const PFixedPoint &b)
         if (is_lastcarry_ct)
         {
             out[i] = PXOR(DigitSum(PXOR(a[i], b[i - 1]), PXOR(a[i - 1], b[i - 1]), PXOR(out[i - 1], b[i - 1])), b[i]);
+            if (i == n_digit - 1)
+            {
+                if (b[i] == 0)
+                {
+                    carry = cc.EvalBinGate(AND, a[i], cc.EvalNOT(out[i]));
+                }
+                else
+                {
+                    carry = cc.EvalBinGate(OR, a[i], cc.EvalNOT(out[i]));
+                }
+            }
         }
         else
         {
@@ -186,6 +198,7 @@ CFixedPoint AEOptimized::Add(const CFixedPoint &a, const PFixedPoint &b)
 CFixedPoint AEOptimized::AddC(const CFixedPoint &a, const PFixedPoint &b)
 {
     assert(a.size() == b.size());
+    auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
     CFixedPoint out(n_digit);
@@ -202,6 +215,17 @@ CFixedPoint AEOptimized::AddC(const CFixedPoint &a, const PFixedPoint &b)
         if (is_lastcarry_ct)
         {
             out[i] = PXOR(DigitSum(PXOR(a[i], b[i - 1]), PXOR(a[i - 1], b[i - 1]), PXOR(out[i - 1], b[i - 1])), b[i]);
+            if (i == n_digit - 1)
+            {
+                if (b[i] == 0)
+                {
+                    carry = cc.EvalBinGate(AND, a[i], cc.EvalNOT(out[i]));
+                }
+                else
+                {
+                    carry = cc.EvalBinGate(OR, a[i], cc.EvalNOT(out[i]));
+                }
+            }
         }
         else
         {
@@ -261,6 +285,17 @@ CFixedPoint AEOptimized::Sub(const PFixedPoint &a, const CFixedPoint &b)
         if (is_lastcarry_ct)
         {
             out[i] = PXOR(DigitSum(PXNOR(b[i], a[i - 1]), PXNOR(b[i - 1], a[i - 1]), PXOR(out[i - 1], a[i - 1])), a[i]);
+            if (i == n_digit - 1)
+            {
+                if (a[i] == 0)
+                {
+                    carry = cc.EvalBinGate(NOR, b[i], out[i]);
+                }
+                else
+                {
+                    carry = cc.EvalBinGate(NAND, b[i], out[i]);
+                }
+            }
         }
         else
         {
@@ -290,6 +325,17 @@ CFixedPoint AEOptimized::SubC(const PFixedPoint &a, const CFixedPoint &b)
         if (is_lastcarry_ct)
         {
             out[i] = PXOR(DigitSum(PXNOR(b[i], a[i - 1]), PXNOR(b[i - 1], a[i - 1]), PXOR(out[i - 1], a[i - 1])), a[i]);
+            if (i == n_digit - 1)
+            {
+                if (a[i] == 0)
+                {
+                    carry = cc.EvalBinGate(NOR, b[i], out[i]);
+                }
+                else
+                {
+                    carry = cc.EvalBinGate(NAND, b[i], out[i]);
+                }
+            }
         }
         else
         {

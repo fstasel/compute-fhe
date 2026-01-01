@@ -251,6 +251,10 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
             report = TestFullMul(n_digits);
             break;
 
+        case TT_PFULLMUL:
+            report = TestPFullMul(n_digits);
+            break;
+
         case TT_MUL:
             report = TestMul(n_digits);
             break;
@@ -469,6 +473,7 @@ void CFHE_Test::StartTest()
         Test(TT_CMPGTEQ, d);
         Test(TT_CMPLT, d);
         Test(TT_FULLMUL, d);
+        Test(TT_PFULLMUL, d);
         Test(TT_MUL, d);
     }
 }

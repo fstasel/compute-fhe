@@ -24,4 +24,5 @@ public:
     CFixedPoint Sub(const PFixedPoint &a, const CFixedPoint &b);
     CFixedPoint SubC(const PFixedPoint &a, const CFixedPoint &b);
     CFixedPoint SubNC(const PFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint Neg(const CFixedPoint &a);
 };

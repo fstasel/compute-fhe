@@ -380,3 +380,8 @@ CFixedPoint AEOptimized::SubNC(const PFixedPoint &a, const CFixedPoint &b)
     }
     return out;
 }
+
+CFixedPoint AEOptimized::Neg(const CFixedPoint &a)
+{
+    return SubNC(PFixedPoint(a.size(), 0), a);
+}

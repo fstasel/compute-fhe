@@ -9,11 +9,11 @@ int main()
     // CFHE_Test::TestAll();
     // CFHE_Test::TestAllNoise();
 
-    CFHE_Test t(CCPARAM_STD128, AE_GATELOGIC);
-    t.SetNumTest(100);
+    CFHE_Test t(CCPARAM_STD128_3, AE_OPTIMIZED);
+    t.SetNumTest(10);
     t.SetVerbosity(4);
     t.SetRegenerateKeys(false);
-    t.Test(TT_PFULLMUL, 5);
+    t.Test(TT_NEG, 32);
 
     // ComputeFHE cfhe(CCPARAM_STD128, AE_GATELOGIC);
     // AEGateLogic *ae = (AEGateLogic *)cfhe.GetArithmeticsEngine();

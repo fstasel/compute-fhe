@@ -43,6 +43,7 @@ public:
     void SetTestFresh(bool val);
     bool GetRegenerateKeys();
     void SetRegenerateKeys(bool val);
+    ComputeFHE *GetBase();
 
     void Test(TestType tt, size_t n_digits = 8);
     TestReport TestEncryptDecrypt(size_t n_digits);
@@ -88,6 +89,7 @@ public:
     TestReport TestCmpLT(uint n_digits);
     TestReport TestFullMul(uint n_digits);
     TestReport TestPFullMul(uint n_digits);
+    TestReport TestPFullMulFast(uint n_digits);
     TestReport TestMul(uint n_digits);
 
     void StartNoiseTest();

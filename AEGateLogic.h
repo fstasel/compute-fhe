@@ -67,13 +67,15 @@ public:
 
     CFixedPoint FullMul(const CFixedPoint &a, const CFixedPoint &b);
     CFixedPoint FullMul(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint FullMulFast(const CFixedPoint &a, const PFixedPoint &b);
 
     CFixedPoint Mul(const CFixedPoint &a, const CFixedPoint &b);
 
     virtual uint Get_CtCtAdd_Cost(size_t n_bits);
+    virtual uint Get_CtCtSubC_Cost(size_t n_bits);
     virtual uint Get_CtPtAddC_Cost(size_t n_bits);
     virtual uint Get_PtCtSub_Cost(size_t n_bits);
     virtual uint Get_CtPtSubC_Cost(size_t n_bits);
-    virtual uint Get_PtFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits);
+    virtual uint Get_PtFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits, size_t &out_n_bits);
     virtual uint Get_Pt2sCompFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits);
 };

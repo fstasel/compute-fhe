@@ -25,4 +25,9 @@ public:
     CFixedPoint SubC(const PFixedPoint &a, const CFixedPoint &b);
     CFixedPoint SubNC(const PFixedPoint &a, const CFixedPoint &b);
     CFixedPoint Neg(const CFixedPoint &a);
+
+    uint Get_CtCtAdd_Cost(size_t n_bits);
+    uint Get_CtCtSubC_Cost(size_t n_bits);
+    uint Get_CtPtAddC_Cost(size_t n_bits);
+    uint Get_PtCtSub_Cost(size_t n_bits);
 };

@@ -639,7 +639,57 @@ CFixedPoint AEGateLogic::FullMul(const CFixedPoint &a, const PFixedPoint &b)
     {
         out.push_back(GetConstantFalse());
     }
-    cout << "Size of FullMul result: " << out.size() << endl;
+    return out;
+}
+
+CFixedPoint AEGateLogic::FullMulFast(const CFixedPoint &a, const PFixedPoint &b)
+{
+    auto &cc = cfhe_base->GetBinFHEContext();
+    if (a.size() == 0 || b.size() == 0 || cfhe_base->PFixedPoint2uint(b) == 0)
+    {
+        CFixedPoint zero(1);
+        zero[0] = GetConstantFalse();
+        return zero;
+    }
+    size_t out_n_bits = 0;
+    if (Get_PtFullMul_Cost(b, a.size(), out_n_bits) <= Get_Pt2sCompFullMul_Cost(b, a.size()))
+    {
+        return FullMul(a, b);
+    }
+    PFixedPoint b_neg = BaseArithmeticsEngine::Neg(b);
+    CFixedPoint res_neg = FullMul(a, b_neg);
+    CFixedPoint out_lo, out_mid, out_hi;
+    if (res_neg.size() <= b.size())
+    {
+        out_lo = Sub(PFixedPoint(res_neg.size(), 0), res_neg);
+        for (uint8_t i = 0; i < b.size() - res_neg.size(); i++)
+        {
+            out_mid.push_back(cc.EvalNOT(carry));
+        }
+        out_hi = SubC(a, PFixedPoint(a.size(), 0));
+    }
+    else
+    {
+        out_lo = Sub(PFixedPoint(b.size(), 0), CFixedPoint(res_neg.begin(), res_neg.begin() + b.size()));
+        out_mid = SubC(CFixedPoint(a.begin(), a.begin() + (res_neg.size() - b.size())), CFixedPoint(res_neg.begin() + b.size(), res_neg.end()));
+        if (a.size() > res_neg.size() - b.size())
+        {
+            out_hi = SubC(CFixedPoint(a.begin() + (res_neg.size() - b.size()), a.end()), PFixedPoint(a.size() - (res_neg.size() - b.size()), 0));
+        }
+    }
+    CFixedPoint out(out_lo.size() + out_mid.size() + out_hi.size());
+    for (uint8_t i = 0; i < out_lo.size(); i++)
+    {
+        out[i] = out_lo[i];
+    }
+    for (uint8_t i = 0; i < out_mid.size(); i++)
+    {
+        out[i + out_lo.size()] = out_mid[i];
+    }
+    for (uint8_t i = 0; i < out_hi.size(); i++)
+    {
+        out[i + out_lo.size() + out_mid.size()] = out_hi[i];
+    }
     return out;
 }
 
@@ -686,6 +736,11 @@ uint AEGateLogic::Get_CtCtAdd_Cost(size_t n_bits)
     return (n_bits > 0) ? 5 * n_bits - 3 : 0;
 }
 
+uint AEGateLogic::Get_CtCtSubC_Cost(size_t n_bits)
+{
+    return (n_bits > 0) ? 5 * n_bits : 0;
+}
+
 uint AEGateLogic::Get_CtPtAddC_Cost(size_t n_bits)
 {
     return (n_bits > 0) ? 2 * n_bits : 0;
@@ -701,12 +756,13 @@ uint AEGateLogic::Get_CtPtSubC_Cost(size_t n_bits)
     return Get_CtPtAddC_Cost(n_bits);
 }
 
-uint AEGateLogic::Get_PtFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits)
+uint AEGateLogic::Get_PtFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits, size_t &out_n_bits)
 {
     uint cost = 0;
     size_t num_carry = 0;
     size_t r = 1;
     size_t start = 0;
+    out_n_bits = 1;
     for (start = 0; start < pt.size(); start++)
     {
         if (pt[start] == 0)
@@ -715,6 +771,7 @@ uint AEGateLogic::Get_PtFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits)
         }
         else
         {
+            out_n_bits = start + ct_n_bits;
             start++;
             break;
         }
@@ -728,22 +785,38 @@ uint AEGateLogic::Get_PtFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits)
         }
         else if (r >= ct_n_bits + num_carry)
         {
+            out_n_bits = i + ct_n_bits;
             num_carry = 0;
             r = 1;
         }
         else
         {
+            out_n_bits = i + ct_n_bits + 1;
             cost += Get_CtCtAdd_Cost(ct_n_bits + num_carry - r);
             cost += Get_CtPtAddC_Cost(r - num_carry);
             num_carry = 1;
             r = 1;
         }
     }
-
     return cost;
 }
 
 uint AEGateLogic::Get_Pt2sCompFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits)
 {
-    return Get_PtFullMul_Cost(BaseArithmeticsEngine::Neg(pt), ct_n_bits) + Get_PtCtSub_Cost(pt.size()) + Get_CtPtSubC_Cost(pt.size());
+    size_t out_n_bits = 0;
+    size_t pt_n_bits = pt.size();
+    uint cost = Get_PtFullMul_Cost(BaseArithmeticsEngine::Neg(pt), ct_n_bits, out_n_bits);
+    if (out_n_bits <= pt_n_bits)
+    {
+        cost += Get_PtCtSub_Cost(out_n_bits);
+        cost += Get_CtPtSubC_Cost(ct_n_bits);
+    }
+    else
+    {
+        cost += Get_PtCtSub_Cost(pt_n_bits);
+        cost += Get_CtCtSubC_Cost(out_n_bits - pt_n_bits);
+        cost += Get_CtPtSubC_Cost(ct_n_bits - out_n_bits + pt_n_bits);
+    }
+
+    return cost;
 }

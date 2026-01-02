@@ -385,3 +385,23 @@ CFixedPoint AEOptimized::Neg(const CFixedPoint &a)
 {
     return SubNC(PFixedPoint(a.size(), 0), a);
 }
+
+uint AEOptimized::Get_CtCtAdd_Cost(size_t n_bits)
+{
+    return (n_bits > 0) ? 2 * n_bits : 0;
+}
+
+uint AEOptimized::Get_CtCtSubC_Cost(size_t n_bits)
+{
+    return (n_bits > 0) ? 2 * n_bits : 0;
+}
+
+uint AEOptimized::Get_CtPtAddC_Cost(size_t n_bits)
+{
+    return (n_bits > 0) ? n_bits + 2 : 0;
+}
+
+uint AEOptimized::Get_PtCtSub_Cost(size_t n_bits)
+{
+    return (n_bits > 0) ? n_bits + 1 : 0;
+}

@@ -91,7 +91,8 @@ public:
 
     virtual CFixedPoint FullMul(const CFixedPoint &a, const CFixedPoint &b) = 0;
     virtual CFixedPoint FullMul(const CFixedPoint &a, const PFixedPoint &b) = 0;
-    
+    virtual CFixedPoint FullMulFast(const CFixedPoint &a, const PFixedPoint &b) = 0;
+
     virtual CFixedPoint Mul(const CFixedPoint &a, const CFixedPoint &b) = 0;
 
     CFixedPoint ToggleMSB(const CFixedPoint &a);

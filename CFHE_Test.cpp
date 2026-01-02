@@ -81,6 +81,11 @@ void CFHE_Test::SetRegenerateKeys(bool val)
     regenerate_keys = val;
 }
 
+ComputeFHE *CFHE_Test::GetBase()
+{
+    return cfhe_base;
+}
+
 uint CFHE_Test::CreateRandomNumber()
 {
     return dis(gen);
@@ -253,6 +258,10 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
 
         case TT_PFULLMUL:
             report = TestPFullMul(n_digits);
+            break;
+
+        case TT_PFULLMUL_FAST:
+            report = TestPFullMulFast(n_digits);
             break;
 
         case TT_MUL:
@@ -474,6 +483,7 @@ void CFHE_Test::StartTest()
         Test(TT_CMPLT, d);
         Test(TT_FULLMUL, d);
         Test(TT_PFULLMUL, d);
+        Test(TT_PFULLMUL_FAST, d);
         Test(TT_MUL, d);
     }
 }

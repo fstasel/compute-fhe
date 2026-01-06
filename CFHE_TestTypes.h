@@ -17,6 +17,8 @@ enum TestType
     TT_PADDC,
     TT_ADD_NC,
     TT_PADD_NC,
+    TT_ADDC_NC,
+    TT_PADDC_NC,
     TT_SUB,
     TT_CPSUB,
     TT_PSUB,
@@ -26,6 +28,9 @@ enum TestType
     TT_SUB_NC,
     TT_CPSUB_NC,
     TT_PSUB_NC,
+    TT_SUBC_NC,
+    TT_CPSUBC_NC,
+    TT_PSUBC_NC,
     TT_NEG,
     TT_CMPNOTEQ,
     TT_CMPEQ,
@@ -77,6 +82,10 @@ inline const char *ToString(TestType v)
         return "ADD_NC";
     case TT_PADD_NC:
         return "PADD_NC";
+    case TT_ADDC_NC:
+        return "ADDC_NC";
+    case TT_PADDC_NC:
+        return "PADDC_NC";
     case TT_SUB:
         return "SUB";
     case TT_CPSUB:
@@ -95,6 +104,12 @@ inline const char *ToString(TestType v)
         return "CPSUB_NC";
     case TT_PSUB_NC:
         return "PSUB_NC";
+    case TT_SUBC_NC:
+        return "SUBC_NC";
+    case TT_CPSUBC_NC:
+        return "CPSUBC_NC";
+    case TT_PSUBC_NC:
+        return "PSUBC_NC";
     case TT_NEG:
         return "NEG";
     case TT_CMPNOTEQ:

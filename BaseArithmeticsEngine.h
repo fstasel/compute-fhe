@@ -56,26 +56,14 @@ public:
                                  LWECiphertext *carry_out = nullptr) = 0;
     virtual LWECiphertext DigitSum(ConstLWECiphertext &e1, ConstLWECiphertext &e0, ConstLWECiphertext &s0) = 0;
 
-    virtual CFixedPoint Add(const CFixedPoint &a, const CFixedPoint &b) = 0;
-    virtual CFixedPoint Add(const CFixedPoint &a, const PFixedPoint &b) = 0;
-
-    virtual CFixedPoint AddC(const CFixedPoint &a, const CFixedPoint &b) = 0;
-    virtual CFixedPoint AddC(const CFixedPoint &a, const PFixedPoint &b) = 0;
-
-    virtual CFixedPoint AddNC(const CFixedPoint &a, const CFixedPoint &b) = 0;
-    virtual CFixedPoint AddNC(const CFixedPoint &a, const PFixedPoint &b) = 0;
-
-    virtual CFixedPoint Sub(const CFixedPoint &a, const CFixedPoint &b) = 0;
-    virtual CFixedPoint Sub(const CFixedPoint &a, const PFixedPoint &b) = 0;
-    virtual CFixedPoint Sub(const PFixedPoint &a, const CFixedPoint &b) = 0;
-
-    virtual CFixedPoint SubC(const CFixedPoint &a, const CFixedPoint &b) = 0;
-    virtual CFixedPoint SubC(const CFixedPoint &a, const PFixedPoint &b) = 0;
-    virtual CFixedPoint SubC(const PFixedPoint &a, const CFixedPoint &b) = 0;
-
-    virtual CFixedPoint SubNC(const CFixedPoint &a, const CFixedPoint &b) = 0;
-    virtual CFixedPoint SubNC(const CFixedPoint &a, const PFixedPoint &b) = 0;
-    virtual CFixedPoint SubNC(const PFixedPoint &a, const CFixedPoint &b) = 0;
+    virtual CFixedPoint Add_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b,
+                                            const bool &carry_in, const bool &carry_out) = 0;
+    virtual CFixedPoint Sub_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b,
+                                            const bool &carry_in, const bool &carry_out) = 0;
+    virtual CFixedPoint Add_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b,
+                                            const bool &carry_in, const bool &carry_out) = 0;
+    virtual CFixedPoint Sub_PtCt_FixedPoint(const PFixedPoint &a, const CFixedPoint &b,
+                                            const bool &carry_in, const bool &carry_out) = 0;
 
     virtual CFixedPoint Neg(const CFixedPoint &a) = 0;
     virtual LWECiphertext CmpNotEq(const CFixedPoint &a, const CFixedPoint &b) = 0;
@@ -94,6 +82,34 @@ public:
     virtual CFixedPoint FullMulFast(const CFixedPoint &a, const PFixedPoint &b) = 0;
 
     virtual CFixedPoint Mul(const CFixedPoint &a, const CFixedPoint &b) = 0;
+
+    CFixedPoint Add(const CFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint AddC(const CFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint AddNC(const CFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint AddCNC(const CFixedPoint &a, const CFixedPoint &b);
+
+    CFixedPoint Sub(const CFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint SubC(const CFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint SubNC(const CFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint SubCNC(const CFixedPoint &a, const CFixedPoint &b);
+
+    CFixedPoint Add(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint Add(const PFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint AddC(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint AddC(const PFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint AddNC(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint AddNC(const PFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint AddCNC(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint AddCNC(const PFixedPoint &a, const CFixedPoint &b);
+
+    CFixedPoint Sub(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint Sub(const PFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint SubC(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint SubC(const PFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint SubNC(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint SubNC(const PFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint SubCNC(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint SubCNC(const PFixedPoint &a, const CFixedPoint &b);
 
     CFixedPoint ToggleMSB(const CFixedPoint &a);
     LWECiphertext PXOR(ConstLWECiphertext &a, const LWEPlaintext &b);

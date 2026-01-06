@@ -67,6 +67,126 @@ LWECiphertext BaseArithmeticsEngine::GetConstantTrue()
     return COPY_CT(constant_true);
 }
 
+CFixedPoint BaseArithmeticsEngine::Add(const CFixedPoint &a, const CFixedPoint &b)
+{
+    return Add_CtCt_FixedPoint(a, b, false, true);
+}
+
+CFixedPoint BaseArithmeticsEngine::AddC(const CFixedPoint &a, const CFixedPoint &b)
+{
+    return Add_CtCt_FixedPoint(a, b, true, true);
+}
+
+CFixedPoint BaseArithmeticsEngine::AddNC(const CFixedPoint &a, const CFixedPoint &b)
+{
+    return Add_CtCt_FixedPoint(a, b, false, false);
+}
+
+CFixedPoint BaseArithmeticsEngine::AddCNC(const CFixedPoint &a, const CFixedPoint &b)
+{
+    return Add_CtCt_FixedPoint(a, b, true, false);
+}
+
+CFixedPoint BaseArithmeticsEngine::Sub(const CFixedPoint &a, const CFixedPoint &b)
+{
+    return Sub_CtCt_FixedPoint(a, b, false, true);
+}
+
+CFixedPoint BaseArithmeticsEngine::SubC(const CFixedPoint &a, const CFixedPoint &b)
+{
+    return Sub_CtCt_FixedPoint(a, b, true, true);
+}
+
+CFixedPoint BaseArithmeticsEngine::SubNC(const CFixedPoint &a, const CFixedPoint &b)
+{
+    return Sub_CtCt_FixedPoint(a, b, false, false);
+}
+
+CFixedPoint BaseArithmeticsEngine::SubCNC(const CFixedPoint &a, const CFixedPoint &b)
+{
+    return Sub_CtCt_FixedPoint(a, b, true, false);
+}
+
+CFixedPoint BaseArithmeticsEngine::Add(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return Add_CtPt_FixedPoint(a, b, false, true);
+}
+
+CFixedPoint BaseArithmeticsEngine::Add(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return Add_CtPt_FixedPoint(b, a, false, true);
+}
+
+CFixedPoint BaseArithmeticsEngine::AddC(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return Add_CtPt_FixedPoint(a, b, true, true);
+}
+
+CFixedPoint BaseArithmeticsEngine::AddC(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return Add_CtPt_FixedPoint(b, a, true, true);
+}
+
+CFixedPoint BaseArithmeticsEngine::AddNC(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return Add_CtPt_FixedPoint(a, b, false, false);
+}
+
+CFixedPoint BaseArithmeticsEngine::AddNC(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return Add_CtPt_FixedPoint(b, a, false, false);
+}
+
+CFixedPoint BaseArithmeticsEngine::AddCNC(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return Add_CtPt_FixedPoint(a, b, true, false);
+}
+
+CFixedPoint BaseArithmeticsEngine::AddCNC(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return Add_CtPt_FixedPoint(b, a, true, false);
+}
+
+CFixedPoint BaseArithmeticsEngine::Sub(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return Add(a, Neg(b));
+}
+
+CFixedPoint BaseArithmeticsEngine::Sub(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return Sub_PtCt_FixedPoint(a, b, false, true);
+}
+
+CFixedPoint BaseArithmeticsEngine::SubC(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return AddC(a, Not(b));
+}
+
+CFixedPoint BaseArithmeticsEngine::SubC(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return Sub_PtCt_FixedPoint(a, b, true, true);
+}
+
+CFixedPoint BaseArithmeticsEngine::SubNC(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return AddNC(a, Neg(b));
+}
+
+CFixedPoint BaseArithmeticsEngine::SubNC(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return Sub_PtCt_FixedPoint(a, b, false, false);
+}
+
+CFixedPoint BaseArithmeticsEngine::SubCNC(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return AddCNC(a, Not(b));
+}
+
+CFixedPoint BaseArithmeticsEngine::SubCNC(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return Sub_PtCt_FixedPoint(a, b, true, false);
+}
+
 CFixedPoint BaseArithmeticsEngine::ToggleMSB(const CFixedPoint &a)
 {
     auto &cc = cfhe_base->GetBinFHEContext();

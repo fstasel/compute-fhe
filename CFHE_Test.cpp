@@ -172,6 +172,14 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
             report = TestPAddNC(n_digits);
             break;
 
+        case TT_ADDC_NC:
+            report = TestAddCNC(n_digits);
+            break;
+
+        case TT_PADDC_NC:
+            report = TestPAddCNC(n_digits);
+            break;
+
         case TT_SUB:
             report = TestSub(n_digits);
             break;
@@ -206,6 +214,18 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
 
         case TT_PSUB_NC:
             report = TestPSubNC(n_digits);
+            break;
+
+        case TT_SUBC_NC:
+            report = TestSubCNC(n_digits);
+            break;
+
+        case TT_CPSUBC_NC:
+            report = TestCPSubCNC(n_digits);
+            break;
+
+        case TT_PSUBC_NC:
+            report = TestPSubCNC(n_digits);
             break;
 
         case TT_NEG:
@@ -462,6 +482,8 @@ void CFHE_Test::StartTest()
         Test(TT_PADDC, d);
         Test(TT_ADD_NC, d);
         Test(TT_PADD_NC, d);
+        Test(TT_ADDC_NC, d);
+        Test(TT_PADDC_NC, d);
         Test(TT_SUB, d);
         Test(TT_CPSUB, d);
         Test(TT_PSUB, d);
@@ -470,6 +492,10 @@ void CFHE_Test::StartTest()
         Test(TT_PSUBC, d);
         Test(TT_SUB_NC, d);
         Test(TT_CPSUB_NC, d);
+        Test(TT_PSUB_NC, d);
+        Test(TT_SUBC_NC, d);
+        Test(TT_CPSUBC_NC, d);
+        Test(TT_PSUBC_NC, d);
         Test(TT_NEG, d);
         Test(TT_CMPNOTEQ, d);
         Test(TT_CMPEQ, d);

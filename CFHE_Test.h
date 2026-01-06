@@ -67,6 +67,8 @@ public:
     TestReport TestPAddC(uint n_digits);
     TestReport TestAddNC(uint n_digits);
     TestReport TestPAddNC(uint n_digits);
+    TestReport TestAddCNC(uint n_digits);
+    TestReport TestPAddCNC(uint n_digits);
     TestReport TestSub(uint n_digits);
     TestReport TestCPSub(uint n_digits);
     TestReport TestPSub(uint n_digits);
@@ -76,6 +78,9 @@ public:
     TestReport TestSubNC(uint n_digits);
     TestReport TestCPSubNC(uint n_digits);
     TestReport TestPSubNC(uint n_digits);
+    TestReport TestSubCNC(uint n_digits);
+    TestReport TestCPSubCNC(uint n_digits);
+    TestReport TestPSubCNC(uint n_digits);
     TestReport TestNeg(uint n_digits);
     TestReport TestCmpNotEq(uint n_digits);
     TestReport TestCmpEq(uint n_digits);

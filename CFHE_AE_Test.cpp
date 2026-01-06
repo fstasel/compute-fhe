@@ -283,6 +283,52 @@ TestReport CFHE_Test::TestPAddNC(uint n_digits)
     return report;
 }
 
+TestReport CFHE_Test::TestAddCNC(uint n_digits)
+{
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    uint n3 = CreateRandomNumber() % 2;
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    uint expected = (n1 + n2 + n3) & ((1UL << n_digits) - 1);
+    cfhe_base->GetArithmeticsEngine()->SetCarry(cfhe_base->EncryptBool(n3, GetTestFresh()));
+    StartTimer();
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->AddCNC(ct_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPAddCNC(uint n_digits)
+{
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    uint n3 = CreateRandomNumber() % 2;
+    uint carry_type = CreateRandomNumber() % 2;
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    PFixedPoint pt_n2 = cfhe_base->uint2PFixedPoint(n2, n_digits);
+    uint expected = (n1 + n2 + n3) & ((1UL << n_digits) - 1);
+    if (carry_type == 0)
+    {
+        cfhe_base->GetArithmeticsEngine()->SetCarry(cfhe_base->EncryptBool(n3, GetTestFresh()));
+    }
+    else
+    {
+        cfhe_base->GetArithmeticsEngine()->SetCarry(n3);
+    }
+    StartTimer();
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->AddCNC(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected);
+    return report;
+}
+
 TestReport CFHE_Test::TestSub(uint n_digits)
 {
     TestReport report;
@@ -455,6 +501,79 @@ TestReport CFHE_Test::TestPSubNC(uint n_digits)
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
     PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestSubCNC(uint n_digits)
+{
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    uint n3 = CreateRandomNumber() % 2;
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    uint expected = (n1 + (UINT32_MAX - n2 + n3)) & ((1UL << n_digits) - 1);
+    cfhe_base->GetArithmeticsEngine()->SetCarry(cfhe_base->EncryptBool(n3, GetTestFresh()));
+    StartTimer();
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->SubCNC(ct_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestCPSubCNC(uint n_digits)
+{
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    uint n3 = CreateRandomNumber() % 2;
+    uint carry_type = CreateRandomNumber() % 2;
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    PFixedPoint pt_n2 = cfhe_base->uint2PFixedPoint(n2, n_digits);
+    uint expected = (n1 + (UINT32_MAX - n2 + n3)) & ((1UL << n_digits) - 1);
+    if (carry_type == 0)
+    {
+        cfhe_base->GetArithmeticsEngine()->SetCarry(cfhe_base->EncryptBool(n3, GetTestFresh()));
+    }
+    else
+    {
+        cfhe_base->GetArithmeticsEngine()->SetCarry(n3);
+    }
+    StartTimer();
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->SubCNC(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPSubCNC(uint n_digits)
+{
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    uint n3 = CreateRandomNumber() % 2;
+    uint carry_type = CreateRandomNumber() % 2;
+    PFixedPoint pt_n1 = cfhe_base->uint2PFixedPoint(n1, n_digits);
+    CFixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    uint expected = (n1 + (UINT32_MAX - n2 + n3)) & ((1UL << n_digits) - 1);
+    if (carry_type == 0)
+    {
+        cfhe_base->GetArithmeticsEngine()->SetCarry(cfhe_base->EncryptBool(n3, GetTestFresh()));
+    }
+    else
+    {
+        cfhe_base->GetArithmeticsEngine()->SetCarry(n3);
+    }
+    StartTimer();
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->SubCNC(pt_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected);
     return report;
 }
 

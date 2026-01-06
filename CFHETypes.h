@@ -13,7 +13,8 @@ enum CryptoContextParam
     CCPARAM_STD256,
     CCPARAM_STD256_3,
     CCPARAM_STD256_LMKCDEY,
-    CCPARAM_STD256_3_LMKCDEY
+    CCPARAM_STD256_3_LMKCDEY,
+    CCPARAM_TOY
 };
 
 inline const char *ToString(CryptoContextParam v)
@@ -44,6 +45,8 @@ inline const char *ToString(CryptoContextParam v)
         return "STD256_LMKCDEY";
     case CCPARAM_STD256_3_LMKCDEY:
         return "STD256_3_LMKCDEY";
+    case CCPARAM_TOY:
+        return "TOY";
     default:
         return "[Unknown]";
     }

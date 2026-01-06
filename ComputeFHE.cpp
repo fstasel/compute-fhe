@@ -52,8 +52,11 @@ void ComputeFHE::createCC()
         break;
 
     case CCPARAM_STD128_3:
-    default:
         cc.GenerateBinFHEContext(STD128_3);
+
+    case CCPARAM_TOY:
+    default:
+        cc.GenerateBinFHEContext(TOY);
     }
 }
 

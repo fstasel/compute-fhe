@@ -32,26 +32,14 @@ public:
                          LWECiphertext *carry_out = nullptr);
     LWECiphertext DigitSum(ConstLWECiphertext &e1, ConstLWECiphertext &e0, ConstLWECiphertext &s0);
 
-    CFixedPoint Add(const CFixedPoint &a, const CFixedPoint &b);
-    CFixedPoint Add(const CFixedPoint &a, const PFixedPoint &b);
-
-    CFixedPoint AddC(const CFixedPoint &a, const CFixedPoint &b);
-    CFixedPoint AddC(const CFixedPoint &a, const PFixedPoint &b);
-
-    CFixedPoint AddNC(const CFixedPoint &a, const CFixedPoint &b);
-    CFixedPoint AddNC(const CFixedPoint &a, const PFixedPoint &b);
-
-    CFixedPoint Sub(const CFixedPoint &a, const CFixedPoint &b);
-    CFixedPoint Sub(const CFixedPoint &a, const PFixedPoint &b);
-    CFixedPoint Sub(const PFixedPoint &a, const CFixedPoint &b);
-
-    CFixedPoint SubC(const CFixedPoint &a, const CFixedPoint &b);
-    CFixedPoint SubC(const CFixedPoint &a, const PFixedPoint &b);
-    CFixedPoint SubC(const PFixedPoint &a, const CFixedPoint &b);
-
-    CFixedPoint SubNC(const CFixedPoint &a, const CFixedPoint &b);
-    CFixedPoint SubNC(const CFixedPoint &a, const PFixedPoint &b);
-    CFixedPoint SubNC(const PFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint Add_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b,
+                                    const bool &carry_in, const bool &carry_out);
+    CFixedPoint Sub_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b,
+                                    const bool &carry_in, const bool &carry_out);
+    CFixedPoint Add_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b,
+                                    const bool &carry_in, const bool &carry_out);
+    CFixedPoint Sub_PtCt_FixedPoint(const PFixedPoint &a, const CFixedPoint &b,
+                                    const bool &carry_in, const bool &carry_out);
 
     CFixedPoint Neg(const CFixedPoint &a);
     LWECiphertext CmpNotEq(const CFixedPoint &a, const CFixedPoint &b);
@@ -75,7 +63,7 @@ public:
     virtual uint Get_CtCtSubC_Cost(size_t n_bits);
     virtual uint Get_CtPtAddC_Cost(size_t n_bits);
     virtual uint Get_PtCtSub_Cost(size_t n_bits);
-    virtual uint Get_CtPtSubC_Cost(size_t n_bits);
+    virtual uint Get_CtPtSubCNC_Cost(size_t n_bits);
     virtual uint Get_PtFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits, size_t &out_n_bits);
     virtual uint Get_Pt2sCompFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits);
 };

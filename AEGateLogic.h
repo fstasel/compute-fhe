@@ -56,6 +56,7 @@ public:
     CFixedPoint FullMul(const CFixedPoint &a, const CFixedPoint &b);
     CFixedPoint FullMul(const CFixedPoint &a, const PFixedPoint &b);
     CFixedPoint FullMulFast(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint BoothsMul(const CFixedPoint &a, const PFixedPoint &b);
 
     CFixedPoint Mul(const CFixedPoint &a, const CFixedPoint &b);
 

@@ -556,6 +556,46 @@ CFixedPoint AEGateLogic::FullMulFast(const CFixedPoint &a, const PFixedPoint &b)
     return out;
 }
 
+CFixedPoint AEGateLogic::BoothsMul(const CFixedPoint &a, const PFixedPoint &b)
+{
+    if (a.size() == 0 || b.size() == 0 || cfhe_base->PFixedPoint2uint(b) == 0)
+    {
+        CFixedPoint zero(1);
+        zero[0] = GetConstantFalse();
+        return zero;
+    }
+    CFixedPoint aa = a;
+    aa.push_back(a.back()); // The most negative number correction
+    CFixedPoint acc(aa.size());
+    CFixedPoint buffer;
+    for (size_t i = 0; i < acc.size(); i++)
+    {
+        acc[i] = GetConstantFalse();
+    }
+    for (size_t i = 0; i < b.size(); i++)
+    {
+        uint k = (b[i] << 1) + ((i > 0) ? b[i - 1] : 0);
+        switch (k)
+        {
+        case 1:
+            acc = AddNC(acc, aa);
+            break;
+        case 2:
+            acc = SubNC(acc, aa);
+            break;
+        default:
+            break;
+        }
+        buffer.push_back(acc[0]);
+        for (size_t j = 1; j < acc.size(); j++)
+        {
+            acc[j - 1] = (j == acc.size() - 1) ? COPY_CT(acc[j]) : acc[j];
+        }
+    }
+    buffer.insert(buffer.end(), acc.begin(), acc.end() - 1);
+    return buffer;
+}
+
 CFixedPoint AEGateLogic::Mul(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());

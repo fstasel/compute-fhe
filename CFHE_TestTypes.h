@@ -45,6 +45,7 @@ enum TestType
     TT_FULLMUL,
     TT_PFULLMUL,
     TT_PFULLMUL_FAST,
+    TT_BOOTHSMUL,
     TT_MUL
 };
 
@@ -138,6 +139,8 @@ inline const char *ToString(TestType v)
         return "PFULLMUL";
     case TT_PFULLMUL_FAST:
         return "PFULLMUL_FAST";
+    case TT_BOOTHSMUL:
+        return "BOOTHSMUL";
     case TT_MUL:
         return "MUL";
     default:

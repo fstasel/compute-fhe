@@ -34,28 +34,17 @@ void manual_test()
     t.SetNumTest(100);
     t.SetVerbosity(0);
     t.SetRegenerateKeys(false);
+    t.Test(TT_BOOTHSMUL, 4);
+    t.Test(TT_PFULLMUL, 4);
+    t.Test(TT_PFULLMUL_FAST, 4);
+    t.Test(TT_NEG, 4);
+
     // t.Test(TT_PFULLMUL, 1);
     // t.Test(TT_PFULLMUL, 4);
     // t.Test(TT_PFULLMUL, 8);
     // t.Test(TT_PFULLMUL_FAST, 1);
     // t.Test(TT_PFULLMUL_FAST, 4);
     // t.Test(TT_PFULLMUL_FAST, 8);
-
-    t.Test(TT_ADDC_NC, 1);
-    t.Test(TT_ADDC_NC, 4);
-    t.Test(TT_ADDC_NC, 8);
-    t.Test(TT_SUBC_NC, 1);
-    t.Test(TT_SUBC_NC, 4);
-    t.Test(TT_SUBC_NC, 8);
-    t.Test(TT_PADDC_NC, 1);
-    t.Test(TT_PADDC_NC, 4);
-    t.Test(TT_PADDC_NC, 8);
-    t.Test(TT_PSUBC_NC, 1);
-    t.Test(TT_PSUBC_NC, 4);
-    t.Test(TT_PSUBC_NC, 8);
-    t.Test(TT_CPSUBC_NC, 1);
-    t.Test(TT_CPSUBC_NC, 4);
-    t.Test(TT_CPSUBC_NC, 8);
 }
 
 void calculate_expected_cost()

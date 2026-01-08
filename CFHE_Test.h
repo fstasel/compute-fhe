@@ -95,6 +95,7 @@ public:
     TestReport TestFullMul(uint n_digits);
     TestReport TestPFullMul(uint n_digits);
     TestReport TestPFullMulFast(uint n_digits);
+    TestReport TestBoothsMul(uint n_digits);
     TestReport TestMul(uint n_digits);
 
     void StartNoiseTest();

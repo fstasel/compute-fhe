@@ -829,6 +829,25 @@ TestReport CFHE_Test::TestPFullMulFast(uint n_digits)
     return report;
 }
 
+TestReport CFHE_Test::TestBoothsMul(uint n_digits)
+{
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    PFixedPoint pt_n2 = cfhe_base->uint2PFixedPoint(n2, n_digits);
+    int signed_result = (n1 & (1 << (n_digits - 1)) ? (long)n1 - (1UL << n_digits) : (long)n1);
+    signed_result *= (n2 & (1 << (n_digits - 1)) ? (long)n2 - (1UL << n_digits) : (long)n2);
+    uint expected = *(uint *)&signed_result & ((1UL << (n_digits << 1)) - 1);
+    StartTimer();
+    CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->BoothsMul(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
 TestReport CFHE_Test::TestMul(uint n_digits)
 {
     TestReport report;

@@ -83,6 +83,8 @@ public:
     virtual CFixedPoint BoothsMul(const CFixedPoint &a, const PFixedPoint &b) = 0;
 
     virtual CFixedPoint Mul(const CFixedPoint &a, const CFixedPoint &b) = 0;
+    virtual CFixedPoint Mul(const CFixedPoint &a, const PFixedPoint &b) = 0;
+    virtual CFixedPoint MulFast(const CFixedPoint &a, const PFixedPoint &b) = 0;
 
     CFixedPoint Add(const CFixedPoint &a, const CFixedPoint &b);
     CFixedPoint AddC(const CFixedPoint &a, const CFixedPoint &b);

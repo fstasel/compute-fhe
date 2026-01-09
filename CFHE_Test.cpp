@@ -292,6 +292,13 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
             report = TestMul(n_digits);
             break;
 
+        case TT_PMUL:
+            report = TestPMul(n_digits);
+            break;
+        case TT_PMUL_FAST:
+            report = TestPMulFast(n_digits);
+            break;
+
         default:
             report = TestReport();
             cerr << "Unknown test" << endl;
@@ -516,6 +523,8 @@ void CFHE_Test::StartTest()
         Test(TT_PFULLMUL_FAST, d);
         Test(TT_BOOTHSMUL, d);
         Test(TT_MUL, d);
+        Test(TT_PMUL, d);
+        Test(TT_PMUL_FAST, d);
     }
 }
 

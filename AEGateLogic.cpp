@@ -634,9 +634,69 @@ CFixedPoint AEGateLogic::Mul(const CFixedPoint &a, const CFixedPoint &b)
     return out;
 }
 
+CFixedPoint AEGateLogic::Mul(const CFixedPoint &a, const PFixedPoint &b)
+{
+    if (a.size() == 0 || b.size() == 0 || cfhe_base->PFixedPoint2uint(b) == 0)
+    {
+        CFixedPoint zero(1);
+        zero[0] = GetConstantFalse();
+        return zero;
+    }
+    assert(a.size() == b.size());
+    size_t n_digit = a.size();
+    CFixedPoint out(n_digit);
+    for (size_t i = 0; i < n_digit; i++)
+    {
+        out[i] = COPY_CT(GetConstantFalse());
+    }
+    bool acc = false;
+    for (size_t i = 0; i < n_digit; i++)
+    {
+        if (b[i] == 1 && !acc)
+        {
+            for (size_t j = i; j < n_digit; j++)
+            {
+                out[j] = COPY_CT(a[j - i]);
+            }
+            acc = true;
+        }
+        else if (b[i] == 1 && acc)
+        {
+            CFixedPoint r = AddNC(CFixedPoint(a.begin(), a.begin() + n_digit - i),
+                                  CFixedPoint(out.begin() + i, out.end()));
+            for (size_t j = 0; j < r.size(); j++)
+            {
+                out[i + j] = r[j];
+            }
+        }
+    }
+    return out;
+}
+
+CFixedPoint AEGateLogic::MulFast(const CFixedPoint &a, const PFixedPoint &b)
+{
+    if (a.size() == 0 || b.size() == 0 || cfhe_base->PFixedPoint2uint(b) == 0)
+    {
+        CFixedPoint zero(1);
+        zero[0] = GetConstantFalse();
+        return zero;
+    }
+    assert(a.size() == b.size());
+    if (Get_PtMul_Cost(b) <= Get_Pt2sCompMul_Cost(b))
+    {
+        return Mul(a, b);
+    }
+    return Neg(Mul(a, BaseArithmeticsEngine::Neg(b)));
+}
+
 uint AEGateLogic::Get_CtCtAdd_Cost(size_t n_bits)
 {
     return (n_bits > 0) ? 5 * n_bits - 3 : 0;
+}
+
+uint AEGateLogic::Get_CtCtAddNC_Cost(size_t n_bits)
+{
+    return (n_bits > 1) ? 5 * n_bits - 6 : ((n_bits == 1) ? 1 : 0);
 }
 
 uint AEGateLogic::Get_CtCtSubC_Cost(size_t n_bits)
@@ -657,6 +717,11 @@ uint AEGateLogic::Get_PtCtSub_Cost(size_t n_bits)
 uint AEGateLogic::Get_CtPtSubCNC_Cost(size_t n_bits)
 {
     return (n_bits > 0) ? 2 * n_bits - 1 : 0;
+}
+
+uint AEGateLogic::Get_CtNeg_Cost(size_t n_bits)
+{
+    return (n_bits > 1) ? 2 * n_bits - 3 : 0;
 }
 
 uint AEGateLogic::Get_PtFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits, size_t &out_n_bits)
@@ -721,5 +786,38 @@ uint AEGateLogic::Get_Pt2sCompFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bi
         cost += Get_CtPtSubCNC_Cost(ct_n_bits - out_n_bits + pt_n_bits);
     }
 
+    return cost;
+}
+
+uint AEGateLogic::Get_PtMul_Cost(const PFixedPoint &pt)
+{
+    uint cost = 0;
+    size_t start = 0;
+    for (start = 0; start < pt.size(); start++)
+    {
+        if (pt[start] == 0)
+        {
+            continue;
+        }
+        else
+        {
+            start++;
+            break;
+        }
+    }
+    for (size_t i = start; i < pt.size(); i++)
+    {
+        if (pt[i] == 1)
+        {
+            cost += Get_CtCtAddNC_Cost(pt.size() - i);
+        }
+    }
+    return cost;
+}
+
+uint AEGateLogic::Get_Pt2sCompMul_Cost(const PFixedPoint &pt)
+{
+    uint cost = Get_PtMul_Cost(BaseArithmeticsEngine::Neg(pt));
+    cost += Get_CtNeg_Cost(pt.size());
     return cost;
 }

@@ -59,12 +59,18 @@ public:
     CFixedPoint BoothsMul(const CFixedPoint &a, const PFixedPoint &b);
 
     CFixedPoint Mul(const CFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint Mul(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint MulFast(const CFixedPoint &a, const PFixedPoint &b);
 
     virtual uint Get_CtCtAdd_Cost(size_t n_bits);
+    virtual uint Get_CtCtAddNC_Cost(size_t n_bits);
     virtual uint Get_CtCtSubC_Cost(size_t n_bits);
     virtual uint Get_CtPtAddC_Cost(size_t n_bits);
     virtual uint Get_PtCtSub_Cost(size_t n_bits);
     virtual uint Get_CtPtSubCNC_Cost(size_t n_bits);
+    virtual uint Get_CtNeg_Cost(size_t n_bits);
     virtual uint Get_PtFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits, size_t &out_n_bits);
     virtual uint Get_Pt2sCompFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits);
+    virtual uint Get_PtMul_Cost(const PFixedPoint &pt);
+    virtual uint Get_Pt2sCompMul_Cost(const PFixedPoint &pt);
 };

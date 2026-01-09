@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-void test_cost_time()
+void test_cost_time_fullmul()
 {
     CFHE_Test t(CCPARAM_STD128_3, AE_OPTIMIZED);
 
@@ -28,16 +28,41 @@ void test_cost_time()
     }
 }
 
+void test_cost_time_mul()
+{
+    CFHE_Test t(CCPARAM_STD128_3, AE_OPTIMIZED);
+
+    ComputeFHE *cfhe = t.GetBase();
+    CFixedPoint c = cfhe->EncryptInt(0, 8);
+    AEGateLogic *ae = (AEGateLogic *)(cfhe->GetArithmeticsEngine());
+    for (uint k = 0; k < 256; k += 13)
+    {
+        PFixedPoint pt = cfhe->uint2PFixedPoint(k, 8);
+        uint cost = ae->Get_PtMul_Cost(pt);
+        uint cost2 = ae->Get_Pt2sCompMul_Cost(pt);
+        t.StartTimer();
+        ae->Mul(c, pt);
+        double tm1 = t.ReadTimer();
+        t.StartTimer();
+        ae->MulFast(c, pt);
+        double tm2 = t.ReadTimer();
+        cout << "k: " << k << " cost: " << cost << " cost2: " << cost2
+             << " time1: " << tm1 << " ms"
+             << " time2: " << tm2 << " ms" << endl;
+    }
+}
+
 void manual_test()
 {
-    CFHE_Test t(CCPARAM_TOY, AE_OPTIMIZED);
+    CFHE_Test t(CCPARAM_STD128_3, AE_OPTIMIZED);
     t.SetNumTest(100);
-    t.SetVerbosity(0);
+    t.SetVerbosity(4);
     t.SetRegenerateKeys(false);
+    t.Test(TT_PMUL_FAST, 8);
     t.Test(TT_BOOTHSMUL, 4);
-    t.Test(TT_PFULLMUL, 4);
-    t.Test(TT_PFULLMUL_FAST, 4);
-    t.Test(TT_NEG, 4);
+    // t.Test(TT_PFULLMUL, 4);
+    // t.Test(TT_PFULLMUL_FAST, 4);
+    // t.Test(TT_NEG, 8);
 
     // t.Test(TT_PFULLMUL, 1);
     // t.Test(TT_PFULLMUL, 4);
@@ -73,14 +98,38 @@ void calculate_expected_cost()
     cout << "Average FullMulFast CtPt cost for " << n << "-bits : " << avg_fullmul_fast << endl;
 }
 
+void calculate_expected_cost_mul()
+{
+    CFHE_Test t(CCPARAM_STD128_3, AE_OPTIMIZED);
+
+    ComputeFHE *cfhe = t.GetBase();
+    AEGateLogic *ae = (AEGateLogic *)(cfhe->GetArithmeticsEngine());
+
+    uint64_t bs_mul = 0;
+    uint64_t bs_mul_fast = 0;
+    uint n = 8;
+    for (uint64_t k = 0; k < ((uint64_t)1U << (uint64_t)n); k++)
+    {
+        PFixedPoint pt = cfhe->uint2PFixedPoint(k, n);
+        uint cost1 = ae->Get_PtMul_Cost(pt);
+        uint cost2 = ae->Get_Pt2sCompMul_Cost(pt);
+        bs_mul += cost1;
+        bs_mul_fast += (cost1 <= cost2) ? cost1 : cost2;
+    }
+    float avg_mul = (float)bs_mul / (1U << n);
+    float avg_mul_fast = (float)bs_mul_fast / (1U << n);
+    cout << "Average Mul CtPt cost for " << n << "-bits : " << avg_mul << endl;
+    cout << "Average MulFast CtPt cost for " << n << "-bits : " << avg_mul_fast << endl;
+}
+
 int main()
 {
     // CFHE_Test::TestAll();
     // CFHE_Test::TestAllNoise();
 
-    // test_cost_time();
+    // test_cost_time_mul();
     manual_test();
-    // calculate_expected_cost();
+    // calculate_expected_cost_mul();
 
     return EXIT_SUCCESS;
 }

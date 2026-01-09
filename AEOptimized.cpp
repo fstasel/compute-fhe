@@ -313,6 +313,11 @@ uint AEOptimized::Get_CtCtAdd_Cost(size_t n_bits)
     return (n_bits > 0) ? 2 * n_bits : 0;
 }
 
+uint AEOptimized::Get_CtCtAddNC_Cost(size_t n_bits)
+{
+    return (n_bits > 0) ? 2 * n_bits - 1 : 0;
+}
+
 uint AEOptimized::Get_CtCtSubC_Cost(size_t n_bits)
 {
     return (n_bits > 0) ? 2 * n_bits : 0;
@@ -331,4 +336,9 @@ uint AEOptimized::Get_PtCtSub_Cost(size_t n_bits)
 uint AEOptimized::Get_CtPtSubCNC_Cost(size_t n_bits)
 {
     return (n_bits > 0) ? n_bits + 1 : 0;
+}
+
+uint AEOptimized::Get_CtNeg_Cost(size_t n_bits)
+{
+    return (n_bits > 1) ? n_bits - 1 : 0;
 }

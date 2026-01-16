@@ -60,9 +60,9 @@ void manual_test()
     t.SetRegenerateKeys(false);
 
     // Mul variants
-    t.Test(TT_MUL, 4);
-    t.Test(TT_PMUL, 4);
-    t.Test(TT_PMUL_FAST, 4);
+    // t.Test(TT_MUL, 4);
+    // t.Test(TT_PMUL, 4);
+    // t.Test(TT_PMUL_FAST, 4);
 
     // Fullmul variants
     // t.Test(TT_FULLMUL, 4);
@@ -71,16 +71,20 @@ void manual_test()
     // t.Test(TT_BOOTHSMUL, 4);
 
     // Compares
-    // t.Test(TT_CMPEQ, 4);
-    // t.Test(TT_CMPGT, 4);
-    // t.Test(TT_CMPGT_U, 4);
-    // t.Test(TT_CMPGTEQ, 4);
-    // t.Test(TT_CMPGTEQ_U, 4);
-    // t.Test(TT_CMPLT, 4);
-    // t.Test(TT_CMPLT_U, 4);
-    // t.Test(TT_CMPLTEQ, 4);
-    // t.Test(TT_CMPLTEQ_U, 4);
-    // t.Test(TT_CMPNOTEQ, 4);
+    t.Test(TT_CMPEQ, 4);
+    t.Test(TT_PCMPEQ, 4);
+    t.Test(TT_CMPGT, 4);
+    t.Test(TT_CMPGT_U, 4);
+    t.Test(TT_CMPGTEQ, 4);
+    t.Test(TT_CMPGTEQ_U, 4);
+    t.Test(TT_CMPLT, 4);
+    t.Test(TT_CMPLT_U, 4);
+    t.Test(TT_CMPLTEQ, 4);
+    t.Test(TT_CMPLTEQ_U, 4);
+    t.Test(TT_CMPNOTEQ, 4);
+    t.Test(TT_PCMPNOTEQ, 4);
+
+    // Invert
     // t.Test(TT_NEG, 4);
 }
 

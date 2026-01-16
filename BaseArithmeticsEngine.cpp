@@ -192,9 +192,29 @@ LWECiphertext BaseArithmeticsEngine::CmpNotEq(const CFixedPoint &a, const CFixed
     return CmpNotEq_CtCt_FixedPoint(a, b);
 }
 
+LWECiphertext BaseArithmeticsEngine::CmpNotEq(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return CmpNotEq_CtPt_FixedPoint(a, b);
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpNotEq(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return CmpNotEq_CtPt_FixedPoint(b, a);
+}
+
 LWECiphertext BaseArithmeticsEngine::CmpEq(const CFixedPoint &a, const CFixedPoint &b)
 {
     return CmpEq_CtCt_FixedPoint(a, b);
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpEq(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return CmpEq_CtPt_FixedPoint(a, b);
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpEq(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return CmpEq_CtPt_FixedPoint(b, a);
 }
 
 LWECiphertext BaseArithmeticsEngine::CmpLTEq_U(const CFixedPoint &a, const CFixedPoint &b)
@@ -209,12 +229,12 @@ LWECiphertext BaseArithmeticsEngine::CmpGT_U(const CFixedPoint &a, const CFixedP
 
 LWECiphertext BaseArithmeticsEngine::CmpGTEq_U(const CFixedPoint &a, const CFixedPoint &b)
 {
-    return CmpLTEq_U(b, a);
+    return CmpLTEq_U_CtCt_FixedPoint(b, a);
 }
 
 LWECiphertext BaseArithmeticsEngine::CmpLT_U(const CFixedPoint &a, const CFixedPoint &b)
 {
-    return CmpGT_U(b, a);
+    return CmpGT_U_CtCt_FixedPoint(b, a);
 }
 
 LWECiphertext BaseArithmeticsEngine::CmpLTEq(const CFixedPoint &a, const CFixedPoint &b)
@@ -250,9 +270,19 @@ LWECiphertext BaseArithmeticsEngine::PXOR(ConstLWECiphertext &a, const LWEPlaint
     return (b == 0) ? COPY_CT(a) : cfhe_base->GetBinFHEContext().EvalNOT(a);
 }
 
+LWECiphertext BaseArithmeticsEngine::PXOR(const LWEPlaintext &a, ConstLWECiphertext &b)
+{
+    return PXOR(b, a);
+}
+
 LWECiphertext BaseArithmeticsEngine::PXNOR(ConstLWECiphertext &a, const LWEPlaintext &b)
 {
     return PXOR(a, 1 - b);
+}
+
+LWECiphertext BaseArithmeticsEngine::PXNOR(const LWEPlaintext &a, ConstLWECiphertext &b)
+{
+    return PXNOR(b, a);
 }
 
 CFixedPoint BaseArithmeticsEngine::Neg(const CFixedPoint &a)
@@ -263,6 +293,17 @@ CFixedPoint BaseArithmeticsEngine::Neg(const CFixedPoint &a)
 PFixedPoint BaseArithmeticsEngine::Neg(const PFixedPoint &a)
 {
     return PFixedPoint(cfhe_base->uint2PFixedPoint(UINT32_MAX - cfhe_base->PFixedPoint2uint(a) + 1U, a.size()));
+}
+
+CFixedPoint BaseArithmeticsEngine::Not(const CFixedPoint &a)
+{
+    auto &cc = cfhe_base->GetBinFHEContext();
+    CFixedPoint out(a.size());
+    for (size_t i = 0; i < a.size(); i++)
+    {
+        out[i] = cc.EvalNOT(a[i]);
+    }
+    return out;
 }
 
 PFixedPoint BaseArithmeticsEngine::Not(const PFixedPoint &a)
@@ -280,14 +321,29 @@ CFixedPoint BaseArithmeticsEngine::FullMul(const CFixedPoint &a, const PFixedPoi
     return FullMul_CtPt_FixedPoint(a, b);
 }
 
+CFixedPoint BaseArithmeticsEngine::FullMul(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return FullMul_CtPt_FixedPoint(b, a);
+}
+
 CFixedPoint BaseArithmeticsEngine::FullMulFast(const CFixedPoint &a, const PFixedPoint &b)
 {
     return FullMulFast_CtPt_FixedPoint(a, b);
 }
 
+CFixedPoint BaseArithmeticsEngine::FullMulFast(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return FullMul_CtPt_FixedPoint(b, a);
+}
+
 CFixedPoint BaseArithmeticsEngine::BoothsMul(const CFixedPoint &a, const PFixedPoint &b)
 {
     return BoothsMul_CtPt_FixedPoint(a, b);
+}
+
+CFixedPoint BaseArithmeticsEngine::BoothsMul(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return BoothsMul_CtPt_FixedPoint(b, a);
 }
 
 CFixedPoint BaseArithmeticsEngine::Mul(const CFixedPoint &a, const CFixedPoint &b)
@@ -300,7 +356,17 @@ CFixedPoint BaseArithmeticsEngine::Mul(const CFixedPoint &a, const PFixedPoint &
     return Mul_CtPt_FixedPoint(a, b);
 }
 
+CFixedPoint BaseArithmeticsEngine::Mul(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return Mul_CtPt_FixedPoint(b, a);
+}
+
 CFixedPoint BaseArithmeticsEngine::MulFast(const CFixedPoint &a, const PFixedPoint &b)
 {
     return MulFast_CtPt_FixedPoint(a, b);
+}
+
+CFixedPoint BaseArithmeticsEngine::MulFast(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return MulFast_CtPt_FixedPoint(b, a);
 }

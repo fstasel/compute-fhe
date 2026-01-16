@@ -236,8 +236,16 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
             report = TestCmpNotEq(n_digits);
             break;
 
+        case TT_PCMPNOTEQ:
+            report = TestPCmpNotEq(n_digits);
+            break;
+
         case TT_CMPEQ:
             report = TestCmpEq(n_digits);
+            break;
+
+        case TT_PCMPEQ:
+            report = TestPCmpEq(n_digits);
             break;
 
         case TT_CMPLTEQ_U:
@@ -509,7 +517,9 @@ void CFHE_Test::StartTest()
         Test(TT_PSUBC_NC, d);
         Test(TT_NEG, d);
         Test(TT_CMPNOTEQ, d);
+        Test(TT_PCMPNOTEQ, d);
         Test(TT_CMPEQ, d);
+        Test(TT_PCMPEQ, d);
         Test(TT_CMPLTEQ_U, d);
         Test(TT_CMPGT_U, d);
         Test(TT_CMPGTEQ_U, d);

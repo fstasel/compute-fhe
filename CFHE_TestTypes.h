@@ -33,7 +33,9 @@ enum TestType
     TT_PSUBC_NC,
     TT_NEG,
     TT_CMPNOTEQ,
+    TT_PCMPNOTEQ,
     TT_CMPEQ,
+    TT_PCMPEQ,
     TT_CMPLTEQ_U,
     TT_CMPGT_U,
     TT_CMPGTEQ_U,
@@ -117,8 +119,12 @@ inline const char *ToString(TestType v)
         return "NEG";
     case TT_CMPNOTEQ:
         return "CMPNOTEQ";
+    case TT_PCMPNOTEQ:
+        return "PCMPNOTEQ";
     case TT_CMPEQ:
         return "CMPEQ";
+    case TT_PCMPEQ:
+        return "PCMPEQ";
     case TT_CMPLTEQ_U:
         return "CMPLTEQ_U";
     case TT_CMPGT_U:

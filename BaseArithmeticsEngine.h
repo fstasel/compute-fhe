@@ -71,6 +71,10 @@ public:
     virtual LWECiphertext CmpEq_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b) = 0;
     virtual LWECiphertext CmpLTEq_U_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b) = 0;
     virtual LWECiphertext CmpGT_U_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b) = 0;
+    virtual LWECiphertext CmpNotEq_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b) = 0;
+    virtual LWECiphertext CmpEq_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b) = 0;
+    virtual LWECiphertext CmpLTEq_U_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b) = 0;
+    virtual LWECiphertext CmpGT_U_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b) = 0;
 
     virtual CFixedPoint FullMul_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b) = 0;
     virtual CFixedPoint FullMul_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b) = 0;
@@ -110,7 +114,13 @@ public:
     CFixedPoint SubCNC(const PFixedPoint &a, const CFixedPoint &b);
 
     LWECiphertext CmpNotEq(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpNotEq(const CFixedPoint &a, const PFixedPoint &b);
+    LWECiphertext CmpNotEq(const PFixedPoint &a, const CFixedPoint &b);
+
     LWECiphertext CmpEq(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpEq(const CFixedPoint &a, const PFixedPoint &b);
+    LWECiphertext CmpEq(const PFixedPoint &a, const CFixedPoint &b);
+
     LWECiphertext CmpLTEq_U(const CFixedPoint &a, const CFixedPoint &b);
     LWECiphertext CmpGT_U(const CFixedPoint &a, const CFixedPoint &b);
     LWECiphertext CmpGTEq_U(const CFixedPoint &a, const CFixedPoint &b);
@@ -123,19 +133,28 @@ public:
     CFixedPoint ToggleMSB(const CFixedPoint &a);
 
     LWECiphertext PXOR(ConstLWECiphertext &a, const LWEPlaintext &b);
+    LWECiphertext PXOR(const LWEPlaintext &a, ConstLWECiphertext &b);
+
     LWECiphertext PXNOR(ConstLWECiphertext &a, const LWEPlaintext &b);
+    LWECiphertext PXNOR(const LWEPlaintext &a, ConstLWECiphertext &b);
 
     CFixedPoint Neg(const CFixedPoint &a);
     PFixedPoint Neg(const PFixedPoint &a);
 
+    CFixedPoint Not(const CFixedPoint &a);
     PFixedPoint Not(const PFixedPoint &a);
 
     CFixedPoint FullMul(const CFixedPoint &a, const CFixedPoint &b);
     CFixedPoint FullMul(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint FullMul(const PFixedPoint &a, const CFixedPoint &b);
     CFixedPoint FullMulFast(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint FullMulFast(const PFixedPoint &a, const CFixedPoint &b);
     CFixedPoint BoothsMul(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint BoothsMul(const PFixedPoint &a, const CFixedPoint &b);
 
     CFixedPoint Mul(const CFixedPoint &a, const CFixedPoint &b);
     CFixedPoint Mul(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint Mul(const PFixedPoint &a, const CFixedPoint &b);
     CFixedPoint MulFast(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint MulFast(const PFixedPoint &a, const CFixedPoint &b);
 };

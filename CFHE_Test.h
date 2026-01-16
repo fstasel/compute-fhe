@@ -83,7 +83,9 @@ public:
     TestReport TestPSubCNC(uint n_digits);
     TestReport TestNeg(uint n_digits);
     TestReport TestCmpNotEq(uint n_digits);
+    TestReport TestPCmpNotEq(uint n_digits);
     TestReport TestCmpEq(uint n_digits);
+    TestReport TestPCmpEq(uint n_digits);
     TestReport TestCmpLTEq_U(uint n_digits);
     TestReport TestCmpGT_U(uint n_digits);
     TestReport TestCmpGTEq_U(uint n_digits);

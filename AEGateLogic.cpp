@@ -373,6 +373,44 @@ LWECiphertext AEGateLogic::CmpGT_U_CtCt_FixedPoint(const CFixedPoint &a, const C
     return out;
 }
 
+LWECiphertext AEGateLogic::CmpNotEq_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b)
+{
+    assert(a.size() == b.size());
+    auto &cc = cfhe_base->GetBinFHEContext();
+    size_t n_digit = a.size();
+
+    LWECiphertext out = PXOR(a[0], b[0]);
+    for (uint8_t i = 1; i < n_digit; i++)
+    {
+        out = cc.EvalBinGate(OR, out, PXOR(a[i], b[i]));
+    }
+    return out;
+}
+
+LWECiphertext AEGateLogic::CmpEq_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b)
+{
+    assert(a.size() == b.size());
+    auto &cc = cfhe_base->GetBinFHEContext();
+    size_t n_digit = a.size();
+
+    LWECiphertext out = PXNOR(a[0], b[0]);
+    for (uint8_t i = 1; i < n_digit; i++)
+    {
+        out = cc.EvalBinGate(AND, out, PXNOR(a[i], b[i]));
+    }
+    return out;
+}
+
+LWECiphertext AEGateLogic::CmpLTEq_U_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return LWECiphertext();
+}
+
+LWECiphertext AEGateLogic::CmpGT_U_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return LWECiphertext();
+}
+
 CFixedPoint AEGateLogic::FullMul_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());

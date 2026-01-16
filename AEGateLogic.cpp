@@ -282,7 +282,7 @@ CFixedPoint AEGateLogic::Sub_PtCt_FixedPoint(const PFixedPoint &a, const CFixedP
     return out;
 }
 
-CFixedPoint AEGateLogic::Neg(const CFixedPoint &a)
+CFixedPoint AEGateLogic::Neg_Ct_FixedPoint(const CFixedPoint &a)
 {
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
@@ -305,7 +305,7 @@ CFixedPoint AEGateLogic::Neg(const CFixedPoint &a)
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpNotEq(const CFixedPoint &a, const CFixedPoint &b)
+LWECiphertext AEGateLogic::CmpNotEq_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -320,7 +320,7 @@ LWECiphertext AEGateLogic::CmpNotEq(const CFixedPoint &a, const CFixedPoint &b)
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpEq(const CFixedPoint &a, const CFixedPoint &b)
+LWECiphertext AEGateLogic::CmpEq_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -335,7 +335,7 @@ LWECiphertext AEGateLogic::CmpEq(const CFixedPoint &a, const CFixedPoint &b)
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpLTEq_U(const CFixedPoint &a, const CFixedPoint &b)
+LWECiphertext AEGateLogic::CmpLTEq_U_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -354,7 +354,7 @@ LWECiphertext AEGateLogic::CmpLTEq_U(const CFixedPoint &a, const CFixedPoint &b)
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpGT_U(const CFixedPoint &a, const CFixedPoint &b)
+LWECiphertext AEGateLogic::CmpGT_U_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -373,37 +373,7 @@ LWECiphertext AEGateLogic::CmpGT_U(const CFixedPoint &a, const CFixedPoint &b)
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpGTEq_U(const CFixedPoint &a, const CFixedPoint &b)
-{
-    return CmpLTEq_U(b, a);
-}
-
-LWECiphertext AEGateLogic::CmpLT_U(const CFixedPoint &a, const CFixedPoint &b)
-{
-    return CmpGT_U(b, a);
-}
-
-LWECiphertext AEGateLogic::CmpLTEq(const CFixedPoint &a, const CFixedPoint &b)
-{
-    return CmpLTEq_U(ToggleMSB(a), ToggleMSB(b));
-}
-
-LWECiphertext AEGateLogic::CmpGT(const CFixedPoint &a, const CFixedPoint &b)
-{
-    return CmpGT_U(ToggleMSB(a), ToggleMSB(b));
-}
-
-LWECiphertext AEGateLogic::CmpGTEq(const CFixedPoint &a, const CFixedPoint &b)
-{
-    return CmpGTEq_U(ToggleMSB(a), ToggleMSB(b));
-}
-
-LWECiphertext AEGateLogic::CmpLT(const CFixedPoint &a, const CFixedPoint &b)
-{
-    return CmpLT_U(ToggleMSB(a), ToggleMSB(b));
-}
-
-CFixedPoint AEGateLogic::FullMul(const CFixedPoint &a, const CFixedPoint &b)
+CFixedPoint AEGateLogic::FullMul_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -440,7 +410,7 @@ CFixedPoint AEGateLogic::FullMul(const CFixedPoint &a, const CFixedPoint &b)
     return out;
 }
 
-CFixedPoint AEGateLogic::FullMul(const CFixedPoint &a, const PFixedPoint &b)
+CFixedPoint AEGateLogic::FullMul_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b)
 {
     CFixedPoint out, acc;
     uint num_zeros = 0;
@@ -505,7 +475,7 @@ CFixedPoint AEGateLogic::FullMul(const CFixedPoint &a, const PFixedPoint &b)
     return out;
 }
 
-CFixedPoint AEGateLogic::FullMulFast(const CFixedPoint &a, const PFixedPoint &b)
+CFixedPoint AEGateLogic::FullMulFast_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b)
 {
     auto &cc = cfhe_base->GetBinFHEContext();
     if (a.size() == 0 || b.size() == 0 || cfhe_base->PFixedPoint2uint(b) == 0)
@@ -556,7 +526,7 @@ CFixedPoint AEGateLogic::FullMulFast(const CFixedPoint &a, const PFixedPoint &b)
     return out;
 }
 
-CFixedPoint AEGateLogic::BoothsMul(const CFixedPoint &a, const PFixedPoint &b)
+CFixedPoint AEGateLogic::BoothsMul_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b)
 {
     if (a.size() == 0 || b.size() == 0 || cfhe_base->PFixedPoint2uint(b) == 0)
     {
@@ -596,7 +566,7 @@ CFixedPoint AEGateLogic::BoothsMul(const CFixedPoint &a, const PFixedPoint &b)
     return buffer;
 }
 
-CFixedPoint AEGateLogic::Mul(const CFixedPoint &a, const CFixedPoint &b)
+CFixedPoint AEGateLogic::Mul_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -634,7 +604,7 @@ CFixedPoint AEGateLogic::Mul(const CFixedPoint &a, const CFixedPoint &b)
     return out;
 }
 
-CFixedPoint AEGateLogic::Mul(const CFixedPoint &a, const PFixedPoint &b)
+CFixedPoint AEGateLogic::Mul_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b)
 {
     if (a.size() == 0 || b.size() == 0 || cfhe_base->PFixedPoint2uint(b) == 0)
     {
@@ -673,7 +643,7 @@ CFixedPoint AEGateLogic::Mul(const CFixedPoint &a, const PFixedPoint &b)
     return out;
 }
 
-CFixedPoint AEGateLogic::MulFast(const CFixedPoint &a, const PFixedPoint &b)
+CFixedPoint AEGateLogic::MulFast_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b)
 {
     if (a.size() == 0 || b.size() == 0 || cfhe_base->PFixedPoint2uint(b) == 0)
     {
@@ -702,6 +672,11 @@ uint AEGateLogic::Get_CtCtAddNC_Cost(size_t n_bits)
 uint AEGateLogic::Get_CtCtSubC_Cost(size_t n_bits)
 {
     return (n_bits > 0) ? 5 * n_bits : 0;
+}
+
+uint AEGateLogic::Get_CtCtSubNC_Cost(size_t n_bits)
+{
+    return Get_CtCtAddNC_Cost(n_bits);
 }
 
 uint AEGateLogic::Get_CtPtAddC_Cost(size_t n_bits)
@@ -819,5 +794,32 @@ uint AEGateLogic::Get_Pt2sCompMul_Cost(const PFixedPoint &pt)
 {
     uint cost = Get_PtMul_Cost(BaseArithmeticsEngine::Neg(pt));
     cost += Get_CtNeg_Cost(pt.size());
+    return cost;
+}
+
+uint AEGateLogic::Get_BoothsMul_Cost(const PFixedPoint &pt, size_t ct_n_bits)
+{
+    uint cost = 0;
+    if (pt.size() == 0 || ct_n_bits == 0 || cfhe_base->PFixedPoint2uint(pt) == 0)
+    {
+        return 0;
+    }
+    ct_n_bits++; // Expanded ct for the most negative number correction
+    for (size_t i = 0; i < pt.size(); i++)
+    {
+        uint k = (pt[i] << 1) + ((i > 0) ? pt[i - 1] : 0);
+        switch (k)
+        {
+        case 1:
+            cost += Get_CtCtAddNC_Cost(ct_n_bits);
+            break;
+        case 2:
+            cost += Get_CtCtSubNC_Cost(ct_n_bits);
+            break;
+        default:
+            break;
+        }
+    }
+
     return cost;
 }

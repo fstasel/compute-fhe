@@ -54,7 +54,7 @@ LWECiphertext AEOptimized::DigitSum(ConstLWECiphertext &e1, ConstLWECiphertext &
     return s0_2e1_e0;
 }
 
-LWECiphertext AEOptimized::CmpLTEq_U(const CFixedPoint &a, const CFixedPoint &b)
+LWECiphertext AEOptimized::CmpLTEq_U_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -70,7 +70,7 @@ LWECiphertext AEOptimized::CmpLTEq_U(const CFixedPoint &a, const CFixedPoint &b)
     return c;
 }
 
-LWECiphertext AEOptimized::CmpGT_U(const CFixedPoint &a, const CFixedPoint &b)
+LWECiphertext AEOptimized::CmpGT_U_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -86,7 +86,7 @@ LWECiphertext AEOptimized::CmpGT_U(const CFixedPoint &a, const CFixedPoint &b)
     return c;
 }
 
-CFixedPoint AEOptimized::FullMul(const CFixedPoint &a, const CFixedPoint &b)
+CFixedPoint AEOptimized::FullMul_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -124,7 +124,7 @@ CFixedPoint AEOptimized::FullMul(const CFixedPoint &a, const CFixedPoint &b)
     return out;
 }
 
-CFixedPoint AEOptimized::Mul(const CFixedPoint &a, const CFixedPoint &b)
+CFixedPoint AEOptimized::Mul_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b)
 {
     assert(a.size() == b.size());
     auto &cc = cfhe_base->GetBinFHEContext();
@@ -303,7 +303,7 @@ CFixedPoint AEOptimized::Sub_PtCt_FixedPoint(const PFixedPoint &a, const CFixedP
     return out;
 }
 
-CFixedPoint AEOptimized::Neg(const CFixedPoint &a)
+CFixedPoint AEOptimized::Neg_Ct_FixedPoint(const CFixedPoint &a)
 {
     return SubNC(PFixedPoint(a.size(), 0), a);
 }

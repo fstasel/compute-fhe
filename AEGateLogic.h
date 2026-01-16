@@ -41,30 +41,26 @@ public:
     CFixedPoint Sub_PtCt_FixedPoint(const PFixedPoint &a, const CFixedPoint &b,
                                     const bool &carry_in, const bool &carry_out);
 
-    CFixedPoint Neg(const CFixedPoint &a);
-    LWECiphertext CmpNotEq(const CFixedPoint &a, const CFixedPoint &b);
-    LWECiphertext CmpEq(const CFixedPoint &a, const CFixedPoint &b);
-    LWECiphertext CmpLTEq_U(const CFixedPoint &a, const CFixedPoint &b);
-    LWECiphertext CmpGT_U(const CFixedPoint &a, const CFixedPoint &b);
-    LWECiphertext CmpGTEq_U(const CFixedPoint &a, const CFixedPoint &b);
-    LWECiphertext CmpLT_U(const CFixedPoint &a, const CFixedPoint &b);
-    LWECiphertext CmpLTEq(const CFixedPoint &a, const CFixedPoint &b);
-    LWECiphertext CmpGT(const CFixedPoint &a, const CFixedPoint &b);
-    LWECiphertext CmpGTEq(const CFixedPoint &a, const CFixedPoint &b);
-    LWECiphertext CmpLT(const CFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint Neg_Ct_FixedPoint(const CFixedPoint &a);
 
-    CFixedPoint FullMul(const CFixedPoint &a, const CFixedPoint &b);
-    CFixedPoint FullMul(const CFixedPoint &a, const PFixedPoint &b);
-    CFixedPoint FullMulFast(const CFixedPoint &a, const PFixedPoint &b);
-    CFixedPoint BoothsMul(const CFixedPoint &a, const PFixedPoint &b);
+    LWECiphertext CmpNotEq_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpEq_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpLTEq_U_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpGT_U_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b);
 
-    CFixedPoint Mul(const CFixedPoint &a, const CFixedPoint &b);
-    CFixedPoint Mul(const CFixedPoint &a, const PFixedPoint &b);
-    CFixedPoint MulFast(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint FullMul_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint FullMul_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint FullMulFast_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint BoothsMul_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b);
+
+    CFixedPoint Mul_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b);
+    CFixedPoint Mul_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b);
+    CFixedPoint MulFast_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b);
 
     virtual uint Get_CtCtAdd_Cost(size_t n_bits);
     virtual uint Get_CtCtAddNC_Cost(size_t n_bits);
     virtual uint Get_CtCtSubC_Cost(size_t n_bits);
+    virtual uint Get_CtCtSubNC_Cost(size_t n_bits);
     virtual uint Get_CtPtAddC_Cost(size_t n_bits);
     virtual uint Get_PtCtSub_Cost(size_t n_bits);
     virtual uint Get_CtPtSubCNC_Cost(size_t n_bits);
@@ -73,4 +69,5 @@ public:
     virtual uint Get_Pt2sCompFullMul_Cost(const PFixedPoint &pt, size_t ct_n_bits);
     virtual uint Get_PtMul_Cost(const PFixedPoint &pt);
     virtual uint Get_Pt2sCompMul_Cost(const PFixedPoint &pt);
+    virtual uint Get_BoothsMul_Cost(const PFixedPoint &pt, size_t ct_n_bits);
 };

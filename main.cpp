@@ -54,34 +54,45 @@ void test_cost_time_mul()
 
 void manual_test()
 {
-    CFHE_Test t(CCPARAM_STD128_3, AE_OPTIMIZED);
+    CFHE_Test t(CCPARAM_TOY, AE_OPTIMIZED);
     t.SetNumTest(100);
-    t.SetVerbosity(4);
+    t.SetVerbosity(0);
     t.SetRegenerateKeys(false);
-    t.Test(TT_PMUL_FAST, 8);
-    t.Test(TT_BOOTHSMUL, 4);
-    // t.Test(TT_PFULLMUL, 4);
-    // t.Test(TT_PFULLMUL_FAST, 4);
-    // t.Test(TT_NEG, 8);
 
-    // t.Test(TT_PFULLMUL, 1);
+    // Mul variants
+    t.Test(TT_MUL, 4);
+    t.Test(TT_PMUL, 4);
+    t.Test(TT_PMUL_FAST, 4);
+
+    // Fullmul variants
+    // t.Test(TT_FULLMUL, 4);
     // t.Test(TT_PFULLMUL, 4);
-    // t.Test(TT_PFULLMUL, 8);
-    // t.Test(TT_PFULLMUL_FAST, 1);
     // t.Test(TT_PFULLMUL_FAST, 4);
-    // t.Test(TT_PFULLMUL_FAST, 8);
+    // t.Test(TT_BOOTHSMUL, 4);
+
+    // Compares
+    // t.Test(TT_CMPEQ, 4);
+    // t.Test(TT_CMPGT, 4);
+    // t.Test(TT_CMPGT_U, 4);
+    // t.Test(TT_CMPGTEQ, 4);
+    // t.Test(TT_CMPGTEQ_U, 4);
+    // t.Test(TT_CMPLT, 4);
+    // t.Test(TT_CMPLT_U, 4);
+    // t.Test(TT_CMPLTEQ, 4);
+    // t.Test(TT_CMPLTEQ_U, 4);
+    // t.Test(TT_CMPNOTEQ, 4);
+    // t.Test(TT_NEG, 4);
 }
 
-void calculate_expected_cost()
+void calculate_expected_cost_fullmul(uint n, ArithmeticsEngineType ae_type)
 {
-    CFHE_Test t(CCPARAM_STD128_3, AE_OPTIMIZED);
+    CFHE_Test t(CCPARAM_TOY, ae_type);
 
     ComputeFHE *cfhe = t.GetBase();
     AEGateLogic *ae = (AEGateLogic *)(cfhe->GetArithmeticsEngine());
 
     uint64_t bs_fullmul = 0;
     uint64_t bs_fullmul_fast = 0;
-    uint n = 8;
     for (uint64_t k = 0; k < ((uint64_t)1U << (uint64_t)n); k++)
     {
         PFixedPoint pt = cfhe->uint2PFixedPoint(k, n);
@@ -98,16 +109,15 @@ void calculate_expected_cost()
     cout << "Average FullMulFast CtPt cost for " << n << "-bits : " << avg_fullmul_fast << endl;
 }
 
-void calculate_expected_cost_mul()
+void calculate_expected_cost_mul(uint n, ArithmeticsEngineType ae_type)
 {
-    CFHE_Test t(CCPARAM_STD128_3, AE_OPTIMIZED);
+    CFHE_Test t(CCPARAM_TOY, ae_type);
 
     ComputeFHE *cfhe = t.GetBase();
     AEGateLogic *ae = (AEGateLogic *)(cfhe->GetArithmeticsEngine());
 
     uint64_t bs_mul = 0;
     uint64_t bs_mul_fast = 0;
-    uint n = 8;
     for (uint64_t k = 0; k < ((uint64_t)1U << (uint64_t)n); k++)
     {
         PFixedPoint pt = cfhe->uint2PFixedPoint(k, n);
@@ -122,6 +132,47 @@ void calculate_expected_cost_mul()
     cout << "Average MulFast CtPt cost for " << n << "-bits : " << avg_mul_fast << endl;
 }
 
+void calculate_expected_cost_dmul(uint n, ArithmeticsEngineType ae_type)
+{
+    CFHE_Test t(CCPARAM_TOY, ae_type);
+
+    ComputeFHE *cfhe = t.GetBase();
+    AEGateLogic *ae = (AEGateLogic *)(cfhe->GetArithmeticsEngine());
+
+    uint64_t bs_mul = 0;
+    uint64_t bs_mul_fast = 0;
+    for (uint64_t k = 0; k < ((uint64_t)1U << (uint64_t)n); k++)
+    {
+        PFixedPoint pt = cfhe->uint2PFixedPoint(k, n << 1);
+        uint cost1 = ae->Get_PtMul_Cost(pt);
+        uint cost2 = ae->Get_Pt2sCompMul_Cost(pt);
+        bs_mul += cost1;
+        bs_mul_fast += (cost1 <= cost2) ? cost1 : cost2;
+    }
+    float avg_mul = (float)bs_mul / (1U << n);
+    float avg_mul_fast = (float)bs_mul_fast / (1U << n);
+    cout << "Average DMul CtPt cost for " << n << "-bits : " << avg_mul << endl;
+    cout << "Average DMulFast CtPt cost for " << n << "-bits : " << avg_mul_fast << endl;
+}
+
+void calculate_expected_cost_booths(uint n, ArithmeticsEngineType ae_type)
+{
+    CFHE_Test t(CCPARAM_TOY, ae_type);
+
+    ComputeFHE *cfhe = t.GetBase();
+    AEGateLogic *ae = (AEGateLogic *)(cfhe->GetArithmeticsEngine());
+
+    uint64_t bs_boothsmul = 0;
+    for (uint64_t k = 0; k < ((uint64_t)1U << (uint64_t)n); k++)
+    {
+        PFixedPoint pt = cfhe->uint2PFixedPoint(k, n);
+        size_t ct_n_bits = n;
+        bs_boothsmul += ae->Get_BoothsMul_Cost(pt, ct_n_bits);
+    }
+    float avg_boothsmul = (float)bs_boothsmul / (1U << n);
+    cout << "Average BoothsMul CtPt cost for " << n << "-bits : " << avg_boothsmul << endl;
+}
+
 int main()
 {
     // CFHE_Test::TestAll();
@@ -129,7 +180,23 @@ int main()
 
     // test_cost_time_mul();
     manual_test();
-    // calculate_expected_cost_mul();
-
+    // calculate_expected_cost_fullmul(4, AE_GATELOGIC);
+    // calculate_expected_cost_booths(4, AE_GATELOGIC);
+    // calculate_expected_cost_dmul(4, AE_GATELOGIC);
+    // calculate_expected_cost_fullmul(8, AE_GATELOGIC);
+    // calculate_expected_cost_booths(8, AE_GATELOGIC);
+    // calculate_expected_cost_dmul(8, AE_GATELOGIC);
+    // calculate_expected_cost_fullmul(16, AE_GATELOGIC);
+    // calculate_expected_cost_booths(16, AE_GATELOGIC);
+    // calculate_expected_cost_dmul(16, AE_GATELOGIC);
+    // calculate_expected_cost_fullmul(4, AE_OPTIMIZED);
+    // calculate_expected_cost_booths(4, AE_OPTIMIZED);
+    // calculate_expected_cost_dmul(4, AE_OPTIMIZED);
+    // calculate_expected_cost_fullmul(8, AE_OPTIMIZED);
+    // calculate_expected_cost_booths(8, AE_OPTIMIZED);
+    // calculate_expected_cost_dmul(8, AE_OPTIMIZED);
+    // calculate_expected_cost_fullmul(16, AE_OPTIMIZED);
+    // calculate_expected_cost_booths(16, AE_OPTIMIZED);
+    // calculate_expected_cost_dmul(16, AE_OPTIMIZED);
     return EXIT_SUCCESS;
 }

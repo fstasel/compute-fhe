@@ -56,7 +56,7 @@ void manual_test()
 {
     CFHE_Test t(CCPARAM_TOY, AE_OPTIMIZED);
     t.SetNumTest(100);
-    t.SetVerbosity(0);
+    t.SetVerbosity(4);
     t.SetRegenerateKeys(false);
 
     // Mul variants
@@ -71,18 +71,22 @@ void manual_test()
     // t.Test(TT_BOOTHSMUL, 4);
 
     // Compares
-    t.Test(TT_CMPEQ, 4);
-    t.Test(TT_PCMPEQ, 4);
-    t.Test(TT_CMPGT, 4);
-    t.Test(TT_CMPGT_U, 4);
-    t.Test(TT_CMPGTEQ, 4);
-    t.Test(TT_CMPGTEQ_U, 4);
-    t.Test(TT_CMPLT, 4);
-    t.Test(TT_CMPLT_U, 4);
-    t.Test(TT_CMPLTEQ, 4);
-    t.Test(TT_CMPLTEQ_U, 4);
-    t.Test(TT_CMPNOTEQ, 4);
-    t.Test(TT_PCMPNOTEQ, 4);
+    // t.Test(TT_CMPEQ, 4);
+    // t.Test(TT_PCMPEQ, 4);
+    // t.Test(TT_CMPGT, 4);
+    // t.Test(TT_CMPGT_U, 4);
+    // t.Test(TT_PCMPGT_U, 4);
+    // t.Test(TT_CMPGTEQ, 4);
+    // t.Test(TT_CMPGTEQ_U, 4);
+    // t.Test(TT_PCMPGTEQ_U, 4);
+    // t.Test(TT_CMPLT, 4);
+    // t.Test(TT_CMPLT_U, 4);
+    t.Test(TT_PCMPLT_U, 4);
+    // t.Test(TT_CMPLTEQ, 4);
+    // t.Test(TT_CMPLTEQ_U, 4);
+    // t.Test(TT_PCMPLTEQ_U, 4);
+    // t.Test(TT_CMPNOTEQ, 4);
+    // t.Test(TT_PCMPNOTEQ, 4);
 
     // Invert
     // t.Test(TT_NEG, 4);

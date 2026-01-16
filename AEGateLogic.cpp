@@ -140,7 +140,7 @@ CFixedPoint AEGateLogic::Add_CtCt_FixedPoint(const CFixedPoint &a, const CFixedP
     size_t n_digit = a.size();
 
     CFixedPoint out(n_digit);
-    for (uint8_t i = 0; i < n_digit; i++)
+    for (size_t i = 0; i < n_digit; i++)
     {
         if (n_digit == 1 && !carry_in && !carry_out)
         {
@@ -170,7 +170,7 @@ CFixedPoint AEGateLogic::Sub_CtCt_FixedPoint(const CFixedPoint &a, const CFixedP
     size_t n_digit = a.size();
 
     CFixedPoint out(n_digit);
-    for (uint8_t i = 0; i < n_digit; i++)
+    for (size_t i = 0; i < n_digit; i++)
     {
         if (n_digit == 1 && !carry_in && !carry_out)
         {
@@ -200,7 +200,7 @@ CFixedPoint AEGateLogic::Add_CtPt_FixedPoint(const CFixedPoint &a, const PFixedP
     size_t n_digit = a.size();
 
     CFixedPoint out(n_digit);
-    for (uint8_t i = 0; i < n_digit; i++)
+    for (size_t i = 0; i < n_digit; i++)
     {
         if (n_digit == 1 && !carry_in && !carry_out)
         {
@@ -245,7 +245,7 @@ CFixedPoint AEGateLogic::Sub_PtCt_FixedPoint(const PFixedPoint &a, const CFixedP
     size_t n_digit = a.size();
 
     CFixedPoint out(n_digit);
-    for (uint8_t i = 0; i < n_digit; i++)
+    for (size_t i = 0; i < n_digit; i++)
     {
         if (n_digit == 1 && !carry_in && !carry_out)
         {
@@ -290,7 +290,7 @@ CFixedPoint AEGateLogic::Neg_Ct_FixedPoint(const CFixedPoint &a)
     CFixedPoint out(n_digit);
     out[0] = COPY_CT(a[0]);
     LWECiphertext c = cc.EvalNOT(a[0]);
-    for (uint8_t i = 1; i < n_digit; i++)
+    for (size_t i = 1; i < n_digit; i++)
     {
         LWECiphertext inv = cc.EvalNOT(a[i]);
         if (i < n_digit - 1)
@@ -312,7 +312,7 @@ LWECiphertext AEGateLogic::CmpNotEq_CtCt_FixedPoint(const CFixedPoint &a, const 
     size_t n_digit = a.size();
 
     LWECiphertext out = cc.EvalBinGate(XOR, a[0], b[0]);
-    for (uint8_t i = 1; i < n_digit; i++)
+    for (size_t i = 1; i < n_digit; i++)
     {
         LWECiphertext eq = cc.EvalBinGate(XOR, a[i], b[i]);
         out = cc.EvalBinGate(OR, out, eq);
@@ -327,7 +327,7 @@ LWECiphertext AEGateLogic::CmpEq_CtCt_FixedPoint(const CFixedPoint &a, const CFi
     size_t n_digit = a.size();
 
     LWECiphertext out = cc.EvalBinGate(XNOR, a[0], b[0]);
-    for (uint8_t i = 1; i < n_digit; i++)
+    for (size_t i = 1; i < n_digit; i++)
     {
         LWECiphertext eq = cc.EvalBinGate(XNOR, a[i], b[i]);
         out = cc.EvalBinGate(AND, out, eq);
@@ -343,7 +343,7 @@ LWECiphertext AEGateLogic::CmpLTEq_U_CtCt_FixedPoint(const CFixedPoint &a, const
 
     LWECiphertext inv_a = cc.EvalNOT(a[0]);
     LWECiphertext out = cc.EvalBinGate(OR, inv_a, b[0]);
-    for (uint8_t i = 1; i < n_digit; i++)
+    for (size_t i = 1; i < n_digit; i++)
     {
         inv_a = cc.EvalNOT(a[i]);
         LWECiphertext t1 = cc.EvalBinGate(AND, inv_a, b[i]);
@@ -362,7 +362,7 @@ LWECiphertext AEGateLogic::CmpGT_U_CtCt_FixedPoint(const CFixedPoint &a, const C
 
     LWECiphertext inv_b = cc.EvalNOT(b[0]);
     LWECiphertext out = cc.EvalBinGate(AND, a[0], inv_b);
-    for (uint8_t i = 1; i < n_digit; i++)
+    for (size_t i = 1; i < n_digit; i++)
     {
         inv_b = cc.EvalNOT(b[i]);
         LWECiphertext t1 = cc.EvalBinGate(AND, a[i], inv_b);
@@ -380,7 +380,7 @@ LWECiphertext AEGateLogic::CmpNotEq_CtPt_FixedPoint(const CFixedPoint &a, const 
     size_t n_digit = a.size();
 
     LWECiphertext out = PXOR(a[0], b[0]);
-    for (uint8_t i = 1; i < n_digit; i++)
+    for (size_t i = 1; i < n_digit; i++)
     {
         out = cc.EvalBinGate(OR, out, PXOR(a[i], b[i]));
     }
@@ -394,7 +394,7 @@ LWECiphertext AEGateLogic::CmpEq_CtPt_FixedPoint(const CFixedPoint &a, const PFi
     size_t n_digit = a.size();
 
     LWECiphertext out = PXNOR(a[0], b[0]);
-    for (uint8_t i = 1; i < n_digit; i++)
+    for (size_t i = 1; i < n_digit; i++)
     {
         out = cc.EvalBinGate(AND, out, PXNOR(a[i], b[i]));
     }
@@ -403,12 +403,62 @@ LWECiphertext AEGateLogic::CmpEq_CtPt_FixedPoint(const CFixedPoint &a, const PFi
 
 LWECiphertext AEGateLogic::CmpLTEq_U_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b)
 {
-    return LWECiphertext();
+    assert(a.size() == b.size());
+    auto &cc = cfhe_base->GetBinFHEContext();
+    size_t n_digit = a.size();
+
+    LWECiphertext out = GetConstantTrue();
+    bool flag = false;
+    for (size_t i = 0; i < n_digit; i++)
+    {
+        if (flag || (!flag && b[i] == 0))
+        {
+            if (!flag)
+            {
+                out = cc.EvalNOT(a[i]);
+                flag = true;
+            }
+            else if (b[i] == 0)
+            {
+                out = cc.EvalBinGate(AND, out, cc.EvalNOT(a[i]));
+            }
+            else
+            {
+                out = cc.EvalBinGate(OR, out, cc.EvalNOT(a[i]));
+            }
+        }
+    }
+    return out;
 }
 
 LWECiphertext AEGateLogic::CmpGT_U_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b)
 {
-    return LWECiphertext();
+    assert(a.size() == b.size());
+    auto &cc = cfhe_base->GetBinFHEContext();
+    size_t n_digit = a.size();
+
+    LWECiphertext out = GetConstantFalse();
+    bool flag = false;
+    for (size_t i = 0; i < n_digit; i++)
+    {
+        if (flag || (!flag && b[i] == 0))
+        {
+            if (!flag)
+            {
+                out = COPY_CT(a[i]);
+                flag = true;
+            }
+            else if (b[i] == 0)
+            {
+                out = cc.EvalBinGate(OR, out, a[i]);
+            }
+            else
+            {
+                out = cc.EvalBinGate(AND, out, a[i]);
+            }
+        }
+    }
+    return out;
 }
 
 CFixedPoint AEGateLogic::FullMul_CtCt_FixedPoint(const CFixedPoint &a, const CFixedPoint &b)
@@ -418,13 +468,13 @@ CFixedPoint AEGateLogic::FullMul_CtCt_FixedPoint(const CFixedPoint &a, const CFi
     size_t n_digit = a.size();
 
     CFixedPoint out((n_digit == 1) ? 1 : (n_digit << 1));
-    for (uint8_t i = 0; i < n_digit; i++)
+    for (size_t i = 0; i < n_digit; i++)
     {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);
     }
-    for (uint8_t j = 1; j < n_digit; j++)
+    for (size_t j = 1; j < n_digit; j++)
     {
-        for (uint8_t i = 0; i < n_digit; i++)
+        for (size_t i = 0; i < n_digit; i++)
         {
             LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
             if (i == 0)
@@ -457,7 +507,7 @@ CFixedPoint AEGateLogic::FullMul_CtPt_FixedPoint(const CFixedPoint &a, const PFi
         out.push_back(GetConstantFalse());
         return out;
     }
-    for (uint8_t i = 0; i < b.size(); i++)
+    for (size_t i = 0; i < b.size(); i++)
     {
         if (b[i] == 0)
         {
@@ -473,13 +523,13 @@ CFixedPoint AEGateLogic::FullMul_CtPt_FixedPoint(const CFixedPoint &a, const PFi
         }
         else if (acc.size() == 0)
         {
-            for (uint8_t j = 0; j < num_zeros; j++)
+            for (size_t j = 0; j < num_zeros; j++)
             {
                 out.push_back(GetConstantFalse());
             }
             num_zeros = 0;
             out.push_back(COPY_CT(a[0]));
-            for (uint8_t j = 1; j < a.size(); j++)
+            for (size_t j = 1; j < a.size(); j++)
             {
                 acc.push_back(a[j]);
             }
@@ -533,7 +583,7 @@ CFixedPoint AEGateLogic::FullMulFast_CtPt_FixedPoint(const CFixedPoint &a, const
     if (res_neg.size() <= b.size())
     {
         out_lo = Sub(PFixedPoint(res_neg.size(), 0), res_neg);
-        for (uint8_t i = 0; i < b.size() - res_neg.size(); i++)
+        for (size_t i = 0; i < b.size() - res_neg.size(); i++)
         {
             out_mid.push_back(cc.EvalNOT(carry));
         }
@@ -549,15 +599,15 @@ CFixedPoint AEGateLogic::FullMulFast_CtPt_FixedPoint(const CFixedPoint &a, const
         }
     }
     CFixedPoint out(out_lo.size() + out_mid.size() + out_hi.size());
-    for (uint8_t i = 0; i < out_lo.size(); i++)
+    for (size_t i = 0; i < out_lo.size(); i++)
     {
         out[i] = out_lo[i];
     }
-    for (uint8_t i = 0; i < out_mid.size(); i++)
+    for (size_t i = 0; i < out_mid.size(); i++)
     {
         out[i + out_lo.size()] = out_mid[i];
     }
-    for (uint8_t i = 0; i < out_hi.size(); i++)
+    for (size_t i = 0; i < out_hi.size(); i++)
     {
         out[i + out_lo.size() + out_mid.size()] = out_hi[i];
     }
@@ -611,13 +661,13 @@ CFixedPoint AEGateLogic::Mul_CtCt_FixedPoint(const CFixedPoint &a, const CFixedP
     size_t n_digit = a.size();
 
     CFixedPoint out(n_digit);
-    for (uint8_t i = 0; i < n_digit; i++)
+    for (size_t i = 0; i < n_digit; i++)
     {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);
     }
-    for (uint8_t j = 1; j < n_digit; j++)
+    for (size_t j = 1; j < n_digit; j++)
     {
-        for (uint8_t i = 0; i < n_digit - j; i++)
+        for (size_t i = 0; i < n_digit - j; i++)
         {
             LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
             if (i == 0 && j < n_digit - 1)

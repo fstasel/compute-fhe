@@ -222,9 +222,29 @@ LWECiphertext BaseArithmeticsEngine::CmpLTEq_U(const CFixedPoint &a, const CFixe
     return CmpLTEq_U_CtCt_FixedPoint(a, b);
 }
 
+LWECiphertext BaseArithmeticsEngine::CmpLTEq_U(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return CmpLTEq_U_CtPt_FixedPoint(a, b);
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpLTEq_U(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return CmpGTEq_U(b, a);
+}
+
 LWECiphertext BaseArithmeticsEngine::CmpGT_U(const CFixedPoint &a, const CFixedPoint &b)
 {
     return CmpGT_U_CtCt_FixedPoint(a, b);
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpGT_U(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return CmpGT_U_CtPt_FixedPoint(a, b);
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpGT_U(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return CmpLT_U(b, a);
 }
 
 LWECiphertext BaseArithmeticsEngine::CmpGTEq_U(const CFixedPoint &a, const CFixedPoint &b)
@@ -232,9 +252,29 @@ LWECiphertext BaseArithmeticsEngine::CmpGTEq_U(const CFixedPoint &a, const CFixe
     return CmpLTEq_U_CtCt_FixedPoint(b, a);
 }
 
+LWECiphertext BaseArithmeticsEngine::CmpGTEq_U(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return CmpLTEq_U_CtPt_FixedPoint(Not(a), Not(b));
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpGTEq_U(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return CmpLTEq_U_CtPt_FixedPoint(b, a);
+}
+
 LWECiphertext BaseArithmeticsEngine::CmpLT_U(const CFixedPoint &a, const CFixedPoint &b)
 {
     return CmpGT_U_CtCt_FixedPoint(b, a);
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpLT_U(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return CmpGT_U_CtPt_FixedPoint(Not(a), Not(b));
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpLT_U(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return CmpGT_U_CtPt_FixedPoint(b, a);
 }
 
 LWECiphertext BaseArithmeticsEngine::CmpLTEq(const CFixedPoint &a, const CFixedPoint &b)

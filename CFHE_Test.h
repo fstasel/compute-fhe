@@ -87,9 +87,13 @@ public:
     TestReport TestCmpEq(uint n_digits);
     TestReport TestPCmpEq(uint n_digits);
     TestReport TestCmpLTEq_U(uint n_digits);
+    TestReport TestPCmpLTEq_U(uint n_digits);
     TestReport TestCmpGT_U(uint n_digits);
+    TestReport TestPCmpGT_U(uint n_digits);
     TestReport TestCmpGTEq_U(uint n_digits);
+    TestReport TestPCmpGTEq_U(uint n_digits);
     TestReport TestCmpLT_U(uint n_digits);
+    TestReport TestPCmpLT_U(uint n_digits);
     TestReport TestCmpLTEq(uint n_digits);
     TestReport TestCmpGT(uint n_digits);
     TestReport TestCmpGTEq(uint n_digits);

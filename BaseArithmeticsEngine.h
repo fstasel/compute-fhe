@@ -122,9 +122,21 @@ public:
     LWECiphertext CmpEq(const PFixedPoint &a, const CFixedPoint &b);
 
     LWECiphertext CmpLTEq_U(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpLTEq_U(const CFixedPoint &a, const PFixedPoint &b);
+    LWECiphertext CmpLTEq_U(const PFixedPoint &a, const CFixedPoint &b);
+
     LWECiphertext CmpGT_U(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpGT_U(const CFixedPoint &a, const PFixedPoint &b);
+    LWECiphertext CmpGT_U(const PFixedPoint &a, const CFixedPoint &b);
+
     LWECiphertext CmpGTEq_U(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpGTEq_U(const CFixedPoint &a, const PFixedPoint &b);
+    LWECiphertext CmpGTEq_U(const PFixedPoint &a, const CFixedPoint &b);
+
     LWECiphertext CmpLT_U(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpLT_U(const CFixedPoint &a, const PFixedPoint &b);
+    LWECiphertext CmpLT_U(const PFixedPoint &a, const CFixedPoint &b);
+
     LWECiphertext CmpLTEq(const CFixedPoint &a, const CFixedPoint &b);
     LWECiphertext CmpGT(const CFixedPoint &a, const CFixedPoint &b);
     LWECiphertext CmpGTEq(const CFixedPoint &a, const CFixedPoint &b);

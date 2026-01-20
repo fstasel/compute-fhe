@@ -138,11 +138,23 @@ public:
     LWECiphertext CmpLT_U(const PFixedPoint &a, const CFixedPoint &b);
 
     LWECiphertext CmpLTEq(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpLTEq(const CFixedPoint &a, const PFixedPoint &b);
+    LWECiphertext CmpLTEq(const PFixedPoint &a, const CFixedPoint &b);
+
     LWECiphertext CmpGT(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpGT(const CFixedPoint &a, const PFixedPoint &b);
+    LWECiphertext CmpGT(const PFixedPoint &a, const CFixedPoint &b);
+
     LWECiphertext CmpGTEq(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpGTEq(const CFixedPoint &a, const PFixedPoint &b);
+    LWECiphertext CmpGTEq(const PFixedPoint &a, const CFixedPoint &b);
+
     LWECiphertext CmpLT(const CFixedPoint &a, const CFixedPoint &b);
+    LWECiphertext CmpLT(const CFixedPoint &a, const PFixedPoint &b);
+    LWECiphertext CmpLT(const PFixedPoint &a, const CFixedPoint &b);
 
     CFixedPoint ToggleMSB(const CFixedPoint &a);
+    PFixedPoint ToggleMSB(const PFixedPoint &a);
 
     LWECiphertext PXOR(ConstLWECiphertext &a, const LWEPlaintext &b);
     LWECiphertext PXOR(const LWEPlaintext &a, ConstLWECiphertext &b);

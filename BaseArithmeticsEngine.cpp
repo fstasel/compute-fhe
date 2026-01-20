@@ -282,7 +282,27 @@ LWECiphertext BaseArithmeticsEngine::CmpLTEq(const CFixedPoint &a, const CFixedP
     return CmpLTEq_U(ToggleMSB(a), ToggleMSB(b));
 }
 
+LWECiphertext BaseArithmeticsEngine::CmpLTEq(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return CmpLTEq_U(ToggleMSB(a), ToggleMSB(b));
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpLTEq(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return CmpLTEq_U(ToggleMSB(a), ToggleMSB(b));
+}
+
 LWECiphertext BaseArithmeticsEngine::CmpGT(const CFixedPoint &a, const CFixedPoint &b)
+{
+    return CmpGT_U(ToggleMSB(a), ToggleMSB(b));
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpGT(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return CmpGT_U(ToggleMSB(a), ToggleMSB(b));
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpGT(const PFixedPoint &a, const CFixedPoint &b)
 {
     return CmpGT_U(ToggleMSB(a), ToggleMSB(b));
 }
@@ -292,7 +312,27 @@ LWECiphertext BaseArithmeticsEngine::CmpGTEq(const CFixedPoint &a, const CFixedP
     return CmpGTEq_U(ToggleMSB(a), ToggleMSB(b));
 }
 
+LWECiphertext BaseArithmeticsEngine::CmpGTEq(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return CmpGTEq_U(ToggleMSB(a), ToggleMSB(b));
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpGTEq(const PFixedPoint &a, const CFixedPoint &b)
+{
+    return CmpGTEq_U(ToggleMSB(a), ToggleMSB(b));
+}
+
 LWECiphertext BaseArithmeticsEngine::CmpLT(const CFixedPoint &a, const CFixedPoint &b)
+{
+    return CmpLT_U(ToggleMSB(a), ToggleMSB(b));
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpLT(const CFixedPoint &a, const PFixedPoint &b)
+{
+    return CmpLT_U(ToggleMSB(a), ToggleMSB(b));
+}
+
+LWECiphertext BaseArithmeticsEngine::CmpLT(const PFixedPoint &a, const CFixedPoint &b)
 {
     return CmpLT_U(ToggleMSB(a), ToggleMSB(b));
 }
@@ -302,6 +342,13 @@ CFixedPoint BaseArithmeticsEngine::ToggleMSB(const CFixedPoint &a)
     auto &cc = cfhe_base->GetBinFHEContext();
     CFixedPoint t = CFixedPoint(a);
     t.back() = cc.EvalNOT(t.back());
+    return t;
+}
+
+PFixedPoint BaseArithmeticsEngine::ToggleMSB(const PFixedPoint &a)
+{
+    PFixedPoint t = a;
+    t.back() = 1U - t.back();
     return t;
 }
 

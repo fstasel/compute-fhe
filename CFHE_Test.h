@@ -95,9 +95,13 @@ public:
     TestReport TestCmpLT_U(uint n_digits);
     TestReport TestPCmpLT_U(uint n_digits);
     TestReport TestCmpLTEq(uint n_digits);
+    TestReport TestPCmpLTEq(uint n_digits);
     TestReport TestCmpGT(uint n_digits);
+    TestReport TestPCmpGT(uint n_digits);
     TestReport TestCmpGTEq(uint n_digits);
+    TestReport TestPCmpGTEq(uint n_digits);
     TestReport TestCmpLT(uint n_digits);
+    TestReport TestPCmpLT(uint n_digits);
     TestReport TestFullMul(uint n_digits);
     TestReport TestPFullMul(uint n_digits);
     TestReport TestPFullMulFast(uint n_digits);

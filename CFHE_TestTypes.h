@@ -45,9 +45,13 @@ enum TestType
     TT_CMPLT_U,
     TT_PCMPLT_U,
     TT_CMPLTEQ,
+    TT_PCMPLTEQ,
     TT_CMPGT,
+    TT_PCMPGT,
     TT_CMPGTEQ,
+    TT_PCMPGTEQ,
     TT_CMPLT,
+    TT_PCMPLT,
     TT_FULLMUL,
     TT_PFULLMUL,
     TT_PFULLMUL_FAST,
@@ -147,12 +151,20 @@ inline const char *ToString(TestType v)
         return "PCMPLT_U";
     case TT_CMPLTEQ:
         return "CMPLTEQ";
+    case TT_PCMPLTEQ:
+        return "PCMPLTEQ";
     case TT_CMPGT:
         return "CMPGT";
+    case TT_PCMPGT:
+        return "PCMPGT";
     case TT_CMPGTEQ:
         return "CMPGTEQ";
+    case TT_PCMPGTEQ:
+        return "PCMPGTEQ";
     case TT_CMPLT:
         return "CMPLT";
+    case TT_PCMPLT:
+        return "PCMPLT";
     case TT_FULLMUL:
         return "FULLMUL";
     case TT_PFULLMUL:

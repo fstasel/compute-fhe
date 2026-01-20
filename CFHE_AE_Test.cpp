@@ -817,6 +817,27 @@ TestReport CFHE_Test::TestCmpLTEq(uint n_digits)
     return report;
 }
 
+TestReport CFHE_Test::TestPCmpLTEq(uint n_digits)
+{
+    TestReport report;
+    int64_t n1 = CreateRandomNumber();
+    int64_t n2 = CreateRandomNumber();
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    PFixedPoint pt_n2 = cfhe_base->uint2PFixedPoint(n2, n_digits);
+    int64_t bound = 1UL << n_digits;
+    int64_t max_val = (1UL << (n_digits - 1)) - 1;
+    n1 = (n1 > max_val) ? (n1 - bound) : n1;
+    n2 = (n2 > max_val) ? (n2 - bound) : n2;
+    uint expected = (n1 <= n2) ? 1 : 0;
+    StartTimer();
+    LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->CmpLTEq(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
 TestReport CFHE_Test::TestCmpGT(uint n_digits)
 {
     TestReport report;
@@ -831,6 +852,27 @@ TestReport CFHE_Test::TestCmpGT(uint n_digits)
     uint expected = (n1 > n2) ? 1 : 0;
     StartTimer();
     LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->CmpGT(ct_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPCmpGT(uint n_digits)
+{
+    TestReport report;
+    int64_t n1 = CreateRandomNumber();
+    int64_t n2 = CreateRandomNumber();
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    PFixedPoint pt_n2 = cfhe_base->uint2PFixedPoint(n2, n_digits);
+    int64_t bound = 1UL << n_digits;
+    int64_t max_val = (1UL << (n_digits - 1)) - 1;
+    n1 = (n1 > max_val) ? (n1 - bound) : n1;
+    n2 = (n2 > max_val) ? (n2 - bound) : n2;
+    uint expected = (n1 > n2) ? 1 : 0;
+    StartTimer();
+    LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->CmpGT(ct_n1, pt_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -859,6 +901,27 @@ TestReport CFHE_Test::TestCmpGTEq(uint n_digits)
     return report;
 }
 
+TestReport CFHE_Test::TestPCmpGTEq(uint n_digits)
+{
+    TestReport report;
+    int64_t n1 = CreateRandomNumber();
+    int64_t n2 = CreateRandomNumber();
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    PFixedPoint pt_n2 = cfhe_base->uint2PFixedPoint(n2, n_digits);
+    int64_t bound = 1UL << n_digits;
+    int64_t max_val = (1UL << (n_digits - 1)) - 1;
+    n1 = (n1 > max_val) ? (n1 - bound) : n1;
+    n2 = (n2 > max_val) ? (n2 - bound) : n2;
+    uint expected = (n1 >= n2) ? 1 : 0;
+    StartTimer();
+    LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->CmpGTEq(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
 TestReport CFHE_Test::TestCmpLT(uint n_digits)
 {
     TestReport report;
@@ -873,6 +936,27 @@ TestReport CFHE_Test::TestCmpLT(uint n_digits)
     uint expected = (n1 < n2) ? 1 : 0;
     StartTimer();
     LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->CmpLT(ct_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPCmpLT(uint n_digits)
+{
+    TestReport report;
+    int64_t n1 = CreateRandomNumber();
+    int64_t n2 = CreateRandomNumber();
+    CFixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    PFixedPoint pt_n2 = cfhe_base->uint2PFixedPoint(n2, n_digits);
+    int64_t bound = 1UL << n_digits;
+    int64_t max_val = (1UL << (n_digits - 1)) - 1;
+    n1 = (n1 > max_val) ? (n1 - bound) : n1;
+    n2 = (n2 > max_val) ? (n2 - bound) : n2;
+    uint expected = (n1 < n2) ? 1 : 0;
+    StartTimer();
+    LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->CmpLT(ct_n1, pt_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;

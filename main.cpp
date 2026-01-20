@@ -54,7 +54,7 @@ void test_cost_time_mul()
 
 void manual_test()
 {
-    CFHE_Test t(CCPARAM_TOY, AE_OPTIMIZED);
+    CFHE_Test t(CCPARAM_TOY, AE_GATELOGIC);
     t.SetNumTest(100);
     t.SetVerbosity(4);
     t.SetRegenerateKeys(false);
@@ -74,15 +74,19 @@ void manual_test()
     // t.Test(TT_CMPEQ, 4);
     // t.Test(TT_PCMPEQ, 4);
     // t.Test(TT_CMPGT, 4);
+    t.Test(TT_PCMPGT, 4);
     // t.Test(TT_CMPGT_U, 4);
     // t.Test(TT_PCMPGT_U, 4);
     // t.Test(TT_CMPGTEQ, 4);
+    t.Test(TT_PCMPGTEQ, 4);
     // t.Test(TT_CMPGTEQ_U, 4);
     // t.Test(TT_PCMPGTEQ_U, 4);
     // t.Test(TT_CMPLT, 4);
+    t.Test(TT_PCMPLT, 4);
     // t.Test(TT_CMPLT_U, 4);
-    t.Test(TT_PCMPLT_U, 4);
+    // t.Test(TT_PCMPLT_U, 4);
     // t.Test(TT_CMPLTEQ, 4);
+    t.Test(TT_PCMPLTEQ, 4);
     // t.Test(TT_CMPLTEQ_U, 4);
     // t.Test(TT_PCMPLTEQ_U, 4);
     // t.Test(TT_CMPNOTEQ, 4);

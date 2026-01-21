@@ -62,7 +62,7 @@ LWECiphertext AEOptimized::CmpLTEq_U_CtCt_FixedPoint(const CFixedPoint &a, const
 
     LWECiphertext inv_a = cc.EvalNOT(a[0]);
     LWECiphertext c = cc.EvalBinGate(OR, inv_a, b[0]);
-    for (uint8_t i = 1; i < n_digit; i++)
+    for (size_t i = 1; i < n_digit; i++)
     {
         inv_a = cc.EvalNOT(a[i]);
         c = cc.EvalBinGate(MAJORITY, {inv_a, b[i], c});
@@ -78,7 +78,7 @@ LWECiphertext AEOptimized::CmpGT_U_CtCt_FixedPoint(const CFixedPoint &a, const C
 
     LWECiphertext inv_b = cc.EvalNOT(b[0]);
     LWECiphertext c = cc.EvalBinGate(AND, a[0], inv_b);
-    for (uint8_t i = 1; i < n_digit; i++)
+    for (size_t i = 1; i < n_digit; i++)
     {
         inv_b = cc.EvalNOT(b[i]);
         c = cc.EvalBinGate(MAJORITY, {a[i], inv_b, c});
@@ -93,13 +93,13 @@ CFixedPoint AEOptimized::FullMul_CtCt_FixedPoint(const CFixedPoint &a, const CFi
     size_t n_digit = a.size();
 
     CFixedPoint out((n_digit == 1) ? 1 : (n_digit << 1));
-    for (uint8_t i = 0; i < n_digit; i++)
+    for (size_t i = 0; i < n_digit; i++)
     {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);
     }
-    for (uint8_t j = 1; j < n_digit; j++)
+    for (size_t j = 1; j < n_digit; j++)
     {
-        for (uint8_t i = 0; i < n_digit; i++)
+        for (size_t i = 0; i < n_digit; i++)
         {
             if (i == 0)
             {
@@ -131,13 +131,13 @@ CFixedPoint AEOptimized::Mul_CtCt_FixedPoint(const CFixedPoint &a, const CFixedP
     size_t n_digit = a.size();
 
     CFixedPoint out(n_digit);
-    for (uint8_t i = 0; i < n_digit; i++)
+    for (size_t i = 0; i < n_digit; i++)
     {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);
     }
-    for (uint8_t j = 1; j < n_digit; j++)
+    for (size_t j = 1; j < n_digit; j++)
     {
-        for (uint8_t i = 0; i < n_digit - j; i++)
+        for (size_t i = 0; i < n_digit - j; i++)
         {
             if (i == 0 && j < n_digit - 1)
             {
@@ -170,7 +170,7 @@ CFixedPoint AEOptimized::Add_CtPt_FixedPoint(const CFixedPoint &a, const PFixedP
     size_t n_digit = a.size();
 
     CFixedPoint out(n_digit);
-    for (uint8_t i = 0; i < n_digit; i++)
+    for (size_t i = 0; i < n_digit; i++)
     {
         if (n_digit == 1 && !carry_in && !carry_out)
         {
@@ -240,7 +240,7 @@ CFixedPoint AEOptimized::Sub_PtCt_FixedPoint(const PFixedPoint &a, const CFixedP
     size_t n_digit = a.size();
 
     CFixedPoint out(n_digit);
-    for (uint8_t i = 0; i < n_digit; i++)
+    for (size_t i = 0; i < n_digit; i++)
     {
         if (n_digit == 1 && !carry_in && !carry_out)
         {
@@ -306,6 +306,16 @@ CFixedPoint AEOptimized::Sub_PtCt_FixedPoint(const PFixedPoint &a, const CFixedP
 CFixedPoint AEOptimized::Neg_Ct_FixedPoint(const CFixedPoint &a)
 {
     return SubNC(PFixedPoint(a.size(), 0), a);
+}
+
+LWECiphertext AEOptimized::Mux_CCC(LWECiphertext s, LWECiphertext a, LWECiphertext b)
+{
+    auto &cc = cfhe_base->GetBinFHEContext();
+    auto &lwe = cc.GetLWEScheme();
+    LWECiphertext t = cc.EvalBinGate(OR, s, a);
+    lwe->EvalAddEq(t, t);
+    lwe->EvalSubEq(t, b);
+    return cc.EvalBinGate(OR, s, t);
 }
 
 uint AEOptimized::Get_CtCtAdd_Cost(size_t n_bits)

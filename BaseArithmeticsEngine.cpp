@@ -1,4 +1,5 @@
 #include "BaseArithmeticsEngine.h"
+#include <cassert>
 
 BaseArithmeticsEngine::BaseArithmeticsEngine(ComputeFHE *cfhe) : cfhe_base(cfhe)
 {
@@ -456,4 +457,22 @@ CFixedPoint BaseArithmeticsEngine::MulFast(const CFixedPoint &a, const PFixedPoi
 CFixedPoint BaseArithmeticsEngine::MulFast(const PFixedPoint &a, const CFixedPoint &b)
 {
     return MulFast_CtPt_FixedPoint(b, a);
+}
+
+LWECiphertext BaseArithmeticsEngine::Mux(LWECiphertext s, LWECiphertext a, LWECiphertext b)
+{
+    return Mux_CCC(s, a, b);
+}
+
+CFixedPoint BaseArithmeticsEngine::Mux(LWECiphertext s, const CFixedPoint a, const CFixedPoint b)
+{
+    assert(a.size() == b.size());
+    size_t n_digit = a.size();
+
+    CFixedPoint out(n_digit);
+    for (size_t i = 0; i < n_digit; i++)
+    {
+        out[i] = Mux(s, a[i], b[i]);
+    }
+    return out;
 }

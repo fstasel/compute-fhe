@@ -61,6 +61,8 @@ public:
     CFixedPoint Mul_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b);
     CFixedPoint MulFast_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b);
 
+    LWECiphertext Mux_CCC(LWECiphertext s, LWECiphertext a, LWECiphertext b);
+
     virtual uint Get_CtCtAdd_Cost(size_t n_bits);
     virtual uint Get_CtCtAddNC_Cost(size_t n_bits);
     virtual uint Get_CtCtSubC_Cost(size_t n_bits);

@@ -1084,3 +1084,22 @@ TestReport CFHE_Test::TestPMulFast(uint n_digits)
     PrintTestReport(report, n1, n2, result, expected);
     return report;
 }
+
+TestReport CFHE_Test::TestMux()
+{
+    TestReport report;
+    uint n1 = CreateRandomNumber() % 2;
+    uint n2 = CreateRandomNumber() % 2;
+    uint n3 = CreateRandomNumber() % 2;
+    LWECiphertext ct_n1 = cfhe_base->EncryptBool(n1, GetTestFresh());
+    LWECiphertext ct_n2 = cfhe_base->EncryptBool(n2, GetTestFresh());
+    LWECiphertext ct_n3 = cfhe_base->EncryptBool(n3, GetTestFresh());
+    uint expected_result = n1 ? n3 : n2;
+    StartTimer();
+    LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->Mux(ct_n1, ct_n2, ct_n3);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected_result) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected_result);
+    return report;
+}

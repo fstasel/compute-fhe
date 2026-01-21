@@ -26,6 +26,8 @@ public:
                                     const bool &carry_in, const bool &carry_out);
     CFixedPoint Neg_Ct_FixedPoint(const CFixedPoint &a);
 
+    LWECiphertext Mux_CCC(LWECiphertext s, LWECiphertext a, LWECiphertext b);
+
     uint Get_CtCtAdd_Cost(size_t n_bits);
     uint Get_CtCtAddNC_Cost(size_t n_bits);
     uint Get_CtCtSubC_Cost(size_t n_bits);

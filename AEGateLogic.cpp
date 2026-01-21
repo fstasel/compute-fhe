@@ -747,6 +747,11 @@ CFixedPoint AEGateLogic::MulFast_CtPt_FixedPoint(const CFixedPoint &a, const PFi
     return Neg(Mul(a, BaseArithmeticsEngine::Neg(b)));
 }
 
+LWECiphertext AEGateLogic::Mux_CCC(LWECiphertext s, LWECiphertext a, LWECiphertext b)
+{
+    return cfhe_base->GetBinFHEContext().EvalBinGate(CMUX, vector({a, b, s}));
+}
+
 uint AEGateLogic::Get_CtCtAdd_Cost(size_t n_bits)
 {
     return (n_bits > 0) ? 5 * n_bits - 3 : 0;

@@ -335,8 +335,13 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
         case TT_PMUL:
             report = TestPMul(n_digits);
             break;
+
         case TT_PMUL_FAST:
             report = TestPMulFast(n_digits);
+            break;
+
+        case TT_MUX:
+            report = TestMux();
             break;
 
         default:
@@ -572,6 +577,7 @@ void CFHE_Test::StartTest()
         Test(TT_PMUL, d);
         Test(TT_PMUL_FAST, d);
     }
+    Test(TT_MUX, 1);
 }
 
 void CFHE_Test::TestAll()

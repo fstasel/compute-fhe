@@ -752,6 +752,27 @@ LWECiphertext AEGateLogic::Mux_CCC(LWECiphertext s, LWECiphertext a, LWECipherte
     return cfhe_base->GetBinFHEContext().EvalBinGate(CMUX, vector({a, b, s}));
 }
 
+LWECiphertext AEGateLogic::Mux_CCP(LWECiphertext s, LWECiphertext a, LWEPlaintext b)
+{
+    if (b == 1)
+    {
+        return cfhe_base->GetBinFHEContext().EvalBinGate(OR, s, a);
+    }
+    return cfhe_base->GetBinFHEContext().EvalBinGate(AND, cfhe_base->GetBinFHEContext().EvalNOT(s), a);
+}
+
+void AEGateLogic::Mux_CPP(LWECiphertext s, LWEPlaintext a, LWEPlaintext b, LWECiphertext &out_ct, LWEPlaintext &out_pt, bool &is_out_ct)
+{
+    if (a == b)
+    {
+        out_pt = a;
+        is_out_ct = false;
+        return;
+    }
+    is_out_ct = true;
+    out_ct = b ? COPY_CT(s) : cfhe_base->GetBinFHEContext().EvalNOT(s);
+}
+
 uint AEGateLogic::Get_CtCtAdd_Cost(size_t n_bits)
 {
     return (n_bits > 0) ? 5 * n_bits - 3 : 0;

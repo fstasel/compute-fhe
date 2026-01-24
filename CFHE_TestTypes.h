@@ -59,7 +59,9 @@ enum TestType
     TT_MUL,
     TT_PMUL,
     TT_PMUL_FAST,
-    TT_MUX
+    TT_MUX,
+    TT_PMUX,
+    TT_PPMUX
 };
 
 inline const char *ToString(TestType v)
@@ -182,6 +184,10 @@ inline const char *ToString(TestType v)
         return "PMUL_FAST";
     case TT_MUX:
         return "TT_MUX";
+    case TT_PMUX:
+        return "TT_PMUX";
+    case TT_PPMUX:
+        return "TT_PPMUX";
     default:
         return "[Unknown]";
     }

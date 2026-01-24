@@ -344,6 +344,14 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
             report = TestMux();
             break;
 
+        case TT_PMUX:
+            report = TestPMux();
+            break;
+
+        case TT_PPMUX:
+            report = TestPPMux();
+            break;
+
         default:
             report = TestReport();
             cerr << "Unknown test" << endl;
@@ -578,6 +586,8 @@ void CFHE_Test::StartTest()
         Test(TT_PMUL_FAST, d);
     }
     Test(TT_MUX, 1);
+    Test(TT_PMUX, 1);
+    Test(TT_PPMUX, 1);
 }
 
 void CFHE_Test::TestAll()

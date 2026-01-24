@@ -1103,3 +1103,44 @@ TestReport CFHE_Test::TestMux()
     PrintTestReport(report, n1, n2, n3, result, expected_result);
     return report;
 }
+
+TestReport CFHE_Test::TestPMux()
+{
+    TestReport report;
+    uint n1 = CreateRandomNumber() % 2;
+    uint n2 = CreateRandomNumber() % 2;
+    uint n3 = CreateRandomNumber() % 2;
+    LWECiphertext ct_n1 = cfhe_base->EncryptBool(n1, GetTestFresh());
+    LWECiphertext ct_n2 = cfhe_base->EncryptBool(n2, GetTestFresh());
+    LWEPlaintext pt_n3 = n3;
+    uint expected_result = n1 ? n3 : n2;
+    StartTimer();
+    LWECiphertext ct_result = cfhe_base->GetArithmeticsEngine()->Mux(ct_n1, ct_n2, pt_n3);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected_result) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected_result);
+    return report;
+}
+
+TestReport CFHE_Test::TestPPMux()
+{
+    TestReport report;
+    uint n1 = CreateRandomNumber() % 2;
+    uint n2 = CreateRandomNumber() % 2;
+    uint n3 = CreateRandomNumber() % 2;
+    LWECiphertext ct_n1 = cfhe_base->EncryptBool(n1, GetTestFresh());
+    LWEPlaintext pt_n2 = n2;
+    LWEPlaintext pt_n3 = n3;
+    bool is_result_ct = false;
+    LWECiphertext ct_result;
+    LWEPlaintext pt_result;
+    uint expected_result = n1 ? n3 : n2;
+    StartTimer();
+    cfhe_base->GetArithmeticsEngine()->Mux(ct_n1, pt_n2, pt_n3, ct_result, pt_result, is_result_ct);
+    report.delta_t = ReadTimer();
+    uint result = is_result_ct ? cfhe_base->DecryptBool(ct_result) : pt_result;
+    report.test_result = (result == expected_result) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected_result);
+    return report;
+}

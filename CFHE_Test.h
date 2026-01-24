@@ -110,6 +110,8 @@ public:
     TestReport TestPMul(uint n_digits);
     TestReport TestPMulFast(uint n_digits);
     TestReport TestMux();
+    TestReport TestPMux();
+    TestReport TestPPMux();
 
     void StartNoiseTest();
     void StartTest();

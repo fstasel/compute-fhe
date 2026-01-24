@@ -464,7 +464,49 @@ LWECiphertext BaseArithmeticsEngine::Mux(LWECiphertext s, LWECiphertext a, LWECi
     return Mux_CCC(s, a, b);
 }
 
+LWECiphertext BaseArithmeticsEngine::Mux(LWECiphertext s, LWECiphertext a, LWEPlaintext b)
+{
+    return Mux_CCP(s, a, b);
+}
+
+LWECiphertext BaseArithmeticsEngine::Mux(LWECiphertext s, LWEPlaintext a, LWECiphertext b)
+{
+    return Mux_CCP(cfhe_base->GetBinFHEContext().EvalNOT(s), b, a);
+}
+
+void BaseArithmeticsEngine::Mux(LWECiphertext s, LWEPlaintext a, LWEPlaintext b,
+                                LWECiphertext &out_ct, LWEPlaintext &out_pt, bool &is_out_ct)
+{
+    return Mux_CPP(s, a, b, out_ct, out_pt, is_out_ct);
+}
+
 CFixedPoint BaseArithmeticsEngine::Mux(LWECiphertext s, const CFixedPoint a, const CFixedPoint b)
+{
+    assert(a.size() == b.size());
+    size_t n_digit = a.size();
+
+    CFixedPoint out(n_digit);
+    for (size_t i = 0; i < n_digit; i++)
+    {
+        out[i] = Mux(s, a[i], b[i]);
+    }
+    return out;
+}
+
+CFixedPoint BaseArithmeticsEngine::Mux(LWECiphertext s, const CFixedPoint a, const PFixedPoint b)
+{
+    assert(a.size() == b.size());
+    size_t n_digit = a.size();
+
+    CFixedPoint out(n_digit);
+    for (size_t i = 0; i < n_digit; i++)
+    {
+        out[i] = Mux(s, a[i], b[i]);
+    }
+    return out;
+}
+
+CFixedPoint BaseArithmeticsEngine::Mux(LWECiphertext s, const PFixedPoint a, const CFixedPoint b)
 {
     assert(a.size() == b.size());
     size_t n_digit = a.size();

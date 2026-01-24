@@ -86,6 +86,9 @@ public:
     virtual CFixedPoint MulFast_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b) = 0;
 
     virtual LWECiphertext Mux_CCC(LWECiphertext s, LWECiphertext a, LWECiphertext b) = 0;
+    virtual LWECiphertext Mux_CCP(LWECiphertext s, LWECiphertext a, LWEPlaintext b) = 0;
+    virtual void Mux_CPP(LWECiphertext s, LWEPlaintext a, LWEPlaintext b,
+                         LWECiphertext &out_ct, LWEPlaintext &out_pt, bool &is_out_ct) = 0;
 
     CFixedPoint Add(const CFixedPoint &a, const CFixedPoint &b);
     CFixedPoint AddC(const CFixedPoint &a, const CFixedPoint &b);
@@ -185,5 +188,12 @@ public:
     CFixedPoint MulFast(const PFixedPoint &a, const CFixedPoint &b);
 
     LWECiphertext Mux(LWECiphertext s, LWECiphertext a, LWECiphertext b);
+    LWECiphertext Mux(LWECiphertext s, LWECiphertext a, LWEPlaintext b);
+    LWECiphertext Mux(LWECiphertext s, LWEPlaintext a, LWECiphertext b);
+    void Mux(LWECiphertext s, LWEPlaintext a, LWEPlaintext b,
+             LWECiphertext &out_ct, LWEPlaintext &out_pt, bool &is_out_ct);
+
     CFixedPoint Mux(LWECiphertext s, const CFixedPoint a, const CFixedPoint b);
+    CFixedPoint Mux(LWECiphertext s, const CFixedPoint a, const PFixedPoint b);
+    CFixedPoint Mux(LWECiphertext s, const PFixedPoint a, const CFixedPoint b);
 };

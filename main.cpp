@@ -54,7 +54,7 @@ void test_cost_time_mul()
 
 void manual_test()
 {
-    CFHE_Test t(CCPARAM_TOY, AE_OPTIMIZED);
+    CFHE_Test t(CCPARAM_TOY, AE_GATELOGIC);
     t.SetNumTest(100);
     t.SetVerbosity(4);
     t.SetRegenerateKeys(false);
@@ -96,7 +96,9 @@ void manual_test()
     // t.Test(TT_NEG, 4);
 
     // Multiplexer
-    t.Test(TT_MUX, 1);
+    // t.Test(TT_MUX, 1);
+    t.Test(TT_PMUX, 1);
+    t.Test(TT_PPMUX, 1);
 }
 
 void calculate_expected_cost_fullmul(uint n, ArithmeticsEngineType ae_type)

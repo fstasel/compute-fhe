@@ -1,6 +1,8 @@
 #include "ComputeFHE.h"
 #include "AEGateLogic.h"
 #include "AEOptimized.h"
+#include "SimGateLogic.h"
+
 #include <iostream>
 
 void ComputeFHE::createCC()
@@ -128,6 +130,20 @@ void ComputeFHE::createAE()
     }
 }
 
+void ComputeFHE::createSim()
+{
+    switch (ae_type)
+    {
+    case AE_OPTIMIZED:
+        // sim = new SimOptimized(this);
+        break;
+
+    case AE_GATELOGIC:
+    default:
+        sim = new SimGateLogic(this);
+    }
+}
+
 ComputeFHE::ComputeFHE() : ComputeFHE(CCPARAM_STD128, AE_GATELOGIC)
 {
 }
@@ -143,6 +159,7 @@ ComputeFHE::ComputeFHE(ArithmeticsEngineType engine_type) : ComputeFHE(CCPARAM_S
 ComputeFHE::~ComputeFHE()
 {
     delete ae;
+    delete sim;
 }
 
 ComputeFHE::ComputeFHE(CryptoContextParam param, ArithmeticsEngineType engine_type)
@@ -151,6 +168,7 @@ ComputeFHE::ComputeFHE(CryptoContextParam param, ArithmeticsEngineType engine_ty
     createCC();
     generateKeys();
     createAE();
+    createSim();
 }
 
 BinFHEContext &ComputeFHE::GetBinFHEContext()
@@ -161,6 +179,11 @@ BinFHEContext &ComputeFHE::GetBinFHEContext()
 BaseArithmeticsEngine *ComputeFHE::GetArithmeticsEngine()
 {
     return ae;
+}
+
+BaseSimulator *ComputeFHE::GetSimulator()
+{
+    return sim;
 }
 
 CryptoContextParam ComputeFHE::GetCryptoContextParam()

@@ -13,6 +13,7 @@ using CFixedPoint = vector<LWECiphertext>;
 using PFixedPoint = vector<LWEPlaintext>;
 
 class BaseArithmeticsEngine;
+class BaseSimulator;
 
 class ComputeFHE
 {
@@ -22,9 +23,11 @@ private:
     BinFHEContext cc;
     LWEPrivateKey sk;
     BaseArithmeticsEngine *ae;
+    BaseSimulator *sim;
 
     void createCC();
     void createAE();
+    void createSim();
 
 public:
     ComputeFHE();
@@ -35,6 +38,7 @@ public:
 
     BinFHEContext &GetBinFHEContext();
     BaseArithmeticsEngine *GetArithmeticsEngine();
+    BaseSimulator *GetSimulator();
     CryptoContextParam GetCryptoContextParam();
     ArithmeticsEngineType GetArithmeticsEngineType();
     const LWEPrivateKey &GetLWEPrivateKey();

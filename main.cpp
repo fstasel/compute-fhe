@@ -1,5 +1,6 @@
 #include "CFHE_Test.h"
 #include "AEGateLogic.h"
+#include "SimGateLogic.h"
 #include <iostream>
 using namespace std;
 
@@ -190,13 +191,90 @@ void calculate_expected_cost_booths(uint n, ArithmeticsEngineType ae_type)
     cout << "Average BoothsMul CtPt cost for " << n << "-bits : " << avg_boothsmul << endl;
 }
 
+void test_simulator_fullmul_ctpt(uint n, ArithmeticsEngineType ae_type)
+{
+    CFHE_Test t(CCPARAM_TOY, ae_type);
+    ComputeFHE *cfhe = t.GetBase();
+    AEGateLogic *ae = (AEGateLogic *)(cfhe->GetArithmeticsEngine());
+    SimGateLogic *sim = (SimGateLogic *)(cfhe->GetSimulator());
+    for (uint64_t k = 0; k < ((uint64_t)1U << (uint64_t)n); k++)
+    {
+        PFixedPoint pt = cfhe->uint2PFixedPoint(k, n);
+        size_t ct_n_bits = n;
+        size_t out_n_bits = 0;
+        uint cost1 = ae->Get_PtFullMul_Cost(pt, ct_n_bits, out_n_bits);
+        uint cost2 = ae->Get_Pt2sCompFullMul_Cost(pt, ct_n_bits);
+        uint bs_fullmul = cost1;
+        uint bs_fullmul_fast = (cost1 <= cost2) ? cost1 : cost2;
+
+        cout << "k: " << k << endl;
+        cout << "FullMul CtPt cost: " << bs_fullmul << endl;
+        sim->ResetStats();
+        sim->FullMul_CtPt_FixedPoint(n, pt);
+        sim->PrintStats();
+        cout << "FullMulFast CtPt cost: " << bs_fullmul_fast << endl;
+        sim->ResetStats();
+        sim->FullMulFast_CtPt_FixedPoint(n, pt);
+        sim->PrintStats();
+        cout << "----------------------------------------" << endl;
+    }
+}
+
+void test_simulator_mul_ctpt(uint n, ArithmeticsEngineType ae_type)
+{
+    CFHE_Test t(CCPARAM_TOY, ae_type);
+    ComputeFHE *cfhe = t.GetBase();
+    AEGateLogic *ae = (AEGateLogic *)(cfhe->GetArithmeticsEngine());
+    SimGateLogic *sim = (SimGateLogic *)(cfhe->GetSimulator());
+    for (uint64_t k = 0; k < ((uint64_t)1U << (uint64_t)n); k++)
+    {
+        PFixedPoint pt = cfhe->uint2PFixedPoint(k, n);
+        uint cost1 = ae->Get_PtMul_Cost(pt);
+        uint cost2 = ae->Get_Pt2sCompMul_Cost(pt);
+        uint bs_mul = cost1;
+        uint bs_mul_fast = (cost1 <= cost2) ? cost1 : cost2;
+
+        cout << "k: " << k << endl;
+        cout << "Mul CtPt cost: " << bs_mul << endl;
+        sim->ResetStats();
+        sim->Mul_CtPt_FixedPoint(pt);
+        sim->PrintStats();
+        cout << "MulFast CtPt cost: " << bs_mul_fast << endl;
+        sim->ResetStats();
+        sim->MulFast_CtPt_FixedPoint(pt);
+        sim->PrintStats();
+        cout << "----------------------------------------" << endl;
+    }
+}
+
+void test_simulator_booths(uint n, ArithmeticsEngineType ae_type)
+{
+    CFHE_Test t(CCPARAM_TOY, ae_type);
+    ComputeFHE *cfhe = t.GetBase();
+    AEGateLogic *ae = (AEGateLogic *)(cfhe->GetArithmeticsEngine());
+    SimGateLogic *sim = (SimGateLogic *)(cfhe->GetSimulator());
+    for (uint64_t k = 0; k < ((uint64_t)1U << (uint64_t)n); k++)
+    {
+        PFixedPoint pt = cfhe->uint2PFixedPoint(k, n);
+        size_t ct_n_bits = n;
+        uint bs_boothsmul = ae->Get_BoothsMul_Cost(pt, ct_n_bits);
+
+        cout << "k: " << k << endl;
+        cout << "BoothsMul cost: " << bs_boothsmul << endl;
+        sim->ResetStats();
+        sim->BoothsMul_CtPt_FixedPoint(ct_n_bits, pt);
+        sim->PrintStats();
+        cout << "----------------------------------------" << endl;
+    }
+}
+
 int main()
 {
     // CFHE_Test::TestAll();
     // CFHE_Test::TestAllNoise();
 
     // test_cost_time_mul();
-    manual_test();
+    // manual_test();
     // calculate_expected_cost_fullmul(4, AE_GATELOGIC);
     // calculate_expected_cost_booths(4, AE_GATELOGIC);
     // calculate_expected_cost_dmul(4, AE_GATELOGIC);
@@ -215,5 +293,10 @@ int main()
     // calculate_expected_cost_fullmul(16, AE_OPTIMIZED);
     // calculate_expected_cost_booths(16, AE_OPTIMIZED);
     // calculate_expected_cost_dmul(16, AE_OPTIMIZED);
+
+    test_simulator_fullmul_ctpt(4, AE_GATELOGIC);
+    // test_simulator_mul_ctpt(4, AE_GATELOGIC);
+    // test_simulator_booths(4, AE_GATELOGIC);
+
     return EXIT_SUCCESS;
 }

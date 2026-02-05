@@ -333,6 +333,7 @@ void BaseSimulator::CmpLT(const PFixedPoint &a)
 
 size_t BaseSimulator::ToggleMSB(const size_t n_bits)
 {
+    num_not++;
     return n_bits;
 }
 
@@ -445,7 +446,7 @@ size_t BaseSimulator::Mux(const PFixedPoint b)
 {
     for (size_t i = 0; i < b.size(); i++)
     {
-        Mux(b);
+        Mux(b[i]);
     }
     return b.size();
 }
@@ -454,7 +455,7 @@ size_t BaseSimulator::Mux(int s, const PFixedPoint a)
 {
     for (size_t i = 0; i < a.size(); i++)
     {
-        Mux(s, a);
+        Mux(s, a[i]);
     }
     return a.size();
 }

@@ -1,8 +1,9 @@
 #pragma once
 
-#include "BaseSimulator.h"
+#include "BaseAESimulator.h"
+#include "AEGateLogic.h"
 
-class SimGateLogic : public BaseSimulator
+class SimGateLogic : public BaseAESimulator
 {
 public:
     SimGateLogic(ComputeFHE *cfhe);

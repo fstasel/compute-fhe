@@ -1,7 +1,6 @@
 #include "SimGateLogic.h"
-#include "AEGateLogic.h"
 
-SimGateLogic::SimGateLogic(ComputeFHE *cfhe) : BaseSimulator(cfhe)
+SimGateLogic::SimGateLogic(ComputeFHE *cfhe) : BaseAESimulator(cfhe)
 {
 }
 
@@ -166,7 +165,7 @@ size_t SimGateLogic::Add_CtPt_FixedPoint(const PFixedPoint &b, const bool &carry
     {
         if (n_digit == 1 && !carry_in && !carry_out)
         {
-            PXOR(b[0]);
+            PXOR(dummy_ct, b[0]);
         }
         else if (i == 0 && !carry_in)
         {
@@ -208,7 +207,7 @@ size_t SimGateLogic::Sub_PtCt_FixedPoint(const PFixedPoint &a, const bool &carry
     {
         if (n_digit == 1 && !carry_in && !carry_out)
         {
-            PXOR(a[0]);
+            PXOR(dummy_ct, a[0]);
         }
         else if (i == 0 && !carry_in)
         {
@@ -315,10 +314,10 @@ void SimGateLogic::CmpGT_U_CtCt_FixedPoint(const size_t n_bits)
 
 void SimGateLogic::CmpNotEq_CtPt_FixedPoint(const PFixedPoint &b)
 {
-    PXOR(b[0]);
+    PXOR(dummy_ct, b[0]);
     for (size_t i = 1; i < b.size(); i++)
     {
-        PXOR(b[i]);
+        PXOR(dummy_ct, b[i]);
         num_andor++;
         num_bs++;
     }
@@ -327,10 +326,10 @@ void SimGateLogic::CmpNotEq_CtPt_FixedPoint(const PFixedPoint &b)
 void SimGateLogic::CmpEq_CtPt_FixedPoint(const PFixedPoint &b)
 {
 
-    PXNOR(b[0]);
+    PXNOR(dummy_ct, b[0]);
     for (size_t i = 1; i < b.size(); i++)
     {
-        PXNOR(b[i]);
+        PXNOR(dummy_ct, b[i]);
         num_andor++;
         num_bs++;
     }
@@ -457,13 +456,13 @@ size_t SimGateLogic::FullMul_CtPt_FixedPoint(const size_t n_bits, const PFixedPo
         else
         {
             size_t s = acc_bits;
-            acc_bits = Add(s);
+            acc_bits = SimAdd(s);
             SetIsLastCarryCT(true);
             out_bits++;
             acc_bits--;
             if (n_bits > s)
             {
-                size_t sum_bits = AddC(PFixedPoint(n_bits - s, 0));
+                size_t sum_bits = SimAddC(PFixedPoint(n_bits - s, 0));
                 acc_bits += sum_bits;
             }
             acc_bits++;
@@ -487,28 +486,28 @@ size_t SimGateLogic::FullMulFast_CtPt_FixedPoint(const size_t n_bits, const PFix
     size_t out_n_bits = 0;
     if (ae->Get_PtFullMul_Cost(b, n_bits, out_n_bits) <= ae->Get_Pt2sCompFullMul_Cost(b, n_bits))
     {
-        return FullMul(n_bits, b);
+        return FullMul_CtPt_FixedPoint(n_bits, b);
     }
-    PFixedPoint b_neg = Neg(b);
-    size_t res_neg_bits = FullMul(n_bits, b_neg);
+    PFixedPoint b_neg = BaseArithmeticsEngine::Neg(b);
+    size_t res_neg_bits = SimFullMul(n_bits, b_neg);
     size_t out_lo_bits = 0, out_mid_bits = 0, out_hi_bits = 0;
     if (res_neg_bits <= b.size())
     {
-        out_lo_bits = Sub(PFixedPoint(res_neg_bits, 0));
+        out_lo_bits = SimSub(PFixedPoint(res_neg_bits, 0));
         for (size_t i = 0; i < b.size() - res_neg_bits; i++)
         {
             num_not++;
             out_mid_bits++;
         }
-        out_hi_bits = SubCNC(0, PFixedPoint(n_bits, 0));
+        out_hi_bits = SimSubCNC(0, PFixedPoint(n_bits, 0));
     }
     else
     {
-        out_lo_bits = Sub(PFixedPoint(b.size(), 0));
-        out_mid_bits = SubC(res_neg_bits - b.size());
+        out_lo_bits = SimSub(PFixedPoint(b.size(), 0));
+        out_mid_bits = SimSubC(res_neg_bits - b.size());
         if (n_bits > res_neg_bits - b.size())
         {
-            out_hi_bits = SubCNC(PFixedPoint(n_bits - (res_neg_bits - b.size()), 0));
+            out_hi_bits = SimSubCNC(PFixedPoint(n_bits - (res_neg_bits - b.size()), 0));
         }
     }
     size_t out_bits = out_lo_bits + out_mid_bits + out_hi_bits;
@@ -529,10 +528,10 @@ size_t SimGateLogic::BoothsMul_CtPt_FixedPoint(const size_t n_bits, const PFixed
         switch (k)
         {
         case 1:
-            acc_bits = AddNC(acc_bits);
+            acc_bits = SimAddNC(acc_bits);
             break;
         case 2:
-            acc_bits = SubNC(acc_bits);
+            acc_bits = SimSubNC(acc_bits);
             break;
         default:
             break;
@@ -598,7 +597,7 @@ size_t SimGateLogic::Mul_CtPt_FixedPoint(const PFixedPoint &b)
         }
         else if (b[i] == 1 && acc)
         {
-            AddNC(n_digit - i);
+            SimAddNC(n_digit - i);
         }
     }
     return out_bits;
@@ -613,9 +612,9 @@ size_t SimGateLogic::MulFast_CtPt_FixedPoint(const PFixedPoint &b)
     AEGateLogic *ae = (AEGateLogic *)cfhe_base->GetArithmeticsEngine();
     if (ae->Get_PtMul_Cost(b) <= ae->Get_Pt2sCompMul_Cost(b))
     {
-        return Mul(b);
+        return SimMul(b);
     }
-    return Neg(Mul(Neg(b)));
+    return SimNeg(SimMul(BaseArithmeticsEngine::Neg(b)));
 }
 
 void SimGateLogic::Mux_CCC()

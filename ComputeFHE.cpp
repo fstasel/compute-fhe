@@ -181,7 +181,7 @@ BaseArithmeticsEngine *ComputeFHE::GetArithmeticsEngine()
     return ae;
 }
 
-BaseSimulator *ComputeFHE::GetSimulator()
+BaseAESimulator *ComputeFHE::GetSimulator()
 {
     return sim;
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "BaseAESimulator.h"
-#include "AEGateLogic.h"
 
 class SimGateLogic : public BaseAESimulator
 {

@@ -19,6 +19,7 @@ protected:
   uint num_ma = 0;
   uint num_mac = 0;
   uint num_ds = 0;
+  uint num_mux = 0;
 
 public:
   static LWECiphertext dummy_ct;

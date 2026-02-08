@@ -1,4 +1,5 @@
 #include "SimGateLogic.h"
+#include "AEGateLogic.h"
 
 SimGateLogic::SimGateLogic(ComputeFHE *cfhe) : BaseAESimulator(cfhe)
 {

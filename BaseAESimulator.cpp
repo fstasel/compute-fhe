@@ -34,6 +34,7 @@ void BaseAESimulator::PrintStats()
     cout << "Number of MA: " << num_ma << endl;
     cout << "Number of MAC: " << num_mac << endl;
     cout << "Number of DS: " << num_ds << endl;
+    cout << "Number of MUX: " << num_mux << endl;
 }
 
 void BaseAESimulator::ResetStats()
@@ -47,6 +48,7 @@ void BaseAESimulator::ResetStats()
     num_ma = 0;
     num_mac = 0;
     num_ds = 0;
+    num_mux = 0;
 }
 
 void BaseAESimulator::HalfAdder(ConstLWECiphertext &a, ConstLWECiphertext &b, LWECiphertext &sum, LWECiphertext &carry_out)

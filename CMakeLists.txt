@@ -65,4 +65,5 @@ add_executable( computefhe  main.cpp
                             CFHE_Test.cpp
                             CFHE_AE_Test.cpp
                             BaseAESimulator.cpp
-                            SimGateLogic.cpp )
+                            SimGateLogic.cpp
+                            SimOptimized.cpp )

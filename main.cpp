@@ -55,21 +55,21 @@ void test_cost_time_mul()
 
 void manual_test()
 {
-    CFHE_Test t(CCPARAM_TOY, AE_GATELOGIC);
+    CFHE_Test t(CCPARAM_TOY, AE_OPTIMIZED);
     t.SetNumTest(100);
     t.SetVerbosity(4);
     t.SetRegenerateKeys(false);
 
     // Mul variants
-    // t.Test(TT_MUL, 4);
-    // t.Test(TT_PMUL, 4);
-    // t.Test(TT_PMUL_FAST, 4);
+    t.Test(TT_MUL, 8);
+    t.Test(TT_PMUL, 8);
+    t.Test(TT_PMUL_FAST, 8);
 
     // Fullmul variants
-    // t.Test(TT_FULLMUL, 4);
-    // t.Test(TT_PFULLMUL, 4);
-    // t.Test(TT_PFULLMUL_FAST, 4);
-    // t.Test(TT_BOOTHSMUL, 4);
+    t.Test(TT_FULLMUL, 8);
+    t.Test(TT_PFULLMUL, 8);
+    t.Test(TT_PFULLMUL_FAST, 8);
+    t.Test(TT_BOOTHSMUL, 8);
 
     // Compares
     // t.Test(TT_CMPEQ, 4);
@@ -98,8 +98,18 @@ void manual_test()
 
     // Multiplexer
     // t.Test(TT_MUX, 1);
-    t.Test(TT_PMUX, 1);
-    t.Test(TT_PPMUX, 1);
+    // t.Test(TT_PMUX, 1);
+    // t.Test(TT_PPMUX, 1);
+
+    // Adder
+    // t.Test(TT_PADD, 4);
+    // t.Test(TT_PADD_NC, 4);
+    // t.Test(TT_PADDC, 4);
+    // t.Test(TT_PADDC_NC, 4);
+    // t.Test(TT_PSUB, 4);
+    // t.Test(TT_PSUB_NC, 4);
+    // t.Test(TT_PSUBC, 4);
+    // t.Test(TT_PSUBC_NC, 4);
 }
 
 void calculate_expected_cost_fullmul(uint n, ArithmeticsEngineType ae_type)
@@ -496,6 +506,31 @@ void test_simulator(uint n, ArithmeticsEngineType ae_type)
     sim->PrintStats();
     cout << "----------------------------------------" << endl;
     sim->ResetStats();
+    sim->FullMul(ct, ct);
+    cout << "FullMul cost for " << n << "-bits : " << endl;
+    sim->PrintStats();
+    cout << "----------------------------------------" << endl;
+    sim->ResetStats();
+    sim->Mul(ct, ct);
+    cout << "Mul cost for " << n << "-bits : " << endl;
+    sim->PrintStats();
+    cout << "----------------------------------------" << endl;
+    sim->ResetStats();
+    sim->FullMul(ct, pt);
+    cout << "FullMul Pt cost for " << n << "-bits : " << endl;
+    sim->PrintStats();
+    cout << "----------------------------------------" << endl;
+    sim->ResetStats();
+    sim->Mul(ct, pt);
+    cout << "Mul pt cost for " << n << "-bits : " << endl;
+    sim->PrintStats();
+    cout << "----------------------------------------" << endl;
+    sim->ResetStats();
+    sim->BoothsMul(ct, pt);
+    cout << "BoothsMul Pt cost for " << n << "-bits : " << endl;
+    sim->PrintStats();
+    cout << "----------------------------------------" << endl;
+    sim->ResetStats();
     sim->Mux(BaseAESimulator::dummy_ct, BaseAESimulator::dummy_ct, BaseAESimulator::dummy_ct);
     cout << "Mux cost : " << endl;
     sim->PrintStats();
@@ -560,10 +595,14 @@ int main()
     // calculate_expected_cost_booths(16, AE_OPTIMIZED);
     // calculate_expected_cost_dmul(16, AE_OPTIMIZED);
 
-    test_simulator_fullmul_ctpt(4, AE_GATELOGIC);
-    test_simulator_mul_ctpt(4, AE_GATELOGIC);
-    test_simulator_booths(4, AE_GATELOGIC);
-    test_simulator(4, AE_GATELOGIC);
+    // test_simulator_fullmul_ctpt(4, AE_GATELOGIC);
+    test_simulator_fullmul_ctpt(4, AE_OPTIMIZED);
+    // test_simulator_mul_ctpt(4, AE_GATELOGIC);
+    // test_simulator_mul_ctpt(4, AE_OPTIMIZED);
+    // test_simulator_booths(4, AE_GATELOGIC);
+    // test_simulator_booths(4, AE_OPTIMIZED);
+    // test_simulator(4, AE_GATELOGIC);
+    // test_simulator(4, AE_OPTIMIZED);
 
     return EXIT_SUCCESS;
 }

@@ -363,6 +363,11 @@ LWECiphertext BaseArithmeticsEngine::PXOR(const LWEPlaintext &a, ConstLWECiphert
     return PXOR(b, a);
 }
 
+LWEPlaintext BaseArithmeticsEngine::PXOR(const LWEPlaintext &a, LWEPlaintext &b)
+{
+    return (a == b) ? 0 : 1;
+}
+
 LWECiphertext BaseArithmeticsEngine::PXNOR(ConstLWECiphertext &a, const LWEPlaintext &b)
 {
     return PXOR(a, 1 - b);
@@ -371,6 +376,11 @@ LWECiphertext BaseArithmeticsEngine::PXNOR(ConstLWECiphertext &a, const LWEPlain
 LWECiphertext BaseArithmeticsEngine::PXNOR(const LWEPlaintext &a, ConstLWECiphertext &b)
 {
     return PXNOR(b, a);
+}
+
+LWEPlaintext BaseArithmeticsEngine::PXNOR(const LWEPlaintext &a, LWEPlaintext &b)
+{
+    return (a == b) ? 1 : 0;
 }
 
 CFixedPoint BaseArithmeticsEngine::Neg(const CFixedPoint &a)

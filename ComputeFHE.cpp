@@ -2,6 +2,7 @@
 #include "AEGateLogic.h"
 #include "AEOptimized.h"
 #include "SimGateLogic.h"
+#include "SimOptimized.h"
 
 #include <iostream>
 
@@ -135,7 +136,7 @@ void ComputeFHE::createSim()
     switch (ae_type)
     {
     case AE_OPTIMIZED:
-        // sim = new SimOptimized(this);
+        sim = new SimOptimized(this);
         break;
 
     case AE_GATELOGIC:

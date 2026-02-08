@@ -165,9 +165,11 @@ public:
 
     virtual LWECiphertext PXOR(ConstLWECiphertext &a, const LWEPlaintext &b);
     virtual LWECiphertext PXOR(const LWEPlaintext &a, ConstLWECiphertext &b);
+    virtual LWEPlaintext PXOR(const LWEPlaintext &a, LWEPlaintext &b);
 
     virtual LWECiphertext PXNOR(ConstLWECiphertext &a, const LWEPlaintext &b);
     virtual LWECiphertext PXNOR(const LWEPlaintext &a, ConstLWECiphertext &b);
+    virtual LWEPlaintext PXNOR(const LWEPlaintext &a, LWEPlaintext &b);
 
     virtual CFixedPoint Neg(const CFixedPoint &a);
     virtual PFixedPoint Neg(const PFixedPoint &a);

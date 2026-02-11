@@ -25,6 +25,26 @@ protected:
   vector<double> bs_time;
   vector<double> bs_stdev;
 
+  void init_error();
+
+  long double get_error_andor();
+  long double get_error_xorxnor();
+  long double get_error_xor3();
+  long double get_error_maj();
+  long double get_error_ma();
+  long double get_error_mac();
+  long double get_error_ds();
+  long double get_error_mux();
+
+  long double error_andor;
+  long double error_xorxnor;
+  long double error_xor3;
+  long double error_maj;
+  long double error_ma;
+  long double error_mac;
+  long double error_ds;
+  long double error_mux;
+
 public:
   static LWECiphertext dummy_ct;
   static CFixedPoint dummy_cfixedpoint;
@@ -36,6 +56,7 @@ public:
 
   void PrintStats();
   void ResetStats();
+  int GetLog2Error();
 
   // Abstracts
   virtual void HalfAdder() = 0;

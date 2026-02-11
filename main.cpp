@@ -571,14 +571,20 @@ void test_simulator(uint n, ArithmeticsEngineType ae_type)
 
 void test_simulator_manual()
 {
-    ComputeFHE c1(CCPARAM_STD128, AE_GATELOGIC);
-    ComputeFHE c2(CCPARAM_STD128_3, AE_OPTIMIZED);
-    PFixedPoint p = c1.uint2PFixedPoint(78);
+    ComputeFHE c1(CCPARAM_STD256, AE_GATELOGIC);
+    ComputeFHE c2(CCPARAM_STD256_3, AE_OPTIMIZED);
+    // PFixedPoint p = c1.uint2PFixedPoint(78);
     BaseAESimulator *s1 = c1.GetSimulator();
-    s1->FullMul(p, CFixedPoint(8));
+    // s1->FullMul(p, CFixedPoint(8));
+    // s1->Mul(CFixedPoint(32), CFixedPoint(32));
+    // s1->MulAdd(true);
+    s1->SimMul(1);
     s1->PrintStats();
     BaseAESimulator *s2 = c2.GetSimulator();
-    s2->FullMul(p, CFixedPoint(8));
+    // s2->FullMul(p, CFixedPoint(8));
+    // s2->Mul(CFixedPoint(32), CFixedPoint(32));
+    // s2->MulAdd(true);
+    s2->SimMul(1);
     s2->PrintStats();
 }
 

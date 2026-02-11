@@ -1,6 +1,7 @@
 #include "BaseAESimulator.h"
 
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 LWECiphertext BaseAESimulator::dummy_ct;
@@ -10,6 +11,7 @@ BaseAESimulator::BaseAESimulator(ComputeFHE *cfhe) : BaseArithmeticsEngine(cfhe)
 {
     ResetStats();
     SimConstants::initSimConstants(bs_time, bs_stdev);
+    init_error();
 }
 
 void BaseAESimulator::SetCarry()
@@ -37,6 +39,7 @@ void BaseAESimulator::PrintStats()
     cout << "Number of DS: " << num_ds << endl;
     cout << "Number of MUX: " << num_mux << endl;
     cout << "Estimated Time: " << num_bs * bs_time[cfhe_base->GetCryptoContextParam()] << endl;
+    cout << "Log2 Error: " << GetLog2Error() << endl;
 }
 
 void BaseAESimulator::ResetStats()
@@ -51,6 +54,45 @@ void BaseAESimulator::ResetStats()
     num_mac = 0;
     num_ds = 0;
     num_mux = 0;
+}
+
+int BaseAESimulator::GetLog2Error()
+{
+    long double e = 0;
+    uint i;
+    for (i = 0; i < num_andor; i++)
+    {
+        e += error_andor - error_andor * e;
+    }
+    for (i = 0; i < num_xorxnor; i++)
+    {
+        e += error_xorxnor - error_xorxnor * e;
+    }
+    for (i = 0; i < num_xor3; i++)
+    {
+        e += error_xor3 - error_xor3 * e;
+    }
+    for (i = 0; i < num_maj; i++)
+    {
+        e += error_maj - error_maj * e;
+    }
+    for (i = 0; i < num_ma; i++)
+    {
+        e += error_ma - error_ma * e;
+    }
+    for (i = 0; i < num_mac; i++)
+    {
+        e += error_mac - error_mac * e;
+    }
+    for (i = 0; i < num_ds; i++)
+    {
+        e += error_ds - error_ds * e;
+    }
+    for (i = 0; i < num_mux; i++)
+    {
+        e += error_mux - error_mux * e;
+    }
+    return (int)round(log2l(e));
 }
 
 void BaseAESimulator::HalfAdder(ConstLWECiphertext &a, ConstLWECiphertext &b, LWECiphertext &sum, LWECiphertext &carry_out)
@@ -627,4 +669,67 @@ LWECiphertext BaseAESimulator::Mux(LWECiphertext s, LWEPlaintext a, LWECiphertex
 {
     num_not++;
     return BaseArithmeticsEngine::Mux(s, b, a);
+}
+
+void BaseAESimulator::init_error()
+{
+    error_andor = get_error_andor();
+    error_xorxnor = get_error_xorxnor();
+    error_xor3 = get_error_xor3();
+    error_maj = get_error_maj();
+    error_ma = get_error_ma();
+    error_mac = get_error_mac();
+    error_ds = get_error_ds();
+    error_mux = get_error_mux();
+}
+
+long double BaseAESimulator::get_error_andor()
+{
+    double s = bs_stdev[cfhe_base->GetCryptoContextParam()];
+    return erfc((1. / 8.) / (2. * s));
+}
+
+long double BaseAESimulator::get_error_xorxnor()
+{
+    double s = bs_stdev[cfhe_base->GetCryptoContextParam()];
+    return erfc((1. / 4.) / (4. * s));
+}
+
+long double BaseAESimulator::get_error_xor3()
+{
+    double s = bs_stdev[cfhe_base->GetCryptoContextParam()];
+    return erfc((1. / 4.) / (2. * sqrtl(6.) * s));
+}
+
+long double BaseAESimulator::get_error_maj()
+{
+    double s = bs_stdev[cfhe_base->GetCryptoContextParam()];
+    return erfc((1. / 8.) / (sqrtl(6.) * s));
+}
+
+long double BaseAESimulator::get_error_ma()
+{
+    double s = bs_stdev[cfhe_base->GetCryptoContextParam()];
+    return erfc((1. / 8.) / (2. * sqrtl(3.) * s));
+}
+
+long double BaseAESimulator::get_error_mac()
+{
+    long double e1 = get_error_ma();
+    long double e2 = get_error_andor();
+    return e1 + e2 - e1 * e2;
+}
+
+long double BaseAESimulator::get_error_ds()
+{
+    double s = bs_stdev[cfhe_base->GetCryptoContextParam()];
+    return erfc((1. / 8.) / (2. * sqrtl(3.) * s));
+}
+
+long double BaseAESimulator::get_error_mux()
+{
+    double s = bs_stdev[cfhe_base->GetCryptoContextParam()];
+    long double e1 = erfc((1. / 8.) / (2. * sqrtl(3.) * s));
+    long double e2 = get_error_andor();
+    return e1 + e2 - e1 * e2;
 }

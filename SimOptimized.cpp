@@ -21,7 +21,6 @@ void SimOptimized::MulAdd(bool carry_out)
 {
     if (carry_out)
     {
-        num_ma++;
         num_mac++;
         num_bs += 2;
     }

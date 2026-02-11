@@ -2,6 +2,7 @@
 
 #include "ComputeFHE.h"
 #include "BaseArithmeticsEngine.h"
+#include "SimConstants.h"
 
 using namespace lbcrypto;
 
@@ -20,6 +21,9 @@ protected:
   uint num_mac = 0;
   uint num_ds = 0;
   uint num_mux = 0;
+
+  vector<double> bs_time;
+  vector<double> bs_stdev;
 
 public:
   static LWECiphertext dummy_ct;

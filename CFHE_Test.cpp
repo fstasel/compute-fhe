@@ -635,7 +635,7 @@ void CFHE_Test::TestAll()
 
 void CFHE_Test::TestAllNoise()
 {
-    const int NUM_TEST = 10;
+    const int NUM_TEST = 10000;
     const int VERBOSITY = 2;
     CFHE_Test *c;
     c = new CFHE_Test(CCPARAM_STD128, AE_GATELOGIC);

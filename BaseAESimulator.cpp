@@ -9,6 +9,7 @@ CFixedPoint BaseAESimulator::dummy_cfixedpoint;
 BaseAESimulator::BaseAESimulator(ComputeFHE *cfhe) : BaseArithmeticsEngine(cfhe)
 {
     ResetStats();
+    SimConstants::initSimConstants(bs_time, bs_stdev);
 }
 
 void BaseAESimulator::SetCarry()
@@ -35,6 +36,7 @@ void BaseAESimulator::PrintStats()
     cout << "Number of MAC: " << num_mac << endl;
     cout << "Number of DS: " << num_ds << endl;
     cout << "Number of MUX: " << num_mux << endl;
+    cout << "Estimated Time: " << num_bs * bs_time[cfhe_base->GetCryptoContextParam()] << endl;
 }
 
 void BaseAESimulator::ResetStats()

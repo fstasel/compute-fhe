@@ -569,6 +569,19 @@ void test_simulator(uint n, ArithmeticsEngineType ae_type)
     cout << "----------------------------------------" << endl;
 }
 
+void test_simulator_manual()
+{
+    ComputeFHE c1(CCPARAM_STD128, AE_GATELOGIC);
+    ComputeFHE c2(CCPARAM_STD128_3, AE_OPTIMIZED);
+    PFixedPoint p = c1.uint2PFixedPoint(78);
+    BaseAESimulator *s1 = c1.GetSimulator();
+    s1->FullMul(p, CFixedPoint(8));
+    s1->PrintStats();
+    BaseAESimulator *s2 = c2.GetSimulator();
+    s2->FullMul(p, CFixedPoint(8));
+    s2->PrintStats();
+}
+
 int main()
 {
     // CFHE_Test::TestAll();
@@ -596,13 +609,14 @@ int main()
     // calculate_expected_cost_dmul(16, AE_OPTIMIZED);
 
     // test_simulator_fullmul_ctpt(4, AE_GATELOGIC);
-    test_simulator_fullmul_ctpt(4, AE_OPTIMIZED);
+    // test_simulator_fullmul_ctpt(4, AE_OPTIMIZED);
     // test_simulator_mul_ctpt(4, AE_GATELOGIC);
     // test_simulator_mul_ctpt(4, AE_OPTIMIZED);
     // test_simulator_booths(4, AE_GATELOGIC);
     // test_simulator_booths(4, AE_OPTIMIZED);
     // test_simulator(4, AE_GATELOGIC);
     // test_simulator(4, AE_OPTIMIZED);
+    test_simulator_manual();
 
     return EXIT_SUCCESS;
 }

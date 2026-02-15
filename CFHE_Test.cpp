@@ -538,7 +538,7 @@ void CFHE_Test::StartTest()
     Test(TT_FA_CCP, 1);
     Test(TT_XOR3, 1);
     Test(TT_MULADD, 1);
-    for (uint d = 2; d <= 4U; d <<= 1)
+    for (uint d = 2; d <= 32U; d <<= 1)
     {
         Test(TT_ADD, d);
         Test(TT_PADD, d);

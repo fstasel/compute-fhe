@@ -28,18 +28,18 @@ void BaseAESimulator::ResetCarry()
 
 void BaseAESimulator::PrintStats()
 {
-    cout << "Number of BS: " << num_bs << endl;
-    cout << "Number of NOT: " << num_not << endl;
-    cout << "Number of AND/OR: " << num_andor << endl;
-    cout << "Number of XOR/XNOR: " << num_xorxnor << endl;
-    cout << "Number of XOR3: " << num_xor3 << endl;
-    cout << "Number of MAJ: " << num_maj << endl;
-    cout << "Number of MA: " << num_ma << endl;
-    cout << "Number of MAC: " << num_mac << endl;
-    cout << "Number of DS: " << num_ds << endl;
-    cout << "Number of MUX: " << num_mux << endl;
-    cout << "Estimated Time: " << num_bs * bs_time[cfhe_base->GetCryptoContextParam()] << endl;
-    cout << "Log2 Error: " << GetLog2Error() << endl;
+    cout << "BS: " << num_bs << " ";
+    cout << "NOT: " << num_not << " ";
+    cout << "AND/OR: " << num_andor << " ";
+    cout << "XOR/XNOR: " << num_xorxnor << " ";
+    cout << "XOR3: " << num_xor3 << " ";
+    cout << "MAJ: " << num_maj << " ";
+    cout << "MA: " << num_ma << " ";
+    cout << "MAC: " << num_mac << " ";
+    cout << "DS: " << num_ds << " ";
+    cout << "MUX: " << num_mux << " ";
+    cout << "EstimatedTime: " << GetEstimatedTime() << " ";
+    cout << "Log2Error: " << GetLog2Error() << endl;
 }
 
 void BaseAESimulator::ResetStats()
@@ -93,6 +93,16 @@ int BaseAESimulator::GetLog2Error()
         e += error_mux - error_mux * e;
     }
     return (int)round(log2l(e));
+}
+
+uint BaseAESimulator::GetEstimatedTime()
+{
+    return num_bs * bs_time[cfhe_base->GetCryptoContextParam()];
+}
+
+uint BaseAESimulator::GetNumBS()
+{
+    return num_bs;
 }
 
 void BaseAESimulator::HalfAdder(ConstLWECiphertext &a, ConstLWECiphertext &b, LWECiphertext &sum, LWECiphertext &carry_out)
@@ -283,6 +293,24 @@ LWECiphertext BaseAESimulator::Mux_CCP(LWECiphertext s, LWECiphertext a, LWEPlai
 void BaseAESimulator::Mux_CPP(LWECiphertext s, LWEPlaintext a, LWEPlaintext b, LWECiphertext &out_ct, LWEPlaintext &out_pt, bool &is_out_ct)
 {
     Mux_CPP(a, b, out_pt, is_out_ct);
+}
+
+void BaseAESimulator::ANDOR()
+{
+    num_andor++;
+    num_bs++;
+}
+
+void BaseAESimulator::XORXNOR()
+{
+    num_xorxnor++;
+    num_bs++;
+}
+
+void BaseAESimulator::MAJ()
+{
+    num_maj++;
+    num_bs++;
 }
 
 size_t BaseAESimulator::SimAdd(const size_t n_bits)

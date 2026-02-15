@@ -22,7 +22,7 @@ protected:
   uint num_ds = 0;
   uint num_mux = 0;
 
-  vector<double> bs_time;
+  vector<uint> bs_time;
   vector<double> bs_stdev;
 
   void init_error();
@@ -56,7 +56,10 @@ public:
 
   void PrintStats();
   void ResetStats();
+
   int GetLog2Error();
+  uint GetEstimatedTime();
+  uint GetNumBS();
 
   // Abstracts
   virtual void HalfAdder() = 0;
@@ -159,6 +162,10 @@ public:
   LWECiphertext Mux_CCP(LWECiphertext s, LWECiphertext a, LWEPlaintext b);
   void Mux_CPP(LWECiphertext s, LWEPlaintext a, LWEPlaintext b,
                LWECiphertext &out_ct, LWEPlaintext &out_pt, bool &is_out_ct);
+
+  void ANDOR();
+  void XORXNOR();
+  void MAJ();
 
   size_t SimAdd(const size_t n_bits);
   size_t SimAddC(const size_t n_bits);

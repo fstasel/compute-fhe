@@ -18,6 +18,7 @@ protected:
 public:
     BaseArithmeticsEngine(ComputeFHE *cfhe);
     virtual ~BaseArithmeticsEngine();
+    virtual ComputeFHE *GetBase();
 
     virtual LWECiphertext GetCarry();
     virtual LWEPlaintext GetCarryPT();

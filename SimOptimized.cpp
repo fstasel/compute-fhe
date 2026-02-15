@@ -138,51 +138,42 @@ size_t SimOptimized::Add_CtPt_FixedPoint(const PFixedPoint &b, const bool &carry
     {
         if (i == 0)
         {
-            if (!carry_in && (!carry_out || n_digit > 1))
+            if (n_digit == 1 && !carry_in && !carry_out)
             {
                 PXOR(dummy_ct, b[0]);
             }
-            else if (carry_in && (!carry_out || n_digit > 1))
+            else if (!carry_in)
             {
-                if (is_lastcarry_ct)
-                {
-                    num_xorxnor++;
-                    num_bs++;
-                    PXOR(dummy_ct, b[0]);
-                }
-                else
-                {
-                    PXOR(dummy_ct, b[0]);
-                }
+                HalfAdder(b[0], carry_pt, is_lastcarry_ct);
             }
-            else if (carry_in)
+            else if (is_lastcarry_ct)
             {
-                if (is_lastcarry_ct)
-                {
-                    SimGateLogic::FullAdder(b[0]);
-                }
-                else
-                {
-                    SimGateLogic::FullAdder(b[0], carry_pt, carry_pt, is_lastcarry_ct);
-                }
+                SimGateLogic::FullAdder(b[0]);
             }
             else
             {
-                HalfAdder(b[0], carry_pt, is_lastcarry_ct);
+                SimGateLogic::FullAdder(b[0], carry_pt, carry_pt, is_lastcarry_ct);
             }
         }
         else
         {
-            PXOR(dummy_ct, b[i - 1]);
-            PXOR(dummy_ct, b[i - 1]);
-            PXOR(dummy_ct, b[i - 1]);
-            DigitSum();
-            PXOR(dummy_ct, b[i]);
-            if (i == n_digit - 1 && carry_out)
+            if (is_lastcarry_ct)
             {
-                num_not++;
-                num_andor++;
-                num_bs++;
+                PXOR(dummy_ct, b[i - 1]);
+                PXOR(dummy_ct, b[i - 1]);
+                PXOR(dummy_ct, b[i - 1]);
+                DigitSum();
+                PXOR(dummy_ct, b[i]);
+                if (i == n_digit - 1 && carry_out)
+                {
+                    num_not++;
+                    num_andor++;
+                    num_bs++;
+                }
+            }
+            else
+            {
+                SimGateLogic::FullAdder(b[i], carry_pt, carry_pt, is_lastcarry_ct);
             }
         }
     }
@@ -197,52 +188,44 @@ size_t SimOptimized::Sub_PtCt_FixedPoint(const PFixedPoint &a, const bool &carry
     {
         if (i == 0)
         {
-            if (!carry_in && (!carry_out || n_digit > 1))
+            if (n_digit == 1 && !carry_in && !carry_out)
             {
                 PXOR(dummy_ct, a[0]);
             }
-            else if (carry_in && (!carry_out || n_digit > 1))
+            else if (!carry_in)
             {
-                if (is_lastcarry_ct)
-                {
-                    num_xorxnor++;
-                    num_bs++;
-                    PXOR(dummy_ct, a[0]);
-                }
-                else
-                {
-                    PXOR(dummy_ct, PXNOR(a[0], carry_pt));
-                }
+                HalfSubtractor(a[0], carry_pt, is_lastcarry_ct);
             }
-            else if (carry_in)
+            else if (is_lastcarry_ct)
             {
-                if (is_lastcarry_ct)
-                {
-                    num_not++;
-                    SimGateLogic::FullAdder(a[0]);
-                }
-                else
-                {
-                    num_not++;
-                    SimGateLogic::FullAdder(a[0], carry_pt, carry_pt, is_lastcarry_ct);
-                }
+                num_not++;
+                SimGateLogic::FullAdder(a[0]);
             }
             else
             {
-                HalfSubtractor(a[0], carry_pt, is_lastcarry_ct);
+                num_not++;
+                SimGateLogic::FullAdder(a[0], carry_pt, carry_pt, is_lastcarry_ct);
             }
         }
         else
         {
-            PXNOR(dummy_ct, a[i - 1]);
-            PXNOR(dummy_ct, a[i - 1]);
-            PXOR(dummy_ct, a[i - 1]);
-            DigitSum();
-            PXOR(dummy_ct, a[i]);
-            if (i == n_digit - 1 && carry_out)
+            if (is_lastcarry_ct)
             {
-                num_andor++;
-                num_bs++;
+                PXNOR(dummy_ct, a[i - 1]);
+                PXNOR(dummy_ct, a[i - 1]);
+                PXOR(dummy_ct, a[i - 1]);
+                DigitSum();
+                PXOR(dummy_ct, a[i]);
+                if (i == n_digit - 1 && carry_out)
+                {
+                    num_andor++;
+                    num_bs++;
+                }
+            }
+            else
+            {
+                num_not++;
+                SimGateLogic::FullAdder(a[i], carry_pt, carry_pt, is_lastcarry_ct);
             }
         }
     }

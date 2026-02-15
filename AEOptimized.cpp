@@ -162,25 +162,6 @@ CFixedPoint AEOptimized::Mul_CtCt_FixedPoint(const CFixedPoint &a, const CFixedP
     return out;
 }
 
-// Add CtPt cases:
-// n = 1
-//      carry_in carry_out
-//          0       0       => PXOR
-//          0       1       => HA
-//          1       0       => XOR+PXOR
-//          1       1       => FA
-// n > 1, i = 0
-//      carry_in carry_out
-//          0       -       => PXOR
-//          1       -       => XOR+PXOR
-// n > 1, i < n-1
-//      carry_in carry_out
-//          -       -       => DS
-// n > 1, i = n-1
-//      carry_in carry_out
-//          -       0       => DS
-//          -       1       => DS+AND/OR
-
 CFixedPoint AEOptimized::Add_CtPt_FixedPoint(const CFixedPoint &a, const PFixedPoint &b,
                                              const bool &carry_in, const bool &carry_out)
 {
@@ -193,43 +174,36 @@ CFixedPoint AEOptimized::Add_CtPt_FixedPoint(const CFixedPoint &a, const PFixedP
     {
         if (i == 0)
         {
-            if (!carry_in && (!carry_out || n_digit > 1))
+            if (n_digit == 1 && !carry_in && !carry_out)
             {
                 out[0] = PXOR(a[0], b[0]);
             }
-            else if (carry_in && (!carry_out || n_digit > 1))
+            else if (!carry_in)
             {
-                if (is_lastcarry_ct)
-                {
-                    out[0] = PXOR(cc.EvalBinGate(XOR, a[0], carry), b[0]);
-                }
-                else
-                {
-                    out[0] = PXOR(a[0], PXOR(b[0], carry_pt));
-                }
+                HalfAdder(a[0], b[0], out[0], carry, carry_pt, is_lastcarry_ct);
             }
-            else if (carry_in)
+            else if (is_lastcarry_ct)
             {
-                if (is_lastcarry_ct)
-                {
-                    AEGateLogic::FullAdder(a[0], carry, b[0], out[0], carry);
-                }
-                else
-                {
-                    AEGateLogic::FullAdder(a[0], b[0], carry_pt, out[0], carry, carry_pt, is_lastcarry_ct);
-                }
+                AEGateLogic::FullAdder(a[0], carry, b[0], out[0], carry);
             }
             else
             {
-                HalfAdder(a[0], b[0], out[0], carry, carry_pt, is_lastcarry_ct);
+                AEGateLogic::FullAdder(a[0], b[0], carry_pt, out[0], carry, carry_pt, is_lastcarry_ct);
             }
         }
         else
         {
-            out[i] = PXOR(DigitSum(PXOR(a[i], b[i - 1]), PXOR(a[i - 1], b[i - 1]), PXOR(out[i - 1], b[i - 1])), b[i]);
-            if (i == n_digit - 1 && carry_out)
+            if (is_lastcarry_ct)
             {
-                carry = cc.EvalBinGate((b[i] == 0) ? AND : OR, a[i], cc.EvalNOT(out[i]));
+                out[i] = PXOR(DigitSum(PXOR(a[i], b[i - 1]), PXOR(a[i - 1], b[i - 1]), PXOR(out[i - 1], b[i - 1])), b[i]);
+                if (i == n_digit - 1 && carry_out)
+                {
+                    carry = cc.EvalBinGate((b[i] == 0) ? AND : OR, a[i], cc.EvalNOT(out[i]));
+                }
+            }
+            else
+            {
+                AEGateLogic::FullAdder(a[i], b[i], carry_pt, out[i], carry, carry_pt, is_lastcarry_ct);
             }
         }
     }
@@ -247,43 +221,36 @@ CFixedPoint AEOptimized::Sub_PtCt_FixedPoint(const PFixedPoint &a, const CFixedP
     {
         if (i == 0)
         {
-            if (!carry_in && (!carry_out || n_digit > 1))
+            if (n_digit == 1 && !carry_in && !carry_out)
             {
                 out[0] = PXOR(b[0], a[0]);
             }
-            else if (carry_in && (!carry_out || n_digit > 1))
+            else if (!carry_in)
             {
-                if (is_lastcarry_ct)
-                {
-                    out[0] = PXOR(cc.EvalBinGate(XNOR, b[0], carry), a[0]);
-                }
-                else
-                {
-                    out[0] = PXOR(b[0], PXNOR(a[0], carry_pt));
-                }
+                HalfSubtractor(a[0], b[0], out[0], carry, carry_pt, is_lastcarry_ct);
             }
-            else if (carry_in)
+            else if (is_lastcarry_ct)
             {
-                if (is_lastcarry_ct)
-                {
-                    AEGateLogic::FullAdder(cc.EvalNOT(b[0]), carry, a[0], out[0], carry);
-                }
-                else
-                {
-                    AEGateLogic::FullAdder(cc.EvalNOT(b[0]), a[0], carry_pt, out[0], carry, carry_pt, is_lastcarry_ct);
-                }
+                AEGateLogic::FullAdder(cc.EvalNOT(b[0]), carry, a[0], out[0], carry);
             }
             else
             {
-                HalfSubtractor(a[0], b[0], out[0], carry, carry_pt, is_lastcarry_ct);
+                AEGateLogic::FullAdder(cc.EvalNOT(b[0]), a[0], carry_pt, out[0], carry, carry_pt, is_lastcarry_ct);
             }
         }
         else
         {
-            out[i] = PXOR(DigitSum(PXNOR(b[i], a[i - 1]), PXNOR(b[i - 1], a[i - 1]), PXOR(out[i - 1], a[i - 1])), a[i]);
-            if (i == n_digit - 1 && carry_out)
+            if (is_lastcarry_ct)
             {
-                carry = cc.EvalBinGate((a[i] == 0) ? NOR : NAND, b[i], out[i]);
+                out[i] = PXOR(DigitSum(PXNOR(b[i], a[i - 1]), PXNOR(b[i - 1], a[i - 1]), PXOR(out[i - 1], a[i - 1])), a[i]);
+                if (i == n_digit - 1 && carry_out)
+                {
+                    carry = cc.EvalBinGate((a[i] == 0) ? NOR : NAND, b[i], out[i]);
+                }
+            }
+            else
+            {
+                AEGateLogic::FullAdder(cc.EvalNOT(b[i]), a[i], carry_pt, out[i], carry, carry_pt, is_lastcarry_ct);
             }
         }
     }
@@ -322,7 +289,7 @@ uint AEOptimized::Get_CtCtSubC_Cost(size_t n_bits)
 
 uint AEOptimized::Get_CtPtAddC_Cost(size_t n_bits)
 {
-    return (n_bits > 0) ? n_bits + 1 : 0;
+    return (n_bits > 0) ? n_bits + 2 : 0;
 }
 
 uint AEOptimized::Get_PtCtSub_Cost(size_t n_bits)
@@ -332,7 +299,7 @@ uint AEOptimized::Get_PtCtSub_Cost(size_t n_bits)
 
 uint AEOptimized::Get_CtPtSubCNC_Cost(size_t n_bits)
 {
-    return (n_bits > 0) ? n_bits : 0;
+    return (n_bits > 0) ? n_bits + 1 : 0;
 }
 
 uint AEOptimized::Get_CtNeg_Cost(size_t n_bits)

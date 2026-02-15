@@ -17,7 +17,7 @@ using namespace std;
 class SimConstants
 {
 public:
-    static void initSimConstants(vector<double> &bs_time, vector<double> &bs_stdev)
+    static void initSimConstants(vector<uint> &bs_time, vector<double> &bs_stdev)
     {
         bs_time.resize(13);
         bs_stdev.resize(13);

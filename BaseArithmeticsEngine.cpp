@@ -10,6 +10,11 @@ BaseArithmeticsEngine::~BaseArithmeticsEngine()
 {
 }
 
+ComputeFHE *BaseArithmeticsEngine::GetBase()
+{
+    return cfhe_base;
+}
+
 LWECiphertext BaseArithmeticsEngine::GetCarry()
 {
     return carry;

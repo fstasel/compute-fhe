@@ -1,6 +1,7 @@
 #include "CFHE_Test.h"
 #include "AEGateLogic.h"
 #include "SimGateLogic.h"
+#include "SimTest.h"
 #include <iostream>
 using namespace std;
 
@@ -61,12 +62,12 @@ void manual_test()
     t.SetRegenerateKeys(false);
 
     // Mul variants
-    t.Test(TT_MUL, 8);
+    // t.Test(TT_MUL, 8);
     t.Test(TT_PMUL, 8);
     t.Test(TT_PMUL_FAST, 8);
 
     // Fullmul variants
-    t.Test(TT_FULLMUL, 8);
+    // t.Test(TT_FULLMUL, 8);
     t.Test(TT_PFULLMUL, 8);
     t.Test(TT_PFULLMUL_FAST, 8);
     t.Test(TT_BOOTHSMUL, 8);
@@ -102,14 +103,14 @@ void manual_test()
     // t.Test(TT_PPMUX, 1);
 
     // Adder
-    // t.Test(TT_PADD, 4);
-    // t.Test(TT_PADD_NC, 4);
-    // t.Test(TT_PADDC, 4);
-    // t.Test(TT_PADDC_NC, 4);
-    // t.Test(TT_PSUB, 4);
-    // t.Test(TT_PSUB_NC, 4);
-    // t.Test(TT_PSUBC, 4);
-    // t.Test(TT_PSUBC_NC, 4);
+    t.Test(TT_PADD, 4);
+    t.Test(TT_PADD_NC, 4);
+    t.Test(TT_PADDC, 4);
+    t.Test(TT_PADDC_NC, 4);
+    t.Test(TT_PSUB, 4);
+    t.Test(TT_PSUB_NC, 4);
+    t.Test(TT_PSUBC, 4);
+    t.Test(TT_PSUBC_NC, 4);
 }
 
 void calculate_expected_cost_fullmul(uint n, ArithmeticsEngineType ae_type)
@@ -590,6 +591,8 @@ void test_simulator_manual()
 
 int main()
 {
+    SimTest::TestAll();
+
     // CFHE_Test::TestAll();
     // CFHE_Test::TestAllNoise();
 
@@ -622,7 +625,7 @@ int main()
     // test_simulator_booths(4, AE_OPTIMIZED);
     // test_simulator(4, AE_GATELOGIC);
     // test_simulator(4, AE_OPTIMIZED);
-    test_simulator_manual();
+    // test_simulator_manual();
 
     return EXIT_SUCCESS;
 }

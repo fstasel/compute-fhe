@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ComputeFHE.h"
+#include "BaseAESimulator.h"
 #include <iostream>
 #include <string>
 #include <cstdint>

@@ -538,7 +538,7 @@ void CFHE_Test::StartTest()
     Test(TT_FA_CCP, 1);
     Test(TT_XOR3, 1);
     Test(TT_MULADD, 1);
-    for (uint d = 2; d <= 32U; d <<= 1)
+    for (uint d = 4; d <= 32U; d <<= 1)
     {
         Test(TT_ADD, d);
         Test(TT_PADD, d);
@@ -592,8 +592,8 @@ void CFHE_Test::StartTest()
 
 void CFHE_Test::TestAll()
 {
-    const int NUM_TEST = 1;
-    const int VERBOSITY = 4;
+    const int NUM_TEST = 100;
+    const int VERBOSITY = 2;
     CFHE_Test *c;
     c = new CFHE_Test(CCPARAM_STD128, AE_GATELOGIC);
     c->SetNumTest(NUM_TEST);

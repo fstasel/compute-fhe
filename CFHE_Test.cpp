@@ -529,6 +529,10 @@ void CFHE_Test::StartNoiseTest()
 
 void CFHE_Test::StartTest()
 {
+    const int NUM_TEST = 30;
+    const int P_NUM_TEST = 100;
+
+    SetNumTest(NUM_TEST);
     // Test(TT_ENCRYPT_DECRYPT);
     // Test(TT_PFIXP_ENCRYPT_DECRYPT);
     Test(TT_HA, 1);
@@ -538,95 +542,97 @@ void CFHE_Test::StartTest()
     Test(TT_FA_CCP, 1);
     Test(TT_XOR3, 1);
     Test(TT_MULADD, 1);
+    Test(TT_MUX, 1);
+    Test(TT_PMUX, 1);
+    Test(TT_PPMUX, 1);
     for (uint d = 4; d <= 32U; d <<= 1)
     {
         Test(TT_ADD, d);
-        Test(TT_PADD, d);
         Test(TT_ADDC, d);
-        Test(TT_PADDC, d);
         Test(TT_ADD_NC, d);
-        Test(TT_PADD_NC, d);
         Test(TT_ADDC_NC, d);
-        Test(TT_PADDC_NC, d);
         Test(TT_SUB, d);
-        Test(TT_CPSUB, d);
-        Test(TT_PSUB, d);
         Test(TT_SUBC, d);
-        Test(TT_CPSUBC, d);
-        Test(TT_PSUBC, d);
         Test(TT_SUB_NC, d);
-        Test(TT_CPSUB_NC, d);
-        Test(TT_PSUB_NC, d);
         Test(TT_SUBC_NC, d);
-        Test(TT_CPSUBC_NC, d);
-        Test(TT_PSUBC_NC, d);
         Test(TT_NEG, d);
         Test(TT_CMPNOTEQ, d);
-        Test(TT_PCMPNOTEQ, d);
         Test(TT_CMPEQ, d);
-        Test(TT_PCMPEQ, d);
         Test(TT_CMPLTEQ_U, d);
-        Test(TT_PCMPLTEQ_U, d);
         Test(TT_CMPGT_U, d);
-        Test(TT_PCMPGT_U, d);
         Test(TT_CMPGTEQ_U, d);
-        Test(TT_PCMPGTEQ_U, d);
         Test(TT_CMPLT_U, d);
-        Test(TT_PCMPLT_U, d);
         Test(TT_CMPLTEQ, d);
         Test(TT_CMPGT, d);
         Test(TT_CMPGTEQ, d);
         Test(TT_CMPLT, d);
         Test(TT_FULLMUL, d);
+        Test(TT_MUL, d);
+    }
+
+    SetNumTest(P_NUM_TEST);
+    for (uint d = 4; d <= 32U; d <<= 1)
+    {
+        Test(TT_PADD, d);
+        Test(TT_PADDC, d);
+        Test(TT_PADD_NC, d);
+        Test(TT_PADDC_NC, d);
+        Test(TT_CPSUB, d);
+        Test(TT_PSUB, d);
+        Test(TT_CPSUBC, d);
+        Test(TT_PSUBC, d);
+        Test(TT_CPSUB_NC, d);
+        Test(TT_PSUB_NC, d);
+        Test(TT_CPSUBC_NC, d);
+        Test(TT_PSUBC_NC, d);
+        Test(TT_PCMPNOTEQ, d);
+        Test(TT_PCMPEQ, d);
+        Test(TT_PCMPLTEQ_U, d);
+        Test(TT_PCMPGT_U, d);
+        Test(TT_PCMPGTEQ_U, d);
+        Test(TT_PCMPLT_U, d);
+        Test(TT_PCMPLTEQ, d);
+        Test(TT_PCMPGT, d);
+        Test(TT_PCMPGTEQ, d);
+        Test(TT_PCMPLT, d);
         Test(TT_PFULLMUL, d);
         Test(TT_PFULLMUL_FAST, d);
         Test(TT_BOOTHSMUL, d);
-        Test(TT_MUL, d);
         Test(TT_PMUL, d);
         Test(TT_PMUL_FAST, d);
     }
-    Test(TT_MUX, 1);
-    Test(TT_PMUX, 1);
-    Test(TT_PPMUX, 1);
 }
 
 void CFHE_Test::TestAll()
 {
-    const int NUM_TEST = 100;
     const int VERBOSITY = 2;
     CFHE_Test *c;
     c = new CFHE_Test(CCPARAM_STD128, AE_GATELOGIC);
-    c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
     c = new CFHE_Test(CCPARAM_STD128_3, AE_OPTIMIZED);
-    c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
     c = new CFHE_Test(CCPARAM_STD192, AE_GATELOGIC);
-    c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
     c = new CFHE_Test(CCPARAM_STD192_3, AE_OPTIMIZED);
-    c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
     c = new CFHE_Test(CCPARAM_STD256, AE_GATELOGIC);
-    c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
     c = new CFHE_Test(CCPARAM_STD256_3, AE_OPTIMIZED);
-    c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();

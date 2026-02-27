@@ -1024,7 +1024,7 @@ TestReport CFHE_Test::TestBoothsMul(uint n_digits)
     PFixedPoint pt_n2 = cfhe_base->uint2PFixedPoint(n2, n_digits);
     int signed_result = (n1 & (1 << (n_digits - 1)) ? (long)n1 - (1UL << n_digits) : (long)n1);
     signed_result *= (n2 & (1 << (n_digits - 1)) ? (long)n2 - (1UL << n_digits) : (long)n2);
-    uint expected = *(uint *)&signed_result & ((1UL << (n_digits << 1)) - 1);
+    uint expected = *(uint *)&signed_result & (uint)(((uint128_t)1 << (n_digits << 1)) - 1);
     StartTimer();
     CFixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->BoothsMul(ct_n1, pt_n2);
     report.delta_t = ReadTimer();

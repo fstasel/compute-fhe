@@ -1,6 +1,8 @@
 #pragma once
 
-#include "BaseArithmeticsEngine.h"
+#include <computefhe/BaseArithmeticsEngine.h>
+
+namespace computefhe {
 
 class AEGateLogic : public BaseArithmeticsEngine
 {
@@ -80,3 +82,4 @@ public:
     virtual uint Get_Pt2sCompMul_Cost(const PFixedPoint &pt);
     virtual uint Get_BoothsMul_Cost(const PFixedPoint &pt, size_t ct_n_bits);
 };
+}

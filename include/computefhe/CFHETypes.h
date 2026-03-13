@@ -1,5 +1,7 @@
 #pragma once
 
+namespace computefhe {
+
 enum CryptoContextParam
 {
     CCPARAM_STD128,
@@ -69,4 +71,5 @@ inline const char *ToString(ArithmeticsEngineType v)
     default:
         return "[Unknown]";
     }
+}
 }

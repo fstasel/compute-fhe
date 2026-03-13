@@ -1,8 +1,9 @@
-#include "BaseAESimulator.h"
+#include <computefhe/BaseAESimulator.h>
 
 #include <iostream>
 #include <cmath>
 using namespace std;
+using namespace computefhe;
 
 LWECiphertext BaseAESimulator::dummy_ct;
 CFixedPoint BaseAESimulator::dummy_cfixedpoint;

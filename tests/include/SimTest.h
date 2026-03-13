@@ -1,13 +1,16 @@
 #pragma once
 
-#include "ComputeFHE.h"
-#include "BaseAESimulator.h"
+#include <computefhe/ComputeFHE.h>
+#include <computefhe/BaseAESimulator.h>
 #include <iostream>
 #include <string>
 #include <cstdint>
 #include <limits>
 
 using namespace std;
+using namespace computefhe;
+
+namespace computefhe_test {
 
 class SimTest
 {
@@ -232,3 +235,4 @@ public:
         }
     }
 };
+}

@@ -1,10 +1,11 @@
-#include "ComputeFHE.h"
-#include "AEGateLogic.h"
-#include "AEOptimized.h"
-#include "SimGateLogic.h"
-#include "SimOptimized.h"
+#include <computefhe/ComputeFHE.h>
+#include <computefhe/AEGateLogic.h>
+#include <computefhe/AEOptimized.h>
+#include <computefhe/SimGateLogic.h>
+#include <computefhe/SimOptimized.h>
 
 #include <iostream>
+using namespace computefhe;
 
 void ComputeFHE::createCC()
 {

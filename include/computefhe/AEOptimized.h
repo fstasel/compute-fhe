@@ -1,6 +1,8 @@
 #pragma once
 
-#include "AEGateLogic.h"
+#include <computefhe/AEGateLogic.h>
+
+namespace computefhe {
 
 class AEOptimized : public AEGateLogic
 {
@@ -36,3 +38,4 @@ public:
     uint Get_CtPtSubCNC_Cost(size_t n_bits);
     uint Get_CtNeg_Cost(size_t n_bits);
 };
+}

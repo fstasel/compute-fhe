@@ -1,5 +1,6 @@
-#include "AEOptimized.h"
+#include <computefhe/AEOptimized.h>
 #include <cassert>
+using namespace computefhe;
 
 AEOptimized::AEOptimized(ComputeFHE *cfhe) : AEGateLogic(cfhe)
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CFHETypes.h"
+#include <computefhe/CFHETypes.h>
 #include <vector>
 
 using namespace std;
@@ -13,6 +13,8 @@ using namespace std;
 // STD192_3	10.181	    1080.25	172     	0.6	        4096	32.8671568590896	0.00802420821755117
 // STD256	10.1229	    579.518	304	        1.0	        2048	24.0731800973615	0.0117544824694148
 // STD256_3	10.0277	    157.386	427	        1.5	        2048	12.5453577071361	0.00612566294293757
+
+namespace computefhe {
 
 class SimConstants
 {
@@ -37,3 +39,4 @@ public:
         bs_stdev[CCPARAM_STD256_3] = 0.00612566294293757;
     }
 };
+}

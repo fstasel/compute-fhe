@@ -1,6 +1,8 @@
 #pragma once
 
-#include "SimGateLogic.h"
+#include <computefhe/SimGateLogic.h>
+
+namespace computefhe {
 
 class SimOptimized : public SimGateLogic
 {
@@ -26,3 +28,4 @@ public:
 
     void Mux_CCC();
 };
+}

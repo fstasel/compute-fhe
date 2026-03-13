@@ -1,4 +1,5 @@
-#include "SimOptimized.h"
+#include <computefhe/SimOptimized.h>
+using namespace computefhe;
 
 SimOptimized::SimOptimized(ComputeFHE *cfhe) : SimGateLogic(cfhe)
 {

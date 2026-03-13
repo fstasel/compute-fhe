@@ -1,10 +1,10 @@
 #pragma once
 
-#include "ComputeFHE.h"
+#include <computefhe/ComputeFHE.h>
 
 using namespace lbcrypto;
 
-class ComputeFHE;
+namespace computefhe {
 
 class BaseArithmeticsEngine
 {
@@ -202,3 +202,4 @@ public:
     virtual CFixedPoint Mux(LWECiphertext s, const CFixedPoint a, const PFixedPoint b);
     virtual CFixedPoint Mux(LWECiphertext s, const PFixedPoint a, const CFixedPoint b);
 };
+}

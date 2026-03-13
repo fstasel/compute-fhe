@@ -1,14 +1,17 @@
 #pragma once
 
-#include "binfhecontext.h"
+#include <openfhe/binfhe/binfhecontext.h>
 #include <vector>
 
-#include "CFHETypes.h"
+#include <computefhe/CFHETypes.h>
 
 #define COPY_CT(x) std::make_shared<LWECiphertextImpl>(*x)
 
 using namespace lbcrypto;
 using namespace std;
+
+namespace computefhe {
+
 using CFixedPoint = vector<LWECiphertext>;
 using PFixedPoint = vector<LWEPlaintext>;
 
@@ -58,3 +61,4 @@ public:
     void PrintCryptoContextParams();
     void PrintLWECiphertextParams(ConstLWECiphertext &ct);
 };
+}

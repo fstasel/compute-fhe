@@ -1,5 +1,6 @@
-#include "AEGateLogic.h"
+#include <computefhe/AEGateLogic.h>
 #include <cassert>
+using namespace computefhe;
 
 AEGateLogic::AEGateLogic(ComputeFHE *cfhe) : BaseArithmeticsEngine(cfhe)
 {

@@ -1,5 +1,6 @@
-#include "SimGateLogic.h"
-#include "AEGateLogic.h"
+#include <computefhe/SimGateLogic.h>
+#include <computefhe/AEGateLogic.h>
+using namespace computefhe;
 
 SimGateLogic::SimGateLogic(ComputeFHE *cfhe) : BaseAESimulator(cfhe)
 {

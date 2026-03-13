@@ -1,9 +1,12 @@
 #pragma once
 
-#include "ComputeFHE.h"
+#include <computefhe/ComputeFHE.h>
 #include "CFHE_TestTypes.h"
 
 using namespace std;
+using namespace computefhe;
+
+namespace computefhe_test {
 
 class TestReport
 {
@@ -119,3 +122,4 @@ public:
     static void TestAll();
     static void TestAllNoise();
 };
+}

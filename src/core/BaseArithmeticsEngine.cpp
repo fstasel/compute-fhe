@@ -1,5 +1,6 @@
-#include "BaseArithmeticsEngine.h"
+#include <computefhe/BaseArithmeticsEngine.h>
 #include <cassert>
+using namespace computefhe;
 
 BaseArithmeticsEngine::BaseArithmeticsEngine(ComputeFHE *cfhe) : cfhe_base(cfhe)
 {

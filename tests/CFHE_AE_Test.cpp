@@ -1,8 +1,9 @@
-#include "CFHE_Test.h"
-#include "BaseArithmeticsEngine.h"
+#include "include/CFHE_Test.h"
+#include <computefhe/BaseArithmeticsEngine.h>
 
 #include <iostream>
 using namespace std;
+using namespace computefhe_test;
 
 TestReport CFHE_Test::TestHalfAdder()
 {

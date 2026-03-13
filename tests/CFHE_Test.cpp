@@ -1,7 +1,8 @@
-#include "CFHE_Test.h"
+#include "include/CFHE_Test.h"
 
 #include <iostream>
 using namespace std;
+using namespace computefhe_test;
 
 void CFHE_Test::regenerateKeys()
 {

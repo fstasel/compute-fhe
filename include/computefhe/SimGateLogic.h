@@ -1,6 +1,8 @@
 #pragma once
 
-#include "BaseAESimulator.h"
+#include <computefhe/BaseAESimulator.h>
+
+namespace computefhe {
 
 class SimGateLogic : public BaseAESimulator
 {
@@ -48,3 +50,4 @@ public:
     void Mux_CCP(LWEPlaintext b);
     void Mux_CPP(LWEPlaintext a, LWEPlaintext b, LWEPlaintext &out_pt, bool &is_out_ct);
 };
+}

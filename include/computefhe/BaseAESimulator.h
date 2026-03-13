@@ -1,12 +1,12 @@
 #pragma once
 
-#include "ComputeFHE.h"
-#include "BaseArithmeticsEngine.h"
-#include "SimConstants.h"
+#include <computefhe/ComputeFHE.h>
+#include <computefhe/BaseArithmeticsEngine.h>
+#include <computefhe/SimConstants.h>
 
 using namespace lbcrypto;
 
-class ComputeFHE;
+namespace computefhe {
 
 class BaseAESimulator : public BaseArithmeticsEngine
 {
@@ -261,3 +261,4 @@ public:
   CFixedPoint Not(const CFixedPoint &a);
   LWECiphertext Mux(LWECiphertext s, LWEPlaintext a, LWECiphertext b);
 };
+}

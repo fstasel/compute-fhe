@@ -1,5 +1,7 @@
 #pragma once
 
+namespace computefhe_test {
+
 enum TestType
 {
     TT_ENCRYPT_DECRYPT,
@@ -198,3 +200,4 @@ enum TestResult
     TR_FAIL,
     TR_SUCCESS
 };
+}

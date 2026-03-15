@@ -92,7 +92,6 @@ CFHE_Eint CFHE_Eint::operator=(FixedPoint n) {
 }
 
 CFHE_Eint CFHE_Eint::operator-() {
-    cout << "operator- called" << endl;
     CFHE_Eint tmp;
     tmp.data = cfhe->GetArithmeticsEngine()->Neg(data);
     return tmp;

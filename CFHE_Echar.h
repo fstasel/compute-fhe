@@ -11,7 +11,7 @@ private:
   FixedPoint data;
 
 public:
-  CFHE_Echar(int d = 0, const ArithmeticsEngineType & = AE_OPTIMIZED);
+  CFHE_Echar(char d = 0, const ArithmeticsEngineType & = AE_OPTIMIZED);
   bool operator==(const CFHE_Echar &);
   bool operator!=(const CFHE_Echar &);
   bool operator>(const CFHE_Echar &);
@@ -24,7 +24,7 @@ public:
   CFHE_Echar operator-(uint);
   CFHE_Echar operator*(const CFHE_Echar &);
   CFHE_Echar operator*(uint);
-  CFHE_Echar operator=(int n);
+  CFHE_Echar operator=(char n);
   CFHE_Echar operator=(FixedPoint n);
   CFHE_Echar operator-();
   char print();

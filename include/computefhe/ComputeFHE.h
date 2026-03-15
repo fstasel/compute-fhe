@@ -47,6 +47,7 @@ namespace computefhe
         uint DecryptInt(const FixedPoint &ct, size_t n_digits = 0);
         LWECiphertext EncryptBool(uint pt, bool fresh = true);
         uint DecryptBool(ConstLWECiphertext &ct);
+        FixedPoint GetConstantInt(uint pt, size_t n_digits = 8);
 
         double extractNoise(ConstLWECiphertext &ct);
 

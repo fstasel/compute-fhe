@@ -1,10 +1,10 @@
 #include <computefhe/ComputeFHE.h>
 #include "CFHE_Eint.h"
-
+#include "CFHE_Echar.h"
 using namespace computefhe;
 using namespace std;
 
-int main() {
+void test_eint() {
     CFHE_Eint a = 13, b, c, d, e, f, g, h, i;
     int x;
     cout << "a is 13, enter b: ";
@@ -34,5 +34,23 @@ int main() {
          << "g : " << g.print() << endl
          << "h : " << h.print() << endl
          << "i : " << i.print() << endl;
+}
+
+void test_echar() {
+    CFHE_Echar a = 'e', b, c;
+    char x;
+    cout << "a is 'e', enter b: ";
+    cin >> x;
+
+    b = x;
+    c = a + 1;
+
+    cout << "a: " << a.print() << endl
+         << "b: " << b.print() << endl
+         << "c: " << c.print() << endl;
+}
+
+int main() {
+    test_echar();
     return 0;
 }

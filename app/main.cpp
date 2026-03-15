@@ -1,23 +1,20 @@
 #include <computefhe/ComputeFHE.h>
-#include <computefhe/CFHE_Integer.h>
-// #include "CFHE_Echar.h"
+#include <computefhe/CFHE_int.h>
+
 using namespace computefhe;
 using namespace std;
 
 void test_eint() {
-    CFHE_Integer a = 13, b, c, d, e, f, g, h, i;
-    int x;
-    cout << "a is 13, enter b: ";
-    cin >> x;
+    CFHE_Integer::Init(CCPARAM_STD128_3);
+    CFHE_int a, b, c, d, e, f, g;
+    a = 2;
+    b = 3;
 
-    b = x;
     c = a + b;
-    d = c - b;
-    e = d + 5;
-    f = c - 11;
-    g = -f;
-    h = a * 3;
-    i = f * 4;
+    d = a - b;
+    e = a * b;
+    f = -a;
+    g = -b;
     cout << "a == b? " << (a == b ? "yes" : "no") << endl;
     cout << "a != b? " << (a != b ? "yes" : "no") << endl;
     cout << "a >  b? " << (a >  b ? "yes" : "no") << endl;
@@ -31,9 +28,7 @@ void test_eint() {
          << "d : " << d << endl
          << "e : " << e << endl
          << "f : " << f << endl
-         << "g : " << g << endl
-         << "h : " << h << endl
-         << "i : " << i << endl;
+         << "g : " << g << endl;
 }
 
 /*void test_echar() {

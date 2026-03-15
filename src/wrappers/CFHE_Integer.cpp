@@ -3,21 +3,31 @@ using namespace computefhe;
 
 ComputeFHE *CFHE_Integer::cfhe = nullptr;
 
-CFHE_Integer::CFHE_Integer(int d, size_t s, const ArithmeticsEngineType &ae_type) {
-    if (cfhe == nullptr) {
-        switch (ae_type) {
-            case AE_OPTIMIZED: case AE_GATELOGIC:
-                cfhe = new ComputeFHE(CCPARAM_TOY, ae_type);
-                break;
-            default:
-                break;
-        }
-    }
-    size = s;
-    data = cfhe->EncryptInt(d, size);
+CFHE_Integer::CFHE_Integer() {
+    if (cfhe == nullptr)
+        Init();
+    data = FixedPoint();
+    size = 0;
 }
 
-bool CFHE_Integer::operator==(const CFHE_Integer &other) {
+CFHE_Integer::CFHE_Integer(uint d, size_t s) {
+    if (cfhe == nullptr)
+        Init();
+    data = cfhe->EncryptInt(d, s);
+    size = s;
+}
+
+CFHE_Integer::~CFHE_Integer() {
+    // empty
+}
+
+void CFHE_Integer::Init(CryptoContextParam cc_param, ArithmeticsEngineType ae_type) {
+    if (cfhe != nullptr)
+        delete cfhe;
+    cfhe = new ComputeFHE(cc_param, ae_type);
+}
+
+bool CFHE_Integer::operator==(const CFHE_Integer& other) {
     auto res = cfhe->GetArithmeticsEngine()->CmpEq(data, other.data);
     return cfhe->DecryptBool(res) ? true : false;
 }
@@ -28,73 +38,80 @@ bool CFHE_Integer::operator!=(const CFHE_Integer &other) {
 }
 
 bool CFHE_Integer::operator>(const CFHE_Integer& other) {
-    auto res = cfhe->GetArithmeticsEngine()->CmpGT(data, other.data);
+    auto res = cfhe->GetArithmeticsEngine()->CmpGT_U(data, other.data);
     return cfhe->DecryptBool(res) ? true : false;
 }
 
 bool CFHE_Integer::operator>=(const CFHE_Integer& other) {
-    auto res = cfhe->GetArithmeticsEngine()->CmpGTEq(data, other.data);
+    auto res = cfhe->GetArithmeticsEngine()->CmpGTEq_U(data, other.data);
     return cfhe->DecryptBool(res) ? true : false;
 }
 
 bool CFHE_Integer::operator<(const CFHE_Integer& other) {
-    auto res = cfhe->GetArithmeticsEngine()->CmpLT(data, other.data);
+    auto res = cfhe->GetArithmeticsEngine()->CmpLT_U(data, other.data);
     return cfhe->DecryptBool(res) ? true : false;
 }
 
 bool CFHE_Integer::operator<=(const CFHE_Integer& other) {
-    auto res = cfhe->GetArithmeticsEngine()->CmpLTEq(data, other.data);
+    auto res = cfhe->GetArithmeticsEngine()->CmpLTEq_U(data, other.data);
     return cfhe->DecryptBool(res) ? true : false;
 }
 
 CFHE_Integer CFHE_Integer::operator+(const CFHE_Integer &other) {
     CFHE_Integer tmp;
+    tmp.size = size;
     tmp.data = cfhe->GetArithmeticsEngine()->AddNC(data, other.data);
     return tmp;
 }
 
 CFHE_Integer CFHE_Integer::operator+(uint other) {
     CFHE_Integer tmp;
+    tmp.size = size;
     tmp.data = cfhe->GetArithmeticsEngine()->AddNC(data,cfhe->EncryptInt(other, size));
     return tmp;
 }
 
 CFHE_Integer CFHE_Integer::operator-(const CFHE_Integer &other) {
     CFHE_Integer tmp;
+    tmp.size = size;
     tmp.data = cfhe->GetArithmeticsEngine()->SubNC(data, other.data);
     return tmp;
 }
 
 CFHE_Integer CFHE_Integer::operator-(uint other) {
     CFHE_Integer tmp;
+    tmp.size = size;
     tmp.data = cfhe->GetArithmeticsEngine()->SubNC(data, cfhe->EncryptInt(other, size));
     return tmp;
 }
 
 CFHE_Integer CFHE_Integer::operator*(const CFHE_Integer &other) {
     CFHE_Integer tmp;
+    tmp.size = size;
     tmp.data = cfhe->GetArithmeticsEngine()->Mul(data, other.data);
     return tmp;
 }
 
 CFHE_Integer CFHE_Integer::operator*(uint other) {
     CFHE_Integer tmp;
+    tmp.size = size;
     tmp.data = cfhe->GetArithmeticsEngine()->Mul(data, cfhe->EncryptInt(other, size));
     return tmp;
 }
 
-CFHE_Integer CFHE_Integer::operator=(int n) {
+CFHE_Integer& CFHE_Integer::operator=(uint n) {
     data = cfhe->EncryptInt(n, size);
     return *this;
 }
 
-CFHE_Integer CFHE_Integer::operator=(FixedPoint n) {
+CFHE_Integer& CFHE_Integer::operator=(FixedPoint n) {
     this->data = n;
     return *this;
 }
 
 CFHE_Integer CFHE_Integer::operator-() {
     CFHE_Integer tmp;
+    tmp.size = size;
     tmp.data = cfhe->GetArithmeticsEngine()->Neg(data);
     return tmp;
 }

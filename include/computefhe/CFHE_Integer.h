@@ -7,13 +7,16 @@ using namespace std;
 
 namespace computefhe {
   class CFHE_Integer {
-  private:
+  protected:
     static ComputeFHE *cfhe;
     FixedPoint data;
     size_t size;
 
   public:
-    CFHE_Integer(int d = 0, size_t s = 32, const ArithmeticsEngineType & = AE_OPTIMIZED);
+    CFHE_Integer();
+    CFHE_Integer(uint d, size_t s);
+    ~CFHE_Integer();
+    static void Init(CryptoContextParam = CCPARAM_STD128_3, ArithmeticsEngineType = AE_OPTIMIZED);
     virtual bool operator==(const CFHE_Integer &);
     virtual bool operator!=(const CFHE_Integer &);
     virtual bool operator>(const CFHE_Integer &);
@@ -26,8 +29,8 @@ namespace computefhe {
     virtual CFHE_Integer operator-(uint);
     virtual CFHE_Integer operator*(const CFHE_Integer &);
     virtual CFHE_Integer operator*(uint);
-    virtual CFHE_Integer operator=(int n);
-    virtual CFHE_Integer operator=(FixedPoint n);
+    virtual CFHE_Integer& operator=(uint n);
+    virtual CFHE_Integer& operator=(FixedPoint n);
     virtual CFHE_Integer operator-();
     friend ostream& operator<<(ostream &out, const CFHE_Integer& obj);
   };

@@ -67,7 +67,7 @@ set(CORE_SOURCES
 )
 
 set(WRAPPER_SOURCES
-    src/wrappers/CFHE_Eint.cpp
+    src/wrappers/CFHE_Integer.cpp
 )
 
 set(TEST_SOURCES

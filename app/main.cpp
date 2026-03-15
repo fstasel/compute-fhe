@@ -1,6 +1,6 @@
 #include <computefhe/ComputeFHE.h>
-#include "CFHE_Eint.h"
-#include "CFHE_Echar.h"
+#include <computefhe/CFHE_Eint.h>
+// #include "CFHE_Echar.h"
 using namespace computefhe;
 using namespace std;
 
@@ -36,7 +36,7 @@ void test_eint() {
          << "i : " << i.print() << endl;
 }
 
-void test_echar() {
+/*void test_echar() {
     CFHE_Echar a = 'e', b, c;
     char x;
     cout << "a is 'e', enter b: ";
@@ -48,9 +48,9 @@ void test_echar() {
     cout << "a: " << a.print() << endl
          << "b: " << b.print() << endl
          << "c: " << c.print() << endl;
-}
+}*/
 
 int main() {
-    test_echar();
+    test_eint();
     return 0;
 }

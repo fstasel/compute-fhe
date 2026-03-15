@@ -100,8 +100,3 @@ CFHE_Echar CFHE_Echar::operator-() {
 char CFHE_Echar::print() {
     return static_cast<char>(this->cfhe->DecryptInt(this->data));
 }
-
-ostream &operator<<(ostream &os, const CFHE_Echar &obj) {
-    os << static_cast<char>(CFHE_Echar::cfhe->DecryptInt(obj.data));
-    return os;
-}

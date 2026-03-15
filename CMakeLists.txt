@@ -66,6 +66,10 @@ set(CORE_SOURCES
     src/core/AEOptimized.cpp
 )
 
+set(WRAPPER_SOURCES
+    src/wrappers/CFHE_Eint.cpp
+)
+
 set(TEST_SOURCES
     tests/CFHE_Test.cpp
     tests/CFHE_AE_Test.cpp
@@ -74,6 +78,7 @@ set(TEST_SOURCES
 add_executable(computefhe
     app/main.cpp
     ${CORE_SOURCES}
+    ${WRAPPER_SOURCES}
     ${TEST_SOURCES}
 )
 

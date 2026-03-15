@@ -1,4 +1,5 @@
-#include "CFHE_Eint.h"
+#include <computefhe/CFHE_Eint.h>
+using namespace computefhe;
 
 ComputeFHE *CFHE_Eint::cfhe = nullptr;
 

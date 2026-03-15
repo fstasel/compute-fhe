@@ -1,7 +1,10 @@
-#include "ComputeFHE.h"
-#include "AEGateLogic.h"
-#include "AEOptimized.h"
+
+#include <computefhe/ComputeFHE.h>
+#include <computefhe/AEGateLogic.h>
+#include <computefhe/AEOptimized.h>
+
 #include <iostream>
+using namespace computefhe;
 
 void ComputeFHE::createCC()
 {

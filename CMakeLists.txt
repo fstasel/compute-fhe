@@ -41,6 +41,7 @@ include_directories( ${OpenFHE_INCLUDE}/core )
 include_directories( ${OpenFHE_INCLUDE}/pke )
 include_directories( ${OpenFHE_INCLUDE}/binfhe )
 ### add directories for other OpenFHE modules as needed for your project
+include_directories( ${PROJECT_SOURCE_DIR}/include )
 
 link_directories( ${OpenFHE_LIBDIR} )
 link_directories( ${OPENMP_LIBRARIES} )
@@ -57,10 +58,28 @@ endif()
 ###
 ### EXAMPLE:
 ### add_executable( test file.cpp )
-add_executable( computefhe  main.cpp 
-                            ComputeFHE.cpp
-                            BaseArithmeticsEngine.cpp
-                            AEGateLogic.cpp
-                            AEOptimized.cpp
-                            CFHE_Test.cpp
-                            CFHE_AE_Test.cpp )
+set(CORE_SOURCES
+    src/core/ComputeFHE.cpp
+    src/core/BaseArithmeticsEngine.cpp
+    src/core/AEGateLogic.cpp
+    src/core/AEOptimized.cpp
+)
+
+set(TEST_SOURCES
+    tests/CFHE_Test.cpp
+    tests/CFHE_AE_Test.cpp
+)
+
+add_executable(computefhe
+    app/main.cpp
+    ${CORE_SOURCES}
+    ${TEST_SOURCES}
+)
+
+target_include_directories(computefhe
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/src
+        ${PROJECT_SOURCE_DIR}/tests/include
+    PUBLIC
+        ${PROJECT_SOURCE_DIR}/include
+)

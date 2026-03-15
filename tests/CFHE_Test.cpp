@@ -1,7 +1,8 @@
-#include "CFHE_Test.h"
+#include "include/CFHE_Test.h"
 
 #include <iostream>
 using namespace std;
+using namespace computefhe_test;
 
 void CFHE_Test::regenerateKeys()
 {
@@ -100,7 +101,8 @@ void CFHE_Test::Test(TestType tt, size_t n_digits)
     TestReport report;
     for (uint trial = 0; trial < num_test; trial++)
     {
-        if(regenerate_keys) {
+        if (regenerate_keys)
+        {
             regenerateKeys();
         }
         //
@@ -326,7 +328,8 @@ void CFHE_Test::StartNoiseTest()
 
     for (uint trial = 1; trial <= num_test; trial++)
     {
-        if(regenerate_keys) {
+        if (regenerate_keys)
+        {
             regenerateKeys();
         }
         //

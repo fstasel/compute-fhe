@@ -1,7 +1,7 @@
 #include "CFHE_Test.h"
 
-#include <iostream>
-using namespace std;
+using namespace computefhe;
+using namespace computefhe_test;
 
 int main()
 {

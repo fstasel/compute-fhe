@@ -32,6 +32,7 @@ namespace computefhe {
     virtual CFHE_Integer& operator=(uint n);
     virtual CFHE_Integer& operator=(FixedPoint n);
     virtual CFHE_Integer operator-();
+    virtual operator uint() const;
     friend ostream& operator<<(ostream &out, const CFHE_Integer& obj);
   };
 

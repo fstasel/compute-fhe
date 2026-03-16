@@ -116,6 +116,10 @@ CFHE_Integer CFHE_Integer::operator-() {
     return tmp;
 }
 
+CFHE_Integer::operator uint() const {
+    return cfhe->DecryptInt(data, size);
+}
+
 ostream& computefhe::operator<<(ostream &out, const CFHE_Integer& obj) {
     out << obj.cfhe->DecryptInt(obj.data, obj.size);
     return out;

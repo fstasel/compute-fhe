@@ -2,7 +2,7 @@
 #define DSIZE 32
 
 computefhe::CFHE_int::CFHE_int() : CFHE_Integer() {
-    data = FixedPoint(DSIZE, cfhe->GetArithmeticsEngine()->GetConstantFalse());
+    data = cfhe->GetConstantInt(0, DSIZE);
     size = DSIZE;
 }
 

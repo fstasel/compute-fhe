@@ -13,7 +13,7 @@ CFHE_Integer::CFHE_Integer() {
 CFHE_Integer::CFHE_Integer(uint d, size_t s) {
     if (cfhe == nullptr)
         Init();
-    data = cfhe->EncryptInt(d, s);
+    data = cfhe->GetConstantInt(d, s);
     size = s;
 }
 
@@ -67,7 +67,7 @@ CFHE_Integer CFHE_Integer::operator+(const CFHE_Integer &other) {
 CFHE_Integer CFHE_Integer::operator+(uint other) {
     CFHE_Integer tmp;
     tmp.size = size;
-    tmp.data = cfhe->GetArithmeticsEngine()->AddNC(data,cfhe->EncryptInt(other, size));
+    tmp.data = cfhe->GetArithmeticsEngine()->AddNC(data,cfhe->GetConstantInt(other, size));
     return tmp;
 }
 
@@ -81,7 +81,7 @@ CFHE_Integer CFHE_Integer::operator-(const CFHE_Integer &other) {
 CFHE_Integer CFHE_Integer::operator-(uint other) {
     CFHE_Integer tmp;
     tmp.size = size;
-    tmp.data = cfhe->GetArithmeticsEngine()->SubNC(data, cfhe->EncryptInt(other, size));
+    tmp.data = cfhe->GetArithmeticsEngine()->SubNC(data, cfhe->GetConstantInt(other, size));
     return tmp;
 }
 
@@ -95,12 +95,12 @@ CFHE_Integer CFHE_Integer::operator*(const CFHE_Integer &other) {
 CFHE_Integer CFHE_Integer::operator*(uint other) {
     CFHE_Integer tmp;
     tmp.size = size;
-    tmp.data = cfhe->GetArithmeticsEngine()->Mul(data, cfhe->EncryptInt(other, size));
+    tmp.data = cfhe->GetArithmeticsEngine()->Mul(data, cfhe->GetConstantInt(other, size));
     return tmp;
 }
 
 CFHE_Integer& CFHE_Integer::operator=(uint n) {
-    data = cfhe->EncryptInt(n, size);
+    data = cfhe->GetConstantInt(n, size);
     return *this;
 }
 

@@ -4,6 +4,7 @@
 #include <computefhe/AEOptimized.h>
 
 #include <iostream>
+#include <computefhe/ComputeFHE.h>
 using namespace computefhe;
 
 void ComputeFHE::createCC()
@@ -203,6 +204,17 @@ uint ComputeFHE::DecryptBool(ConstLWECiphertext &ct)
     LWEPlaintext result;
     cc.Decrypt(sk, ct, &result);
     return result;
+}
+
+FixedPoint computefhe::ComputeFHE::GetConstantInt(uint pt, size_t n_digits)
+{
+    FixedPoint out(n_digits);
+    for (size_t i = 0; i < n_digits; i++)
+    {
+        out[i] = (pt % 2) ? ae->GetConstantTrue() : ae->GetConstantFalse();
+        pt /= 2;
+    }
+    return out;
 }
 
 void ComputeFHE::PrintCryptoContextParams()

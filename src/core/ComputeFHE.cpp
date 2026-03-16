@@ -161,7 +161,7 @@ const LWEPrivateKey &ComputeFHE::GetLWEPrivateKey()
     return sk;
 }
 
-FixedPoint ComputeFHE::EncryptInt(uint pt, size_t n_digits, bool fresh)
+FixedPoint ComputeFHE::EncryptInt(uint64_t pt, size_t n_digits, bool fresh)
 {
     FixedPoint out(n_digits);
     for (size_t i = 0; i < n_digits; i++)
@@ -176,9 +176,9 @@ FixedPoint ComputeFHE::EncryptInt(uint pt, size_t n_digits, bool fresh)
     return out;
 }
 
-uint ComputeFHE::DecryptInt(const FixedPoint &ct, size_t n_digits)
+uint64_t ComputeFHE::DecryptInt(const FixedPoint &ct, size_t n_digits)
 {
-    uint32_t out = 0;
+    uint64_t out = 0;
     LWEPlaintext result;
     n_digits = (n_digits == 0) ? ct.size() : n_digits;
     for (size_t i = 0; i < n_digits; i++)
@@ -189,7 +189,7 @@ uint ComputeFHE::DecryptInt(const FixedPoint &ct, size_t n_digits)
     return out;
 }
 
-LWECiphertext ComputeFHE::EncryptBool(uint pt, bool fresh)
+LWECiphertext ComputeFHE::EncryptBool(bool pt, bool fresh)
 {
     LWECiphertext out = cc.Encrypt(sk, pt == 0 ? 0 : 1, FRESH);
     if (!fresh)
@@ -199,14 +199,14 @@ LWECiphertext ComputeFHE::EncryptBool(uint pt, bool fresh)
     return out;
 }
 
-uint ComputeFHE::DecryptBool(ConstLWECiphertext &ct)
+bool ComputeFHE::DecryptBool(ConstLWECiphertext &ct)
 {
     LWEPlaintext result;
     cc.Decrypt(sk, ct, &result);
-    return result;
+    return (bool)result;
 }
 
-FixedPoint computefhe::ComputeFHE::GetConstantInt(uint pt, size_t n_digits)
+FixedPoint computefhe::ComputeFHE::GetConstantInt(uint64_t pt, size_t n_digits)
 {
     FixedPoint out(n_digits);
     for (size_t i = 0; i < n_digits; i++)

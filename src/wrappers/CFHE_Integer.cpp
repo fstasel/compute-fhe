@@ -1,126 +1,169 @@
 #include <computefhe/CFHE_Integer.h>
+#define SIZEOF(T) ((std::is_same_v<T, bool>) ? 1 : (sizeof(T) * 8))
 using namespace computefhe;
 
-ComputeFHE *CFHE_Integer::cfhe = nullptr;
+static ComputeFHE* cfhe_base = nullptr;
 
-CFHE_Integer::CFHE_Integer() {
-    if (cfhe == nullptr)
+template <class T, bool isSigned>
+CFHE_Integer<T, isSigned>::CFHE_Integer() {
+    if (cfhe_base == nullptr)
         Init();
-    data = FixedPoint();
-    size = 0;
+    data = FixedPoint(SIZEOF(T));
+    size = SIZEOF(T);
+    is_signed = isSigned;
 }
 
-CFHE_Integer::CFHE_Integer(uint d, size_t s) {
-    if (cfhe == nullptr)
+template<class T, bool isSigned>
+CFHE_Integer<T, isSigned>::CFHE_Integer(T d) {
+    if (cfhe_base == nullptr)
         Init();
-    data = cfhe->GetConstantInt(d, s);
-    size = s;
+    data = cfhe_base->GetConstantInt(d, SIZEOF(T));
+    size = SIZEOF(T);
 }
 
-CFHE_Integer::~CFHE_Integer() {
+template<class T, bool isSigned>
+CFHE_Integer<T, isSigned>::~CFHE_Integer() {
     // empty
 }
 
-void CFHE_Integer::Init(CryptoContextParam cc_param, ArithmeticsEngineType ae_type) {
-    if (cfhe != nullptr)
-        delete cfhe;
-    cfhe = new ComputeFHE(cc_param, ae_type);
+template<class T, bool isSigned>
+void CFHE_Integer<T, isSigned>::Init(CryptoContextParam cc_param, ArithmeticsEngineType ae_type) {
+    if (cfhe_base != nullptr)
+        delete cfhe_base;
+    cfhe_base = new ComputeFHE(cc_param, ae_type);
 }
 
-bool CFHE_Integer::operator==(const CFHE_Integer& other) {
-    auto res = cfhe->GetArithmeticsEngine()->CmpEq(data, other.data);
-    return cfhe->DecryptBool(res) ? true : false;
+template<class T, bool isSigned>
+Ebool CFHE_Integer<T, isSigned>::operator==(const CFHE_Integer& other) {
+    auto res = cfhe_base->GetArithmeticsEngine()->CmpEq(data, other.data);
+    return cfhe_base->DecryptBool(res) ? true : false;
 }
 
-bool CFHE_Integer::operator!=(const CFHE_Integer &other) {
-    auto res = cfhe->GetArithmeticsEngine()->CmpNotEq(data, other.data);
-    return cfhe->DecryptBool(res) ? true : false;
+template<class T, bool isSigned>
+Ebool CFHE_Integer<T, isSigned>::operator!=(const CFHE_Integer &other) {
+    auto res = cfhe_base->GetArithmeticsEngine()->CmpNotEq(data, other.data);
+    return cfhe_base->DecryptBool(res) ? true : false;
 }
 
-bool CFHE_Integer::operator>(const CFHE_Integer& other) {
-    auto res = cfhe->GetArithmeticsEngine()->CmpGT_U(data, other.data);
-    return cfhe->DecryptBool(res) ? true : false;
+template<class T, bool isSigned>
+Ebool CFHE_Integer<T, isSigned>::operator>(const CFHE_Integer& other) {
+    auto res = cfhe_base->GetArithmeticsEngine()->CmpGT_U(data, other.data);
+    return cfhe_base->DecryptBool(res) ? true : false;
 }
 
-bool CFHE_Integer::operator>=(const CFHE_Integer& other) {
-    auto res = cfhe->GetArithmeticsEngine()->CmpGTEq_U(data, other.data);
-    return cfhe->DecryptBool(res) ? true : false;
+template<class T, bool isSigned>
+Ebool CFHE_Integer<T, isSigned>::operator>=(const CFHE_Integer& other) {
+    auto res = cfhe_base->GetArithmeticsEngine()->CmpGTEq_U(data, other.data);
+    return cfhe_base->DecryptBool(res) ? true : false;
 }
 
-bool CFHE_Integer::operator<(const CFHE_Integer& other) {
-    auto res = cfhe->GetArithmeticsEngine()->CmpLT_U(data, other.data);
-    return cfhe->DecryptBool(res) ? true : false;
+template<class T, bool isSigned>
+Ebool CFHE_Integer<T, isSigned>::operator<(const CFHE_Integer& other) {
+    auto res = cfhe_base->GetArithmeticsEngine()->CmpLT_U(data, other.data);
+    return cfhe_base->DecryptBool(res) ? true : false;
 }
 
-bool CFHE_Integer::operator<=(const CFHE_Integer& other) {
-    auto res = cfhe->GetArithmeticsEngine()->CmpLTEq_U(data, other.data);
-    return cfhe->DecryptBool(res) ? true : false;
+template<class T, bool isSigned>
+Ebool CFHE_Integer<T, isSigned>::operator<=(const CFHE_Integer& other) {
+    auto res = cfhe_base->GetArithmeticsEngine()->CmpLTEq_U(data, other.data);
+    return cfhe_base->DecryptBool(res) ? true : false;
 }
 
-CFHE_Integer CFHE_Integer::operator+(const CFHE_Integer &other) {
+template<class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator+(const CFHE_Integer &other) {
     CFHE_Integer tmp;
     tmp.size = size;
-    tmp.data = cfhe->GetArithmeticsEngine()->AddNC(data, other.data);
+    tmp.data = cfhe_base->GetArithmeticsEngine()->AddNC(data, other.data);
     return tmp;
 }
 
-CFHE_Integer CFHE_Integer::operator+(uint other) {
+template<class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator+(uint other) {
     CFHE_Integer tmp;
     tmp.size = size;
-    tmp.data = cfhe->GetArithmeticsEngine()->AddNC(data,cfhe->GetConstantInt(other, size));
+    tmp.data = cfhe_base->GetArithmeticsEngine()->AddNC(data,cfhe_base->GetConstantInt(other, size));
     return tmp;
 }
 
-CFHE_Integer CFHE_Integer::operator-(const CFHE_Integer &other) {
+template<class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator-(const CFHE_Integer &other) {
     CFHE_Integer tmp;
     tmp.size = size;
-    tmp.data = cfhe->GetArithmeticsEngine()->SubNC(data, other.data);
+    tmp.data = cfhe_base->GetArithmeticsEngine()->SubNC(data, other.data);
     return tmp;
 }
 
-CFHE_Integer CFHE_Integer::operator-(uint other) {
+template<class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator-(uint other) {
     CFHE_Integer tmp;
     tmp.size = size;
-    tmp.data = cfhe->GetArithmeticsEngine()->SubNC(data, cfhe->GetConstantInt(other, size));
+    tmp.data = cfhe_base->GetArithmeticsEngine()->SubNC(data, cfhe_base->GetConstantInt(other, size));
     return tmp;
 }
 
-CFHE_Integer CFHE_Integer::operator*(const CFHE_Integer &other) {
+template<class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator*(const CFHE_Integer &other) {
     CFHE_Integer tmp;
     tmp.size = size;
-    tmp.data = cfhe->GetArithmeticsEngine()->Mul(data, other.data);
+    tmp.data = cfhe_base->GetArithmeticsEngine()->Mul(data, other.data);
     return tmp;
 }
 
-CFHE_Integer CFHE_Integer::operator*(uint other) {
+template<class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator*(uint other) {
     CFHE_Integer tmp;
     tmp.size = size;
-    tmp.data = cfhe->GetArithmeticsEngine()->Mul(data, cfhe->GetConstantInt(other, size));
+    tmp.data = cfhe_base->GetArithmeticsEngine()->Mul(data, cfhe_base->GetConstantInt(other, size));
     return tmp;
 }
 
-CFHE_Integer& CFHE_Integer::operator=(uint n) {
-    data = cfhe->GetConstantInt(n, size);
+template<class T, bool isSigned>
+CFHE_Integer<T, isSigned>& CFHE_Integer<T, isSigned>::operator=(uint n) {
+    data = cfhe_base->GetConstantInt(n, size);
     return *this;
 }
 
-CFHE_Integer& CFHE_Integer::operator=(FixedPoint n) {
+template<class T, bool isSigned>
+CFHE_Integer<T, isSigned>& CFHE_Integer<T, isSigned>::operator=(FixedPoint n) {
     this->data = n;
     return *this;
 }
 
-CFHE_Integer CFHE_Integer::operator-() {
+template<class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator-() {
     CFHE_Integer tmp;
     tmp.size = size;
-    tmp.data = cfhe->GetArithmeticsEngine()->Neg(data);
+    tmp.data = cfhe_base->GetArithmeticsEngine()->Neg(data);
     return tmp;
 }
 
-CFHE_Integer::operator uint() const {
-    return cfhe->DecryptInt(data, size);
+template<class T, bool isSigned>
+CFHE_Integer<T, isSigned>::operator uint() const {
+    return cfhe_base->DecryptInt(data, size);
 }
 
-ostream& computefhe::operator<<(ostream &out, const CFHE_Integer& obj) {
-    out << obj.cfhe->DecryptInt(obj.data, obj.size);
+template<class U, bool S>
+ostream& computefhe::operator<<(ostream &out, const CFHE_Integer<U, S>& obj) {
+    out << cfhe_base->DecryptInt(obj.data, obj.size);
     return out;
 }
+
+template class CFHE_Integer<bool, false>;
+template class CFHE_Integer<int8_t, true>;
+template class CFHE_Integer<uint8_t, false>;
+template class CFHE_Integer<int16_t, true>;
+template class CFHE_Integer<uint16_t, false>;
+template class CFHE_Integer<int32_t, true>;
+template class CFHE_Integer<uint32_t, false>;
+template class CFHE_Integer<int64_t, true>;
+template class CFHE_Integer<uint64_t, false>;
+
+template ostream& computefhe::operator<<<bool, false>(ostream &out, const CFHE_Integer<bool, false>& obj);
+template ostream& computefhe::operator<<<int8_t, true>(ostream &out, const CFHE_Integer<int8_t, true>& obj);
+template ostream& computefhe::operator<<<uint8_t, false>(ostream &out, const CFHE_Integer<uint8_t, false>& obj);
+template ostream& computefhe::operator<<<int16_t, true>(ostream &out, const CFHE_Integer<int16_t, true>& obj);
+template ostream& computefhe::operator<<<uint16_t, false>(ostream &out, const CFHE_Integer<uint16_t, false>& obj);
+template ostream& computefhe::operator<<<int32_t, true>(ostream &out, const CFHE_Integer<int32_t, true>& obj);
+template ostream& computefhe::operator<<<uint32_t, false>(ostream &out, const CFHE_Integer<uint32_t, false>& obj);
+template ostream& computefhe::operator<<<int64_t, true>(ostream &out, const CFHE_Integer<int64_t, true>& obj);
+template ostream& computefhe::operator<<<uint64_t, false>(ostream &out, const CFHE_Integer<uint64_t, false>& obj);

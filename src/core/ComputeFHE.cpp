@@ -5,6 +5,7 @@
 #include <computefhe/SimOptimized.h>
 
 #include <iostream>
+
 using namespace computefhe;
 
 void ComputeFHE::createCC()
@@ -71,9 +72,9 @@ void ComputeFHE::generateKeys()
     cc.BTKeyGen(sk);
 }
 
-uint ComputeFHE::PFixedPoint2uint(const PFixedPoint pt)
+uint64_t ComputeFHE::PFixedPoint2uint(const PFixedPoint pt)
 {
-    uint32_t out = 0;
+    uint64_t out = 0;
     for (size_t i = 0; i < pt.size(); i++)
     {
         out += (pt[i] % 2) * (1UL << i);
@@ -81,7 +82,7 @@ uint ComputeFHE::PFixedPoint2uint(const PFixedPoint pt)
     return out;
 }
 
-PFixedPoint ComputeFHE::uint2PFixedPoint(uint pt, size_t n_digits)
+PFixedPoint ComputeFHE::uint2PFixedPoint(uint64_t pt, size_t n_digits)
 {
     PFixedPoint out(n_digits);
     for (size_t i = 0; i < n_digits; i++)
@@ -203,7 +204,7 @@ const LWEPrivateKey &ComputeFHE::GetLWEPrivateKey()
     return sk;
 }
 
-CFixedPoint ComputeFHE::EncryptInt(uint pt, size_t n_digits, bool fresh)
+CFixedPoint ComputeFHE::EncryptInt(uint64_t pt, size_t n_digits, bool fresh)
 {
     CFixedPoint out(n_digits);
     for (size_t i = 0; i < n_digits; i++)
@@ -218,9 +219,9 @@ CFixedPoint ComputeFHE::EncryptInt(uint pt, size_t n_digits, bool fresh)
     return out;
 }
 
-uint ComputeFHE::DecryptInt(const CFixedPoint &ct, size_t n_digits)
+uint64_t ComputeFHE::DecryptInt(const CFixedPoint &ct, size_t n_digits)
 {
-    uint32_t out = 0;
+    uint64_t out = 0;
     LWEPlaintext result;
     n_digits = (n_digits == 0) ? ct.size() : n_digits;
     for (size_t i = 0; i < n_digits; i++)
@@ -260,9 +261,9 @@ void ComputeFHE::DecryptInt(const CFixedPoint &ct, PFixedPoint &pt, size_t n_dig
     }
 }
 
-LWECiphertext ComputeFHE::EncryptBool(uint pt, bool fresh)
+LWECiphertext ComputeFHE::EncryptBool(bool pt, bool fresh)
 {
-    LWECiphertext out = cc.Encrypt(sk, pt == 0 ? 0 : 1, FRESH);
+    LWECiphertext out = cc.Encrypt(sk, pt ? 1 : 0, FRESH);
     if (!fresh)
     {
         out = cc.Bootstrap(out);
@@ -270,11 +271,22 @@ LWECiphertext ComputeFHE::EncryptBool(uint pt, bool fresh)
     return out;
 }
 
-uint ComputeFHE::DecryptBool(ConstLWECiphertext &ct)
+bool ComputeFHE::DecryptBool(ConstLWECiphertext &ct)
 {
     LWEPlaintext result;
     cc.Decrypt(sk, ct, &result);
-    return result;
+    return (bool)result;
+}
+
+CFixedPoint ComputeFHE::GetConstantInt(uint64_t pt, size_t n_digits)
+{
+    CFixedPoint out(n_digits);
+    for (size_t i = 0; i < n_digits; i++)
+    {
+        out[i] = (pt % 2) ? ae->GetConstantTrue() : ae->GetConstantFalse();
+        pt /= 2;
+    }
+    return out;
 }
 
 void ComputeFHE::PrintCryptoContextParams()

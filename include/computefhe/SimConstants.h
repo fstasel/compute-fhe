@@ -14,29 +14,30 @@ using namespace std;
 // STD256	10.1229	    579.518	304	        1.0	        2048	24.0731800973615	0.0117544824694148
 // STD256_3	10.0277	    157.386	427	        1.5	        2048	12.5453577071361	0.00612566294293757
 
-namespace computefhe {
-
-class SimConstants
+namespace computefhe
 {
-public:
-    static void initSimConstants(vector<uint> &bs_time, vector<double> &bs_stdev)
+
+    class SimConstants
     {
-        bs_time.resize(13);
-        bs_stdev.resize(13);
-        //
-        bs_time[CCPARAM_STD128] = 72;
-        bs_time[CCPARAM_STD128_3] = 112;
-        bs_time[CCPARAM_STD192] = 155;
-        bs_time[CCPARAM_STD192_3] = 172;
-        bs_time[CCPARAM_STD256] = 304;
-        bs_time[CCPARAM_STD256_3] = 427;
-        //
-        bs_stdev[CCPARAM_STD128] = 0.0156369278203142;
-        bs_stdev[CCPARAM_STD128_3] = 0.00686745663268481;
-        bs_stdev[CCPARAM_STD192] = 0.0168700995217436;
-        bs_stdev[CCPARAM_STD192_3] = 0.00802420821755117;
-        bs_stdev[CCPARAM_STD256] = 0.0117544824694148;
-        bs_stdev[CCPARAM_STD256_3] = 0.00612566294293757;
-    }
-};
+    public:
+        static void initSimConstants(vector<uint> &bs_time, vector<double> &bs_stdev)
+        {
+            bs_time.resize(13);
+            bs_stdev.resize(13);
+            //
+            bs_time[CCPARAM_STD128] = 72;
+            bs_time[CCPARAM_STD128_3] = 112;
+            bs_time[CCPARAM_STD192] = 155;
+            bs_time[CCPARAM_STD192_3] = 172;
+            bs_time[CCPARAM_STD256] = 304;
+            bs_time[CCPARAM_STD256_3] = 427;
+            //
+            bs_stdev[CCPARAM_STD128] = 0.0156369278203142;
+            bs_stdev[CCPARAM_STD128_3] = 0.00686745663268481;
+            bs_stdev[CCPARAM_STD192] = 0.0168700995217436;
+            bs_stdev[CCPARAM_STD192_3] = 0.00802420821755117;
+            bs_stdev[CCPARAM_STD256] = 0.0117544824694148;
+            bs_stdev[CCPARAM_STD256_3] = 0.00612566294293757;
+        }
+    };
 }

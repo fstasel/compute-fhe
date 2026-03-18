@@ -5,42 +5,54 @@
 #include <iostream>
 using namespace std;
 
-namespace computefhe {
+namespace computefhe
+{
     template <class T, bool isSigned>
-    class CFHE_Integer {
-        protected:
-            FixedPoint data;
-            size_t size;
-            bool is_signed;
+    class CFHE_Integer
+    {
+    protected:
+        FixedPoint data;
+        size_t size;
+        bool is_signed;
 
-        public:
-            CFHE_Integer();
-            CFHE_Integer(T d);
-            ~CFHE_Integer();
-            static void Init(CryptoContextParam = CCPARAM_STD128_3, ArithmeticsEngineType = AE_OPTIMIZED);
-            virtual CFHE_Integer<bool, false> operator==(const CFHE_Integer &);
-            virtual CFHE_Integer<bool, false> operator!=(const CFHE_Integer &);
-            virtual CFHE_Integer<bool, false> operator>(const CFHE_Integer &);
-            virtual CFHE_Integer<bool, false> operator>=(const CFHE_Integer &);
-            virtual CFHE_Integer<bool, false> operator<(const CFHE_Integer &);
-            virtual CFHE_Integer<bool, false> operator<=(const CFHE_Integer &);
-            virtual CFHE_Integer operator+(const CFHE_Integer &);
-            virtual CFHE_Integer operator+(uint);
-            virtual CFHE_Integer operator-(const CFHE_Integer &);
-            virtual CFHE_Integer operator-(uint);
-            virtual CFHE_Integer operator*(const CFHE_Integer &);
-            virtual CFHE_Integer operator*(uint);
-            virtual CFHE_Integer& operator=(uint n);
-            virtual CFHE_Integer& operator=(FixedPoint n);
-            virtual CFHE_Integer operator-();
-            virtual operator uint() const;
-            
-            template<class U, bool S>
-            friend ostream& operator<<(ostream &out, const CFHE_Integer<U, S>& obj);
+        virtual void fixSize(bool is_signed);
+
+    public:
+        template <class U, bool S>
+        friend class CFHE_Integer;
+
+        CFHE_Integer();
+        CFHE_Integer(T d);
+        CFHE_Integer(const FixedPoint &fp, bool is_signed);
+        ~CFHE_Integer();
+
+        static void Init(CryptoContextParam = CCPARAM_STD128_3, ArithmeticsEngineType = AE_OPTIMIZED);
+
+        virtual CFHE_Integer<bool, false> operator==(const CFHE_Integer &);
+        virtual CFHE_Integer<bool, false> operator!=(const CFHE_Integer &);
+        virtual CFHE_Integer<bool, false> operator>(const CFHE_Integer &);
+        virtual CFHE_Integer<bool, false> operator>=(const CFHE_Integer &);
+        virtual CFHE_Integer<bool, false> operator<(const CFHE_Integer &);
+        virtual CFHE_Integer<bool, false> operator<=(const CFHE_Integer &);
+        virtual CFHE_Integer operator+(const CFHE_Integer &);
+        virtual CFHE_Integer operator+(T);
+        virtual CFHE_Integer operator-(const CFHE_Integer &);
+        virtual CFHE_Integer operator-(T);
+        virtual CFHE_Integer operator*(const CFHE_Integer &);
+        virtual CFHE_Integer operator*(T);
+        virtual CFHE_Integer operator-();
+
+        virtual operator T() const;
+
+        template <class U, bool S>
+        operator CFHE_Integer<U, S>() const;
+
+        template <class U, bool S>
+        friend ostream &operator<<(ostream &out, const CFHE_Integer<U, S> &obj);
     };
-    
+
     template <class U, bool S>
-    ostream& operator<<(ostream &out, const CFHE_Integer<U, S>& obj);
+    ostream &operator<<(ostream &out, const CFHE_Integer<U, S> &obj);
 
     using Ebool = CFHE_Integer<bool, false>;
     using Eint8 = CFHE_Integer<int8_t, true>;

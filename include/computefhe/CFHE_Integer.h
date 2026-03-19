@@ -20,6 +20,7 @@ namespace computefhe {
         CFHE_Integer();
         CFHE_Integer(T d);
         CFHE_Integer(const FixedPoint &fp, bool is_signed);
+        CFHE_Integer(const CFHE_Integer &other);
         ~CFHE_Integer();
 
         static void Init(CryptoContextParam = CCPARAM_STD128_3,

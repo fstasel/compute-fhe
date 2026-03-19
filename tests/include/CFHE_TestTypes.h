@@ -1,10 +1,8 @@
 #pragma once
 
-namespace computefhe_test
-{
+namespace computefhe_test {
 
-    enum TestType
-    {
+    enum TestType {
         TT_ENCRYPT_DECRYPT,
         TT_HA,
         TT_FA,
@@ -31,10 +29,8 @@ namespace computefhe_test
         TT_MUL
     };
 
-    inline const char *ToString(TestType v)
-    {
-        switch (v)
-        {
+    inline const char *ToString(TestType v) {
+        switch (v) {
         case TT_ENCRYPT_DECRYPT:
             return "ENCRYPT_DECRYPT";
         case TT_HA:
@@ -88,9 +84,5 @@ namespace computefhe_test
         }
     }
 
-    enum TestResult
-    {
-        TR_FAIL,
-        TR_SUCCESS
-    };
-}
+    enum TestResult { TR_FAIL, TR_SUCCESS };
+} // namespace computefhe_test

@@ -1,24 +1,21 @@
 #pragma once
 
-#include <computefhe/ComputeFHE.h>
 #include "CFHE_TestTypes.h"
+#include <computefhe/ComputeFHE.h>
 
 using namespace std;
 using namespace computefhe;
 
-namespace computefhe_test
-{
+namespace computefhe_test {
 
-    class TestReport
-    {
-    public:
+    class TestReport {
+      public:
         TestResult test_result = TR_FAIL;
         double delta_t = 0.;
     };
 
-    class CFHE_Test
-    {
-    private:
+    class CFHE_Test {
+      private:
         ComputeFHE *cfhe_base;
 
         random_device rd;
@@ -33,7 +30,7 @@ namespace computefhe_test
         void initRandomGenerator(uint max);
         void regenerateKeys();
 
-    public:
+      public:
         CFHE_Test(CryptoContextParam param, ArithmeticsEngineType engine_type);
 
         uint CreateRandomNumber();
@@ -52,9 +49,12 @@ namespace computefhe_test
         TestReport TestEncryptDecrypt(size_t n_digits);
 
         void PrintTestReport(TestReport report, int64_t n, int64_t result);
-        void PrintTestReport(TestReport report, int64_t n, int64_t result, int64_t expected);
-        void PrintTestReport(TestReport report, int64_t n1, int64_t n2, int64_t result, int64_t expected);
-        void PrintTestReport(TestReport report, int64_t n1, int64_t n2, int64_t n3, int64_t result, int64_t expected);
+        void PrintTestReport(TestReport report, int64_t n, int64_t result,
+                             int64_t expected);
+        void PrintTestReport(TestReport report, int64_t n1, int64_t n2,
+                             int64_t result, int64_t expected);
+        void PrintTestReport(TestReport report, int64_t n1, int64_t n2,
+                             int64_t n3, int64_t result, int64_t expected);
 
         TestReport TestHalfAdder();
         TestReport TestFullAdder();
@@ -86,4 +86,4 @@ namespace computefhe_test
         static void TestAll();
         static void TestAllNoise();
     };
-}
+} // namespace computefhe_test

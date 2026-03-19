@@ -1,10 +1,8 @@
 #pragma once
 
-namespace computefhe
-{
+namespace computefhe {
 
-    enum CryptoContextParam
-    {
+    enum CryptoContextParam {
         CCPARAM_STD128,
         CCPARAM_STD128_3,
         CCPARAM_STD128_LMKCDEY,
@@ -20,10 +18,8 @@ namespace computefhe
         CCPARAM_TOY
     };
 
-    inline const char *ToString(CryptoContextParam v)
-    {
-        switch (v)
-        {
+    inline const char *ToString(CryptoContextParam v) {
+        switch (v) {
         case CCPARAM_STD128:
             return "STD128";
         case CCPARAM_STD128_3:
@@ -55,16 +51,10 @@ namespace computefhe
         }
     }
 
-    enum ArithmeticsEngineType
-    {
-        AE_GATELOGIC,
-        AE_OPTIMIZED
-    };
+    enum ArithmeticsEngineType { AE_GATELOGIC, AE_OPTIMIZED };
 
-    inline const char *ToString(ArithmeticsEngineType v)
-    {
-        switch (v)
-        {
+    inline const char *ToString(ArithmeticsEngineType v) {
+        switch (v) {
         case AE_GATELOGIC:
             return "GATELOGIC";
         case AE_OPTIMIZED:
@@ -73,4 +63,4 @@ namespace computefhe
             return "[Unknown]";
         }
     }
-}
+} // namespace computefhe

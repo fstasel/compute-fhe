@@ -2,18 +2,19 @@
 
 #include <computefhe/AEGateLogic.h>
 
-namespace computefhe
-{
+namespace computefhe {
 
-    class AEOptimized : public AEGateLogic
-    {
-    public:
+    class AEOptimized : public AEGateLogic {
+      public:
         AEOptimized(ComputeFHE *cfhe);
 
-        void FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c,
-                       LWECiphertext &sum, LWECiphertext &carry_out);
-        LWECiphertext XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b, ConstLWECiphertext &c);
-        LWECiphertext MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a, ConstLWECiphertext &b,
+        void FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
+                       ConstLWECiphertext &c, LWECiphertext &sum,
+                       LWECiphertext &carry_out);
+        LWECiphertext XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b,
+                           ConstLWECiphertext &c);
+        LWECiphertext MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a,
+                             ConstLWECiphertext &b,
                              LWECiphertext *carry_out = nullptr);
         // LWECiphertext CmpNotEq(const FixedPoint &a, const FixedPoint &b);
         // LWECiphertext CmpEq(const FixedPoint &a, const FixedPoint &b);
@@ -22,4 +23,4 @@ namespace computefhe
         FixedPoint FullMul(const FixedPoint &a, const FixedPoint &b);
         FixedPoint Mul(const FixedPoint &a, const FixedPoint &b);
     };
-}
+} // namespace computefhe

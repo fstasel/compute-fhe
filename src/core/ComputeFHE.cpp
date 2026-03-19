@@ -1,16 +1,14 @@
 
-#include <computefhe/ComputeFHE.h>
 #include <computefhe/AEGateLogic.h>
 #include <computefhe/AEOptimized.h>
-
-#include <iostream>
 #include <computefhe/ComputeFHE.h>
+
+#include <computefhe/ComputeFHE.h>
+#include <iostream>
 using namespace computefhe;
 
-void ComputeFHE::createCC()
-{
-    switch (cc_param)
-    {
+void ComputeFHE::createCC() {
+    switch (cc_param) {
     case CCPARAM_STD256_LMKCDEY:
         cc.GenerateBinFHEContext(STD256_LMKCDEY, LMKCDEY);
         break;
@@ -65,14 +63,12 @@ void ComputeFHE::createCC()
     }
 }
 
-void ComputeFHE::generateKeys()
-{
+void ComputeFHE::generateKeys() {
     sk = cc.KeyGen();
     cc.BTKeyGen(sk);
 }
 
-double ComputeFHE::extractNoise(ConstLWECiphertext &ct)
-{
+double ComputeFHE::extractNoise(ConstLWECiphertext &ct) {
     // OpenFHE Decryption routine
     const auto &mod = ct->GetModulus();
     const auto &a = ct->GetA();
@@ -81,8 +77,7 @@ double ComputeFHE::extractNoise(ConstLWECiphertext &ct)
     auto mu = mod.ComputeMu();
     s.SwitchModulus(mod);
     NativeInteger inner(0);
-    for (size_t i = 0; i < n; ++i)
-    {
+    for (size_t i = 0; i < n; ++i) {
         inner += a[i].ModMulFast(s[i], mod, mu);
     }
     inner.ModEq(mod);
@@ -91,16 +86,15 @@ double ComputeFHE::extractNoise(ConstLWECiphertext &ct)
     LWEPlaintextModulus p = 4;
     r.ModAddFastEq((mod / (p * 2)), mod);
     LWEPlaintext result = ((NativeInteger(p) * r) / mod).ConvertToInt();
-    double error =
-        (static_cast<double>(p) * (r.ConvertToDouble() - mod.ConvertToDouble() / (p * 2))) / mod.ConvertToDouble() -
-        static_cast<double>(result);
+    double error = (static_cast<double>(p) *
+                    (r.ConvertToDouble() - mod.ConvertToDouble() / (p * 2))) /
+                       mod.ConvertToDouble() -
+                   static_cast<double>(result);
     return error * mod.ConvertToDouble() / static_cast<double>(p);
 }
 
-void ComputeFHE::createAE()
-{
-    switch (ae_type)
-    {
+void ComputeFHE::createAE() {
+    switch (ae_type) {
     case AE_OPTIMIZED:
         ae = new AEOptimized(this);
         break;
@@ -111,114 +105,82 @@ void ComputeFHE::createAE()
     }
 }
 
-ComputeFHE::ComputeFHE() : ComputeFHE(CCPARAM_STD128, AE_GATELOGIC)
-{
-}
+ComputeFHE::ComputeFHE() : ComputeFHE(CCPARAM_STD128, AE_GATELOGIC) {}
 
-ComputeFHE::ComputeFHE(CryptoContextParam param) : ComputeFHE(param, AE_GATELOGIC)
-{
-}
+ComputeFHE::ComputeFHE(CryptoContextParam param)
+    : ComputeFHE(param, AE_GATELOGIC) {}
 
-ComputeFHE::ComputeFHE(ArithmeticsEngineType engine_type) : ComputeFHE(CCPARAM_STD128, engine_type)
-{
-}
+ComputeFHE::ComputeFHE(ArithmeticsEngineType engine_type)
+    : ComputeFHE(CCPARAM_STD128, engine_type) {}
 
-ComputeFHE::~ComputeFHE()
-{
-    delete ae;
-}
+ComputeFHE::~ComputeFHE() { delete ae; }
 
-ComputeFHE::ComputeFHE(CryptoContextParam param, ArithmeticsEngineType engine_type)
-    : cc_param(param), ae_type(engine_type)
-{
+ComputeFHE::ComputeFHE(CryptoContextParam param,
+                       ArithmeticsEngineType engine_type)
+    : cc_param(param), ae_type(engine_type) {
     createCC();
     generateKeys();
     createAE();
 }
 
-BinFHEContext &ComputeFHE::GetBinFHEContext()
-{
-    return cc;
-}
+BinFHEContext &ComputeFHE::GetBinFHEContext() { return cc; }
 
-BaseArithmeticsEngine *ComputeFHE::GetArithmeticsEngine()
-{
-    return ae;
-}
+BaseArithmeticsEngine *ComputeFHE::GetArithmeticsEngine() { return ae; }
 
-CryptoContextParam ComputeFHE::GetCryptoContextParam()
-{
-    return cc_param;
-}
+CryptoContextParam ComputeFHE::GetCryptoContextParam() { return cc_param; }
 
-ArithmeticsEngineType ComputeFHE::GetArithmeticsEngineType()
-{
-    return ae_type;
-}
+ArithmeticsEngineType ComputeFHE::GetArithmeticsEngineType() { return ae_type; }
 
-const LWEPrivateKey &ComputeFHE::GetLWEPrivateKey()
-{
-    return sk;
-}
+const LWEPrivateKey &ComputeFHE::GetLWEPrivateKey() { return sk; }
 
-FixedPoint ComputeFHE::EncryptInt(uint64_t pt, size_t n_digits, bool fresh)
-{
+FixedPoint ComputeFHE::EncryptInt(uint64_t pt, size_t n_digits, bool fresh) {
     FixedPoint out(n_digits);
-    for (size_t i = 0; i < n_digits; i++)
-    {
+    for (size_t i = 0; i < n_digits; i++) {
         out[i] = cc.Encrypt(sk, pt % 2, FRESH);
         pt /= 2;
-        if (!fresh)
-        {
+        if (!fresh) {
             out[i] = cc.Bootstrap(out[i]);
         }
     }
     return out;
 }
 
-uint64_t ComputeFHE::DecryptInt(const FixedPoint &ct, size_t n_digits)
-{
+uint64_t ComputeFHE::DecryptInt(const FixedPoint &ct, size_t n_digits) {
     uint64_t out = 0;
     LWEPlaintext result;
     n_digits = (n_digits == 0) ? ct.size() : n_digits;
-    for (size_t i = 0; i < n_digits; i++)
-    {
+    for (size_t i = 0; i < n_digits; i++) {
         cc.Decrypt(sk, ct[i], &result);
         out += result * (1UL << i);
     }
     return out;
 }
 
-LWECiphertext ComputeFHE::EncryptBool(bool pt, bool fresh)
-{
+LWECiphertext ComputeFHE::EncryptBool(bool pt, bool fresh) {
     LWECiphertext out = cc.Encrypt(sk, pt == 0 ? 0 : 1, FRESH);
-    if (!fresh)
-    {
+    if (!fresh) {
         out = cc.Bootstrap(out);
     }
     return out;
 }
 
-bool ComputeFHE::DecryptBool(ConstLWECiphertext &ct)
-{
+bool ComputeFHE::DecryptBool(ConstLWECiphertext &ct) {
     LWEPlaintext result;
     cc.Decrypt(sk, ct, &result);
     return (bool)result;
 }
 
-FixedPoint computefhe::ComputeFHE::GetConstantInt(uint64_t pt, size_t n_digits)
-{
+FixedPoint computefhe::ComputeFHE::GetConstantInt(uint64_t pt,
+                                                  size_t n_digits) {
     FixedPoint out(n_digits);
-    for (size_t i = 0; i < n_digits; i++)
-    {
+    for (size_t i = 0; i < n_digits; i++) {
         out[i] = (pt % 2) ? ae->GetConstantTrue() : ae->GetConstantFalse();
         pt /= 2;
     }
     return out;
 }
 
-void ComputeFHE::PrintCryptoContextParams()
-{
+void ComputeFHE::PrintCryptoContextParams() {
     cout << "cc Q=" << cc.GetParams()->GetLWEParams()->GetQ() << endl
          << "cc q=" << cc.GetParams()->GetLWEParams()->Getq() << endl
          << "cc N=" << cc.GetParams()->GetLWEParams()->GetN() << endl
@@ -228,8 +190,7 @@ void ComputeFHE::PrintCryptoContextParams()
          << "cc max pt space=" << cc.GetMaxPlaintextSpace() << endl;
 }
 
-void ComputeFHE::PrintLWECiphertextParams(ConstLWECiphertext &ct)
-{
+void ComputeFHE::PrintLWECiphertextParams(ConstLWECiphertext &ct) {
     cout << "ct len=" << ct->GetLength() << endl
          << "ct mod=" << ct->GetModulus() << endl
          << "ct pt mod=" << ct->GetptModulus() << endl

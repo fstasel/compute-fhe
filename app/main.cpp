@@ -1,11 +1,10 @@
-#include <computefhe/ComputeFHE.h>
 #include <computefhe/CFHE_Integer.h>
+#include <computefhe/ComputeFHE.h>
 
 using namespace computefhe;
 using namespace std;
 
-void test_eint()
-{
+void test_eint() {
     Ebool::Init(CCPARAM_TOY, AE_OPTIMIZED);
 
     Ebool a = true;
@@ -33,8 +32,7 @@ void test_eint()
          << "k: " << k << endl;
 }
 
-int main()
-{
+int main() {
     test_eint();
     return 0;
 }

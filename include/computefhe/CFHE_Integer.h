@@ -5,28 +5,25 @@
 #include <iostream>
 using namespace std;
 
-namespace computefhe
-{
-    template <class T, bool isSigned>
-    class CFHE_Integer
-    {
-    protected:
+namespace computefhe {
+    template <class T, bool isSigned> class CFHE_Integer {
+      protected:
         FixedPoint data;
         size_t size;
         bool is_signed;
 
         virtual void fixSize(bool is_signed);
 
-    public:
-        template <class U, bool S>
-        friend class CFHE_Integer;
+      public:
+        template <class U, bool S> friend class CFHE_Integer;
 
         CFHE_Integer();
         CFHE_Integer(T d);
         CFHE_Integer(const FixedPoint &fp, bool is_signed);
         ~CFHE_Integer();
 
-        static void Init(CryptoContextParam = CCPARAM_STD128_3, ArithmeticsEngineType = AE_OPTIMIZED);
+        static void Init(CryptoContextParam = CCPARAM_STD128_3,
+                         ArithmeticsEngineType = AE_OPTIMIZED);
 
         virtual CFHE_Integer<bool, false> operator==(const CFHE_Integer &);
         virtual CFHE_Integer<bool, false> operator!=(const CFHE_Integer &);
@@ -44,8 +41,7 @@ namespace computefhe
 
         virtual operator T() const;
 
-        template <class U, bool S>
-        operator CFHE_Integer<U, S>() const;
+        template <class U, bool S> operator CFHE_Integer<U, S>() const;
 
         template <class U, bool S>
         friend ostream &operator<<(ostream &out, const CFHE_Integer<U, S> &obj);
@@ -63,4 +59,4 @@ namespace computefhe
     using Euint32 = CFHE_Integer<uint32_t, false>;
     using Eint64 = CFHE_Integer<int64_t, true>;
     using Euint64 = CFHE_Integer<uint64_t, false>;
-}
+} // namespace computefhe

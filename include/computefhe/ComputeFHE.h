@@ -10,16 +10,14 @@
 using namespace lbcrypto;
 using namespace std;
 
-namespace computefhe
-{
+namespace computefhe {
 
     using FixedPoint = vector<LWECiphertext>;
 
     class BaseArithmeticsEngine;
 
-    class ComputeFHE
-    {
-    private:
+    class ComputeFHE {
+      private:
         CryptoContextParam cc_param;
         ArithmeticsEngineType ae_type;
         BinFHEContext cc;
@@ -29,7 +27,7 @@ namespace computefhe
         void createCC();
         void createAE();
 
-    public:
+      public:
         ComputeFHE();
         ComputeFHE(CryptoContextParam param);
         ComputeFHE(CryptoContextParam param, ArithmeticsEngineType engine_type);
@@ -43,7 +41,8 @@ namespace computefhe
         const LWEPrivateKey &GetLWEPrivateKey();
         void generateKeys();
 
-        FixedPoint EncryptInt(uint64_t pt, size_t n_digits = 8, bool fresh = true);
+        FixedPoint EncryptInt(uint64_t pt, size_t n_digits = 8,
+                              bool fresh = true);
         uint64_t DecryptInt(const FixedPoint &ct, size_t n_digits = 0);
         LWECiphertext EncryptBool(bool pt, bool fresh = true);
         bool DecryptBool(ConstLWECiphertext &ct);
@@ -54,4 +53,4 @@ namespace computefhe
         void PrintCryptoContextParams();
         void PrintLWECiphertextParams(ConstLWECiphertext &ct);
     };
-}
+} // namespace computefhe

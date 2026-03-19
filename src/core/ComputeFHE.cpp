@@ -3,7 +3,6 @@
 #include <computefhe/AEOptimized.h>
 #include <computefhe/ComputeFHE.h>
 
-#include <computefhe/ComputeFHE.h>
 #include <iostream>
 using namespace computefhe;
 

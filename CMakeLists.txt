@@ -89,3 +89,21 @@ target_include_directories(computefhe
     PUBLIC
         ${PROJECT_SOURCE_DIR}/include
 )
+
+find_program(CLANG_FORMAT "clang-format")
+if(CLANG_FORMAT)
+    file(GLOB_RECURSE FORMAT_SOURCES
+        ${PROJECT_SOURCE_DIR}/app/*.cpp
+        ${PROJECT_SOURCE_DIR}/include/*.h
+        ${PROJECT_SOURCE_DIR}/src/*.cpp
+        ${PROJECT_SOURCE_DIR}/src/*.h
+        ${PROJECT_SOURCE_DIR}/tests/*.cpp
+        ${PROJECT_SOURCE_DIR}/tests/*.h
+    )
+    add_custom_target(format
+        COMMAND ${CLANG_FORMAT} -style=file -i ${FORMAT_SOURCES}
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "Formatting sources with clang-format"
+    )
+    add_dependencies(computefhe format)
+endif()

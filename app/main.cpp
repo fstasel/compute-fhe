@@ -5,7 +5,7 @@ using namespace computefhe;
 using namespace std;
 
 void test_eint() {
-    Ebool::Init(CCPARAM_TOY, AE_OPTIMIZED);
+    computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED);
 
     Ebool a = true;
     Eint8 b = -1;

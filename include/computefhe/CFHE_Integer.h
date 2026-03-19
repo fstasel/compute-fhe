@@ -6,6 +6,9 @@
 using namespace std;
 
 namespace computefhe {
+    void Init(CryptoContextParam = CCPARAM_STD128_3,
+              ArithmeticsEngineType = AE_OPTIMIZED);
+
     template <class T, bool isSigned> class CFHE_Integer {
       protected:
         FixedPoint data;
@@ -22,9 +25,6 @@ namespace computefhe {
         CFHE_Integer(const FixedPoint &fp, bool is_signed);
         CFHE_Integer(const CFHE_Integer &other);
         ~CFHE_Integer();
-
-        static void Init(CryptoContextParam = CCPARAM_STD128_3,
-                         ArithmeticsEngineType = AE_OPTIMIZED);
 
         virtual CFHE_Integer<bool, false> operator==(const CFHE_Integer &);
         virtual CFHE_Integer<bool, false> operator!=(const CFHE_Integer &);

@@ -4,6 +4,13 @@ using namespace computefhe;
 
 static ComputeFHE *cfhe_base = nullptr;
 
+void computefhe::Init(CryptoContextParam cc_param,
+                      ArithmeticsEngineType ae_type) {
+    if (cfhe_base != nullptr)
+        delete cfhe_base;
+    cfhe_base = new ComputeFHE(cc_param, ae_type);
+}
+
 template <class T, bool isSigned>
 void computefhe::CFHE_Integer<T, isSigned>::fixSize(bool is_signed) {
     size_t s = SIZEOF(T);
@@ -65,14 +72,6 @@ computefhe::CFHE_Integer<T, isSigned>::CFHE_Integer(const CFHE_Integer &other) {
 
 template <class T, bool isSigned> CFHE_Integer<T, isSigned>::~CFHE_Integer() {
     // empty
-}
-
-template <class T, bool isSigned>
-void CFHE_Integer<T, isSigned>::Init(CryptoContextParam cc_param,
-                                     ArithmeticsEngineType ae_type) {
-    if (cfhe_base != nullptr)
-        delete cfhe_base;
-    cfhe_base = new ComputeFHE(cc_param, ae_type);
 }
 
 template <class T, bool isSigned>

@@ -35,10 +35,13 @@ void test_arithmetic_operators() {
 void test_logic_operators() {
     Euint16 x = 0x1111;
     Euint16 y = 0x3333;
-    
+
     cout << "&: " << (x & y) << endl;
     cout << "|: " << (x | y) << endl;
     cout << "^: " << (x ^ y) << endl;
+    cout << "& 0x00FF: " << (x & 0x00FF) << endl;
+    cout << "| 0x00FF: " << (x | 0x00FF) << endl;
+    cout << "ˆ 0x00FF: " << (x ^ 0x00FF) << endl;
 }
 
 int main() {

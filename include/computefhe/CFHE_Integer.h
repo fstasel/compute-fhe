@@ -33,22 +33,22 @@ namespace computefhe {
         virtual CFHE_Integer<bool, false> operator<(const CFHE_Integer &);
         virtual CFHE_Integer<bool, false> operator<=(const CFHE_Integer &);
         virtual CFHE_Integer operator+(const CFHE_Integer &);
-        virtual CFHE_Integer operator+(T);
+        template <class U> CFHE_Integer operator+(U);
         virtual CFHE_Integer operator-(const CFHE_Integer &);
-        virtual CFHE_Integer operator-(T);
+        template <class U> CFHE_Integer operator-(U);
         virtual CFHE_Integer operator*(const CFHE_Integer &);
-        virtual CFHE_Integer operator*(T);
+        template <class U> CFHE_Integer operator*(U);
         virtual CFHE_Integer operator-();
         virtual CFHE_Integer operator&(const CFHE_Integer &);
-        // virtual CFHE_Integer operator&(T);
+        template <class U> CFHE_Integer operator&(U);
         virtual CFHE_Integer operator|(const CFHE_Integer &);
-        // virtual CFHE_Integer operator|(T);
+        template <class U> CFHE_Integer operator|(U);
         virtual CFHE_Integer operator^(const CFHE_Integer &);
-        // virtual CFHE_Integer operator^(T);
+        template <class U> CFHE_Integer operator^(U);
 
-        virtual operator T() const;
+        virtual operator T();
 
-        template <class U, bool S> operator CFHE_Integer<U, S>() const;
+        template <class U, bool S> operator CFHE_Integer<U, S>();
 
         template <class U, bool S>
         friend ostream &operator<<(ostream &out, const CFHE_Integer<U, S> &obj);

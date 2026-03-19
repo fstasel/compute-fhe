@@ -147,9 +147,10 @@ CFHE_Integer<T, isSigned>::operator+(const CFHE_Integer &other) {
 }
 
 template <class T, bool isSigned>
-CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator+(T other) {
+template <class U>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator+(U other) {
     return *this + CFHE_Integer(cfhe_base->GetConstantInt(other, size),
-                                std::is_signed_v<T>);
+                                std::is_signed_v<U>);
 }
 
 template <class T, bool isSigned>
@@ -161,9 +162,10 @@ CFHE_Integer<T, isSigned>::operator-(const CFHE_Integer &other) {
 }
 
 template <class T, bool isSigned>
-CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator-(T other) {
+template <class U>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator-(U other) {
     return *this - CFHE_Integer(cfhe_base->GetConstantInt(other, size),
-                                std::is_signed_v<T>);
+                                std::is_signed_v<U>);
 }
 
 template <class T, bool isSigned>
@@ -175,9 +177,10 @@ CFHE_Integer<T, isSigned>::operator*(const CFHE_Integer &other) {
 }
 
 template <class T, bool isSigned>
-CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator*(T other) {
+template <class U>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator*(U other) {
     return *this * CFHE_Integer(cfhe_base->GetConstantInt(other, size),
-                                std::is_signed_v<T>);
+                                std::is_signed_v<U>);
 }
 
 template <class T, bool isSigned>
@@ -197,6 +200,13 @@ CFHE_Integer<T, isSigned>::operator&(const CFHE_Integer &other) {
 }
 
 template <class T, bool isSigned>
+template <class U>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator&(U other) {
+    return *this & CFHE_Integer(cfhe_base->GetConstantInt(other, size),
+                                std::is_signed_v<U>);
+}
+
+template <class T, bool isSigned>
 CFHE_Integer<T, isSigned>
 CFHE_Integer<T, isSigned>::operator|(const CFHE_Integer &other) {
     FixedPoint fp(SIZEOF(T));
@@ -205,6 +215,13 @@ CFHE_Integer<T, isSigned>::operator|(const CFHE_Integer &other) {
                                                           other.data[i]);
     }
     return CFHE_Integer(fp, isSigned || other.is_signed);
+}
+
+template <class T, bool isSigned>
+template <class U>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator|(U other) {
+    return *this | CFHE_Integer(cfhe_base->GetConstantInt(other, size),
+                                std::is_signed_v<U>);
 }
 
 template <class T, bool isSigned>
@@ -219,13 +236,19 @@ CFHE_Integer<T, isSigned>::operator^(const CFHE_Integer &other) {
 }
 
 template <class T, bool isSigned>
-CFHE_Integer<T, isSigned>::operator T() const {
+template <class U>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator^(U other) {
+    return *this ^ CFHE_Integer(cfhe_base->GetConstantInt(other, size),
+                                std::is_signed_v<U>);
+}
+
+template <class T, bool isSigned> CFHE_Integer<T, isSigned>::operator T() {
     return (T)cfhe_base->DecryptInt(data, size);
 }
 
 template <class T, bool isSigned>
 template <class U, bool S>
-CFHE_Integer<T, isSigned>::operator CFHE_Integer<U, S>() const {
+CFHE_Integer<T, isSigned>::operator CFHE_Integer<U, S>() {
     return CFHE_Integer<U, S>(data, is_signed);
 }
 
@@ -255,32 +278,132 @@ ostream &computefhe::operator<<(ostream &out, const CFHE_Integer<U, S> &obj) {
 CFHE_TYPES(INSTANTIATE_CFHE_INTEGER)
 
 #define INSTANTIATE_CAST(FROM_T, FROM_S)                                       \
-    template CFHE_Integer<FROM_T,                                              \
-                          FROM_S>::operator CFHE_Integer<bool, false>() const; \
+    template CFHE_Integer<FROM_T, FROM_S>::operator CFHE_Integer<bool,         \
+                                                                 false>();     \
     template CFHE_Integer<FROM_T, FROM_S>::operator CFHE_Integer<uint8_t,      \
-                                                                 false>()      \
-        const;                                                                 \
+                                                                 false>();     \
     template CFHE_Integer<FROM_T, FROM_S>::operator CFHE_Integer<uint16_t,     \
-                                                                 false>()      \
-        const;                                                                 \
+                                                                 false>();     \
     template CFHE_Integer<FROM_T, FROM_S>::operator CFHE_Integer<uint32_t,     \
-                                                                 false>()      \
-        const;                                                                 \
+                                                                 false>();     \
     template CFHE_Integer<FROM_T, FROM_S>::operator CFHE_Integer<uint64_t,     \
-                                                                 false>()      \
-        const;                                                                 \
+                                                                 false>();     \
     template CFHE_Integer<FROM_T, FROM_S>::operator CFHE_Integer<int8_t,       \
-                                                                 true>()       \
-        const;                                                                 \
+                                                                 true>();      \
     template CFHE_Integer<FROM_T, FROM_S>::operator CFHE_Integer<int16_t,      \
-                                                                 true>()       \
-        const;                                                                 \
+                                                                 true>();      \
     template CFHE_Integer<FROM_T, FROM_S>::operator CFHE_Integer<int32_t,      \
-                                                                 true>()       \
-        const;                                                                 \
+                                                                 true>();      \
     template CFHE_Integer<FROM_T, FROM_S>::operator CFHE_Integer<int64_t,      \
-                                                                 true>()       \
-        const;
+                                                                 true>();      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+    CFHE_Integer<FROM_T, FROM_S>::operator+(bool);                             \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator+(uint8_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator+(uint16_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator+(uint32_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator+(uint64_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator+(int8_t);                       \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator+(int16_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator+(int32_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator+(int64_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+    CFHE_Integer<FROM_T, FROM_S>::operator-(bool);                             \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator-(uint8_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator-(uint16_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator-(uint32_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator-(uint64_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator-(int8_t);                       \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator-(int16_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator-(int32_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator-(int64_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+    CFHE_Integer<FROM_T, FROM_S>::operator*(bool);                             \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator*(uint8_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator*(uint16_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator*(uint32_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator*(uint64_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator*(int8_t);                       \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator*(int16_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator*(int32_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator*(int64_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+    CFHE_Integer<FROM_T, FROM_S>::operator&(bool);                             \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator&(uint8_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator&(uint16_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator&(uint32_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator&(uint64_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator&(int8_t);                       \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator&(int16_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator&(int32_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator&(int64_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+    CFHE_Integer<FROM_T, FROM_S>::operator|(bool);                             \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator|(uint8_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator|(uint16_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator|(uint32_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator|(uint64_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator|(int8_t);                       \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator|(int16_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator|(int32_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator|(int64_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+    CFHE_Integer<FROM_T, FROM_S>::operator^(bool);                             \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator^(uint8_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator^(uint16_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator^(uint32_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator^(uint64_t);                     \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator^(int8_t);                       \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator^(int16_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator^(int32_t);                      \
+    template CFHE_Integer<FROM_T, FROM_S>                                      \
+        CFHE_Integer<FROM_T, FROM_S>::operator^(int64_t);
 
 INSTANTIATE_CAST(bool, false)
 INSTANTIATE_CAST(uint8_t, false)

@@ -42,10 +42,25 @@ computefhe::CFHE_Integer<T, isSigned>::CFHE_Integer(const FixedPoint &fp,
                                                     bool is_signed) {
     if (cfhe_base == nullptr)
         Init();
-    data = fp;
+    data.resize(fp.size());
+    for (size_t i = 0; i < data.size(); i++) {
+        data[i] = COPY_CT(fp[i]);
+    }
     size = SIZEOF(T);
     this->is_signed = isSigned;
     fixSize(is_signed);
+}
+
+template <class T, bool isSigned>
+computefhe::CFHE_Integer<T, isSigned>::CFHE_Integer(const CFHE_Integer &other) {
+    if (cfhe_base == nullptr)
+        Init();
+    data.resize(SIZEOF(T));
+    for (size_t i = 0; i < data.size(); i++) {
+        data[i] = COPY_CT(other.data[i]);
+    }
+    size = SIZEOF(T);
+    is_signed = isSigned;
 }
 
 template <class T, bool isSigned> CFHE_Integer<T, isSigned>::~CFHE_Integer() {

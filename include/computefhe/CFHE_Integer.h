@@ -39,6 +39,12 @@ namespace computefhe {
         virtual CFHE_Integer operator*(const CFHE_Integer &);
         virtual CFHE_Integer operator*(T);
         virtual CFHE_Integer operator-();
+        virtual CFHE_Integer operator&(const CFHE_Integer &);
+        // virtual CFHE_Integer operator&(T);
+        virtual CFHE_Integer operator|(const CFHE_Integer &);
+        // virtual CFHE_Integer operator|(T);
+        virtual CFHE_Integer operator^(const CFHE_Integer &);
+        // virtual CFHE_Integer operator^(T);
 
         virtual operator T() const;
 

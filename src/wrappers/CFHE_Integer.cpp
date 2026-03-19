@@ -186,6 +186,39 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator-() {
 }
 
 template <class T, bool isSigned>
+CFHE_Integer<T, isSigned>
+CFHE_Integer<T, isSigned>::operator&(const CFHE_Integer &other) {
+    FixedPoint fp(SIZEOF(T));
+    for (size_t i = 0; i < fp.size(); i++) {
+        fp[i] = cfhe_base->GetBinFHEContext().EvalBinGate(
+            lbcrypto::AND, data[i], other.data[i]);
+    }
+    return CFHE_Integer(fp, isSigned || other.is_signed);
+}
+
+template <class T, bool isSigned>
+CFHE_Integer<T, isSigned>
+CFHE_Integer<T, isSigned>::operator|(const CFHE_Integer &other) {
+    FixedPoint fp(SIZEOF(T));
+    for (size_t i = 0; i < fp.size(); i++) {
+        fp[i] = cfhe_base->GetBinFHEContext().EvalBinGate(lbcrypto::OR, data[i],
+                                                          other.data[i]);
+    }
+    return CFHE_Integer(fp, isSigned || other.is_signed);
+}
+
+template <class T, bool isSigned>
+CFHE_Integer<T, isSigned>
+CFHE_Integer<T, isSigned>::operator^(const CFHE_Integer &other) {
+    FixedPoint fp(SIZEOF(T));
+    for (size_t i = 0; i < fp.size(); i++) {
+        fp[i] = cfhe_base->GetBinFHEContext().EvalBinGate(
+            lbcrypto::XOR, data[i], other.data[i]);
+    }
+    return CFHE_Integer(fp, isSigned || other.is_signed);
+}
+
+template <class T, bool isSigned>
 CFHE_Integer<T, isSigned>::operator T() const {
     return (T)cfhe_base->DecryptInt(data, size);
 }

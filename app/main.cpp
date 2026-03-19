@@ -4,7 +4,7 @@
 using namespace computefhe;
 using namespace std;
 
-void test_eint() {
+void test_arithmetic_operators() {
     computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED);
 
     Ebool a = true;
@@ -32,7 +32,17 @@ void test_eint() {
          << "k: " << k << endl;
 }
 
+void test_logic_operators() {
+    Euint16 x = 0x1111;
+    Euint16 y = 0x3333;
+    
+    cout << "&: " << (x & y) << endl;
+    cout << "|: " << (x | y) << endl;
+    cout << "^: " << (x ^ y) << endl;
+}
+
 int main() {
-    test_eint();
+    // test_arithmetic_operators();
+    test_logic_operators();
     return 0;
 }

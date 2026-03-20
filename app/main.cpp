@@ -5,8 +5,6 @@ using namespace computefhe;
 using namespace std;
 
 void test_arithmetic_operators() {
-    computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED);
-
     Ebool a = true;
     Eint8 b = -1;
     Euint8 c = -1;
@@ -45,6 +43,7 @@ void test_logic_operators() {
 }
 
 int main() {
+    computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED);
     // test_arithmetic_operators();
     test_logic_operators();
     return 0;

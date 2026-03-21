@@ -335,6 +335,35 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator^=(U other) {
                                  std::is_signed_v<U>);
 }
 
+template <class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator<<(int s) {
+    int sz = (int)size;
+    FixedPoint fp(size);
+    s = clamp<int>(s, 0, size - 1);
+    for (int i = sz - 1; i >= 0; i--) {
+        fp[i] = (i - s < 0)
+                    ? cfhe_base->GetArithmeticsEngine()->GetConstantFalse()
+                    : data[i - s];
+    }
+    return CFHE_Integer<T, isSigned>(fp, isSigned);
+}
+
+template <class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator>>(int s) {
+    int sz = (int)size;
+    FixedPoint fp(size);
+    s = clamp<int>(s, 0, size - 1);
+    for (int i = 0; i < sz; i++) {
+        fp[i] =
+            (i + s >= sz)
+                ? (is_signed
+                       ? data[fp.size() - 1]
+                       : cfhe_base->GetArithmeticsEngine()->GetConstantFalse())
+                : data[i + s];
+    }
+    return CFHE_Integer<T, isSigned>(fp, isSigned);
+}
+
 template <class T, bool isSigned> CFHE_Integer<T, isSigned>::operator T() {
     return (T)cfhe_base->DecryptInt(data, size);
 }

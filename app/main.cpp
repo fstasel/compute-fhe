@@ -1,6 +1,5 @@
 #include <computefhe/CFHE_Integer.h>
 #include <computefhe/ComputeFHE.h>
-#include <iomanip>
 
 using namespace computefhe;
 using namespace std;
@@ -88,13 +87,40 @@ void test_logic_assignment_operators() {
     cout << "(y ^= 0x2222) x: " << x << ", y: " << y << endl;
 }
 
+void test_shift_operators() {
+    for (int i = 0; i < 20; i++) {
+        Euint16 x = 50;
+        Euint16 y = 50;
+        Eint16 z = -50;
+        Eint16 t = -50;
+        uint16_t xx = 50;
+        uint16_t yy = 50;
+        int16_t zz = -50;
+        int16_t tt = -50;
+        x = x << i;
+        y = y >> i;
+        z = z << i;
+        t = t >> i;
+        xx = xx << i;
+        yy = yy >> i;
+        zz = zz << i;
+        tt = tt >> i;
+        cout << "i = " << i << endl
+             << "  x = " << x << " --- " << xx << endl
+             << "  y = " << y << " --- " << yy << endl
+             << "  z = " << z << " --- " << zz << endl
+             << "  t = " << t << " --- " << tt << endl;
+    }
+}
+
 int main() {
     computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED);
 
-    // test_arithmetic_operators();
-    // test_arithmetic_assignment_operators();
-    // test_logic_operators();
+    test_arithmetic_operators();
+    test_arithmetic_assignment_operators();
+    test_logic_operators();
     test_logic_assignment_operators();
+    test_shift_operators();
 
     return 0;
 }

@@ -1,5 +1,6 @@
 #include <computefhe/CFHE_Integer.h>
 #include <computefhe/ComputeFHE.h>
+#include <iomanip>
 
 using namespace computefhe;
 using namespace std;
@@ -66,12 +67,34 @@ void test_logic_operators() {
     cout << "ˆ 0x00FF: " << (x ^ 0x00FF) << endl;
 }
 
+void test_logic_assignment_operators() {
+    Euint16 x = 0x5555;
+    Euint16 y = 0x3333;
+    cout << "x: " << x << ", y: " << y << endl;
+
+    x &= y;
+    cout << "(x &= y)      x: " << x << ", y: " << y << endl;
+
+    x &= 0xFFFF;
+    cout << "(x &= 0xFFFF) x: " << x << ", y: " << y << endl;
+
+    y |= 0x8888;
+    cout << "(y |= 0x8888) x: " << x << ", y: " << y << endl;
+
+    x ^= 0x2222;
+    cout << "(x ^= 0x2222) x: " << x << ", y: " << y << endl;
+
+    y ^= 0x2222;
+    cout << "(y ^= 0x2222) x: " << x << ", y: " << y << endl;
+}
+
 int main() {
     computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED);
 
     // test_arithmetic_operators();
-    test_arithmetic_assignment_operators();
+    // test_arithmetic_assignment_operators();
     // test_logic_operators();
+    test_logic_assignment_operators();
 
     return 0;
 }

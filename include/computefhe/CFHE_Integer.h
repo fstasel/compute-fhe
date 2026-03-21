@@ -45,6 +45,8 @@ namespace computefhe {
         template <class U> CFHE_Integer operator|(U);
         virtual CFHE_Integer operator^(const CFHE_Integer &);
         template <class U> CFHE_Integer operator^(U);
+        virtual CFHE_Integer operator<<(int);
+        virtual CFHE_Integer operator>>(int);
 
         virtual operator T();
 

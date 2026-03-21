@@ -5,8 +5,6 @@ using namespace computefhe;
 using namespace std;
 
 void test_arithmetic_operators() {
-    computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED);
-
     Ebool a = true;
     Eint8 b = -1;
     Euint8 c = -1;
@@ -32,6 +30,30 @@ void test_arithmetic_operators() {
          << "k: " << k << endl;
 }
 
+void test_arithmetic_assignment_operators() {
+    Eint16 x = 10;
+    Eint16 y = 3;
+    cout << "(orig) x: " << x << ", y: " << y << endl;
+
+    x += y;
+    cout << "(x+=y) x: " << x << ", y: " << y << endl;
+
+    y += 3;
+    cout << "(y+=3) x: " << x << ", y: " << y << endl;
+
+    x -= y;
+    cout << "(x-=y) x: " << x << ", y: " << y << endl;
+
+    x -= 5;
+    cout << "(x-=5) x: " << x << ", y: " << y << endl;
+
+    x *= y;
+    cout << "(x*=y) x: " << x << ", y: " << y << endl;
+
+    x *= 2;
+    cout << "(x*=2) x: " << x << ", y: " << y << endl;
+}
+
 void test_logic_operators() {
     Euint16 x = 0x1111;
     Euint16 y = 0x3333;
@@ -45,7 +67,11 @@ void test_logic_operators() {
 }
 
 int main() {
+    computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED);
+
     // test_arithmetic_operators();
-    test_logic_operators();
+    test_arithmetic_assignment_operators();
+    // test_logic_operators();
+
     return 0;
 }

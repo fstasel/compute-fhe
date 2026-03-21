@@ -349,6 +349,18 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator<<(int s) {
 }
 
 template <class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator<<=(int s) {
+    int sz = (int)size;
+    s = clamp<int>(s, 0, size - 1);
+    for (int i = sz - 1; i >= 0; i--) {
+        data[i] = (i - s < 0)
+                      ? cfhe_base->GetArithmeticsEngine()->GetConstantFalse()
+                      : data[i - s];
+    }
+    return *this;
+}
+
+template <class T, bool isSigned>
 CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator>>(int s) {
     int sz = (int)size;
     FixedPoint fp(size);
@@ -362,6 +374,21 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator>>(int s) {
                 : data[i + s];
     }
     return CFHE_Integer<T, isSigned>(fp, isSigned);
+}
+
+template <class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator>>=(int s) {
+    int sz = (int)size;
+    s = clamp<int>(s, 0, size - 1);
+    for (int i = 0; i < sz; i++) {
+        data[i] =
+            (i + s >= sz)
+                ? (is_signed
+                       ? data[size - 1]
+                       : cfhe_base->GetArithmeticsEngine()->GetConstantFalse())
+                : data[i + s];
+    }
+    return *this;
 }
 
 template <class T, bool isSigned> CFHE_Integer<T, isSigned>::operator T() {

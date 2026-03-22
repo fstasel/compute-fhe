@@ -11,6 +11,12 @@ void computefhe::Init(CryptoContextParam cc_param,
     cfhe_base = new ComputeFHE(cc_param, ae_type);
 }
 
+void computefhe::Finalize() {
+    if (cfhe_base != nullptr)
+        delete cfhe_base;
+    cfhe_base = nullptr;
+}
+
 template <class T, bool isSigned>
 void computefhe::CFHE_Integer<T, isSigned>::fixSize(bool is_signed) {
     size_t s = SIZEOF(T);

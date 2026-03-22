@@ -9,6 +9,8 @@ namespace computefhe {
     void Init(CryptoContextParam = CCPARAM_STD128_3,
               ArithmeticsEngineType = AE_OPTIMIZED);
 
+    void Finalize();
+
     template <class T, bool isSigned> class CFHE_Integer {
       protected:
         FixedPoint data;

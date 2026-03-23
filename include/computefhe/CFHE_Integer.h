@@ -34,6 +34,13 @@ namespace computefhe {
         virtual CFHE_Integer<bool, false> operator>=(const CFHE_Integer &);
         virtual CFHE_Integer<bool, false> operator<(const CFHE_Integer &);
         virtual CFHE_Integer<bool, false> operator<=(const CFHE_Integer &);
+        // TODO: Implement comparison operators with plaintext integers
+        //       template <class U> CFHE_Integer<bool, false> operator==(U);
+        //       template <class U> CFHE_Integer<bool, false> operator!=(U);
+        //       template <class U> CFHE_Integer<bool, false> operator>(U);
+        //       template <class U> CFHE_Integer<bool, false> operator>=(U);
+        //       template <class U> CFHE_Integer<bool, false> operator<(U);
+        //       template <class U> CFHE_Integer<bool, false> operator<=(U);
         virtual CFHE_Integer operator+(const CFHE_Integer &);
         template <class U> CFHE_Integer operator+(U);
         virtual CFHE_Integer operator+=(const CFHE_Integer &);

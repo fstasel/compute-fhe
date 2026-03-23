@@ -5,29 +5,11 @@ using namespace computefhe;
 using namespace std;
 
 void test_arithmetic_operators() {
-    Ebool a = true;
-    Eint8 b = -1;
-    Euint8 c = -1;
-    Eint16 d = -1;
-    Euint16 e = -1;
-    Eint32 f = -1;
-    Euint32 g = -1;
-    Eint64 h = -1;
-    Euint64 i = -1;
-    Eint8 j = -1;
-    Ebool k = (e == b);
+    Eint32 a = -20000;
+    Eint32 b = -30000;
+    Eint16 c = a + 50000;
 
-    cout << "a: " << a << endl
-         << "b: " << b << endl
-         << "c: " << c << endl
-         << "d: " << d << endl
-         << "e: " << e << endl
-         << "f: " << f << endl
-         << "g: " << g << endl
-         << "h: " << h << endl
-         << "i: " << i << endl
-         << "j: " << j << endl
-         << "k: " << k << endl;
+    cout << "a: " << a << endl << "b: " << b << endl << "c: " << c << endl;
 }
 
 void test_arithmetic_assignment_operators() {
@@ -57,34 +39,47 @@ void test_arithmetic_assignment_operators() {
 void test_logic_operators() {
     Euint16 x = 0x1111;
     Euint16 y = 0x3333;
+    uint16_t xx = 0x1111;
+    uint16_t yy = 0x3333;
 
-    cout << "&: " << (x & y) << endl;
-    cout << "|: " << (x | y) << endl;
-    cout << "^: " << (x ^ y) << endl;
-    cout << "& 0x00FF: " << (x & 0x00FF) << endl;
-    cout << "| 0x00FF: " << (x | 0x00FF) << endl;
-    cout << "ˆ 0x00FF: " << (x ^ 0x00FF) << endl;
+    cout << "&: " << (x & y) << "  Expected: " << (xx & yy) << endl;
+    cout << "|: " << (x | y) << "  Expected: " << (xx | yy) << endl;
+    cout << "^: " << (x ^ y) << "  Expected: " << (xx ^ yy) << endl;
+    cout << "x: " << x << endl;
+    cout << "x & 0x00FF: " << (x & 0x00FF) << "  Expected: " << (xx & 0x00FF)
+         << endl;
+    cout << "x | 0x00FF: " << (x | 0x00FF) << "  Expected: " << (xx | 0x00FF)
+         << endl;
+    cout << "x ˆ 0x00FF: " << (x ^ 0x00FF) << "  Expected: " << (xx ^ 0x00FF)
+         << endl;
 }
 
 void test_logic_assignment_operators() {
-    Euint16 x = 0x5555;
+    Euint16 x = 0x1111;
     Euint16 y = 0x3333;
-    cout << "x: " << x << ", y: " << y << endl;
+    uint16_t xx = 0x1111;
+    uint16_t yy = 0x3333;
 
-    x &= y;
-    cout << "(x &= y)      x: " << x << ", y: " << y << endl;
-
-    x &= 0xFFFF;
-    cout << "(x &= 0xFFFF) x: " << x << ", y: " << y << endl;
-
-    y |= 0x8888;
-    cout << "(y |= 0x8888) x: " << x << ", y: " << y << endl;
-
-    x ^= 0x2222;
-    cout << "(x ^= 0x2222) x: " << x << ", y: " << y << endl;
-
-    y ^= 0x2222;
-    cout << "(y ^= 0x2222) x: " << x << ", y: " << y << endl;
+    cout << "&=: " << (x &= y) << "  Expected: " << (xx &= yy) << endl;
+    x = 0x1111;
+    xx = 0x1111;
+    cout << "|=: " << (x |= y) << "  Expected: " << (xx |= yy) << endl;
+    x = 0x1111;
+    xx = 0x1111;
+    cout << "^=: " << (x ^= y) << "  Expected: " << (xx ^= yy) << endl;
+    x = 0x1111;
+    xx = 0x1111;
+    cout << "x: " << x << endl;
+    cout << "x &= 0x00FF: " << (x &= 0x00FF) << "  Expected: " << (xx &= 0x00FF)
+         << endl;
+    x = 0x1111;
+    xx = 0x1111;
+    cout << "x |= 0x00FF: " << (x |= 0x00FF) << "  Expected: " << (xx |= 0x00FF)
+         << endl;
+    x = 0x1111;
+    xx = 0x1111;
+    cout << "x ˆ= 0x00FF: " << (x ^= 0x00FF) << "  Expected: " << (xx ^= 0x00FF)
+         << endl;
 }
 
 void test_shift_operators() {
@@ -144,10 +139,10 @@ int main() {
 
     // test_arithmetic_operators();
     // test_arithmetic_assignment_operators();
-    // test_logic_operators();
-    // test_logic_assignment_operators();
+    test_logic_operators();
+    test_logic_assignment_operators();
     // test_shift_operators();
-    test_shift_assign_operators();
+    // test_shift_assign_operators();
 
     return 0;
 }

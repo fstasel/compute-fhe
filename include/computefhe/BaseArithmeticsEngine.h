@@ -22,6 +22,20 @@ namespace computefhe {
         LWECiphertext GetConstantFalse();
         LWECiphertext GetConstantTrue();
 
+        virtual LWECiphertext Gate_AND(ConstLWECiphertext &a,
+                                       ConstLWECiphertext &b);
+        virtual LWECiphertext Gate_NAND(ConstLWECiphertext &a,
+                                        ConstLWECiphertext &b);
+        virtual LWECiphertext Gate_OR(ConstLWECiphertext &a,
+                                      ConstLWECiphertext &b);
+        virtual LWECiphertext Gate_NOR(ConstLWECiphertext &a,
+                                       ConstLWECiphertext &b);
+        virtual LWECiphertext Gate_XOR(ConstLWECiphertext &a,
+                                       ConstLWECiphertext &b);
+        virtual LWECiphertext Gate_XNOR(ConstLWECiphertext &a,
+                                        ConstLWECiphertext &b);
+        virtual LWECiphertext Gate_NOT(ConstLWECiphertext &a);
+
         virtual void HalfAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
                                LWECiphertext &sum,
                                LWECiphertext &carry_out) = 0;

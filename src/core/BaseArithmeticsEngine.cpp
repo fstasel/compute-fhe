@@ -31,6 +31,47 @@ LWECiphertext BaseArithmeticsEngine::GetConstantTrue() {
     return COPY_CT(constant_true);
 }
 
+LWECiphertext
+computefhe::BaseArithmeticsEngine::Gate_AND(ConstLWECiphertext &a,
+                                            ConstLWECiphertext &b) {
+    return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::AND, a, b);
+}
+
+LWECiphertext
+computefhe::BaseArithmeticsEngine::Gate_NAND(ConstLWECiphertext &a,
+                                             ConstLWECiphertext &b) {
+    return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::NAND, a, b);
+}
+
+LWECiphertext
+computefhe::BaseArithmeticsEngine::Gate_OR(ConstLWECiphertext &a,
+                                           ConstLWECiphertext &b) {
+    return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::OR, a, b);
+}
+
+LWECiphertext
+computefhe::BaseArithmeticsEngine::Gate_NOR(ConstLWECiphertext &a,
+                                            ConstLWECiphertext &b) {
+    return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::NOR, a, b);
+}
+
+LWECiphertext
+computefhe::BaseArithmeticsEngine::Gate_XOR(ConstLWECiphertext &a,
+                                            ConstLWECiphertext &b) {
+    return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::XOR, a, b);
+}
+
+LWECiphertext
+computefhe::BaseArithmeticsEngine::Gate_XNOR(ConstLWECiphertext &a,
+                                             ConstLWECiphertext &b) {
+    return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::XNOR, a, b);
+}
+
+LWECiphertext
+computefhe::BaseArithmeticsEngine::Gate_NOT(ConstLWECiphertext &a) {
+    return cfhe_base->GetBinFHEContext().EvalNOT(a);
+}
+
 FixedPoint BaseArithmeticsEngine::ToggleMSB(const FixedPoint &a) {
     auto &cc = cfhe_base->GetBinFHEContext();
     FixedPoint t = FixedPoint(a);

@@ -36,6 +36,24 @@ void test_arithmetic_assignment_operators() {
     cout << "(x*=2) x: " << x << ", y: " << y << endl;
 }
 
+void test_comparison_operators() {
+    Eint16 x = -3;
+    Eint16 y = 10;
+    cout << "x: " << x << ", y: " << y << endl;
+    cout << "x == y: " << (x == y) << endl;
+    cout << "x != y: " << (x != y) << endl;
+    cout << "x > y: " << (x > y) << endl;
+    cout << "x >= y: " << (x >= y) << endl;
+    cout << "x < y: " << (x < y) << endl;
+    cout << "x <= y: " << (x <= y) << endl;
+    cout << "x == 10: " << (x == 10) << endl;
+    cout << "x != 10: " << (x != 10) << endl;
+    cout << "x > 10: " << (x > 10) << endl;
+    cout << "x >= 10: " << (x >= 10) << endl;
+    cout << "x < 10: " << (x < 10) << endl;
+    cout << "x <= 10: " << (x <= 10) << endl;
+}
+
 void test_logic_operators() {
     Euint16 x = 0x1111;
     Euint16 y = 0x3333;
@@ -139,8 +157,9 @@ int main() {
 
     // test_arithmetic_operators();
     // test_arithmetic_assignment_operators();
-    test_logic_operators();
-    test_logic_assignment_operators();
+    test_comparison_operators();
+    // test_logic_operators();
+    // test_logic_assignment_operators();
     // test_shift_operators();
     // test_shift_assign_operators();
 

@@ -70,6 +70,12 @@ namespace computefhe {
         template <class U> CFHE_Integer operator^(U);
         virtual CFHE_Integer operator^=(const CFHE_Integer &);
         template <class U> CFHE_Integer operator^=(U);
+        template <class U, bool S>
+        CFHE_Integer<bool, false> operator&&(const CFHE_Integer<U, S> &);
+        template <class U> CFHE_Integer<bool, false> operator&&(U);
+        template <class U, bool S>
+        CFHE_Integer<bool, false> operator||(const CFHE_Integer<U, S> &);
+        template <class U> CFHE_Integer<bool, false> operator||(U);
 
         // Shift operators
         virtual CFHE_Integer operator<<(int);

@@ -469,6 +469,20 @@ Ebool CFHE_Integer<T, isSigned>::operator||(U other) {
 }
 
 template <class T, bool isSigned>
+CFHE_Integer<bool, false> CFHE_Integer<T, isSigned>::operator!() {
+    LWECiphertext r = data[0];
+    for (size_t i = 1; i < size; i++) {
+        r = cfhe_base->GetArithmeticsEngine()->Gate_OR(r, data[i]);
+    }
+    return Ebool({cfhe_base->GetArithmeticsEngine()->Gate_NOT(r)}, false);
+}
+
+template <class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator~() {
+    return *this ^ 0xFFFFFFFFFFFFFFFFUL;
+}
+
+template <class T, bool isSigned>
 CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator<<(int s) {
     int sz = (int)size;
     FixedPoint fp(size);

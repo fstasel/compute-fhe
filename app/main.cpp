@@ -80,6 +80,10 @@ void test_logic_operators() {
     cout << "a || b: " << (a || b) << endl;
     cout << "b || 100: " << (b || 100) << endl;
     cout << "b || 0: " << (b || 0) << endl;
+    cout << "!a: " << (!a) << endl;
+    cout << "~a: " << (~a) << endl;
+    cout << "!b: " << (!b) << endl;
+    cout << "~b: " << (~b) << endl;
 }
 
 void test_logic_assignment_operators() {

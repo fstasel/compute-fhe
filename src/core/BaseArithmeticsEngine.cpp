@@ -78,3 +78,15 @@ FixedPoint BaseArithmeticsEngine::ToggleMSB(const FixedPoint &a) {
     t.back() = cc.EvalNOT(t.back());
     return t;
 }
+
+FixedPoint BaseArithmeticsEngine::Mux(LWECiphertext s, const FixedPoint a,
+                                      const FixedPoint b) {
+    assert(a.size() == b.size());
+    size_t n_digit = a.size();
+
+    FixedPoint out(n_digit);
+    for (size_t i = 0; i < n_digit; i++) {
+        out[i] = Mux(s, a[i], b[i]);
+    }
+    return out;
+}

@@ -22,5 +22,6 @@ namespace computefhe {
         LWECiphertext CmpGT_U(const FixedPoint &a, const FixedPoint &b);
         FixedPoint FullMul(const FixedPoint &a, const FixedPoint &b);
         FixedPoint Mul(const FixedPoint &a, const FixedPoint &b);
+        LWECiphertext Mux(LWECiphertext s, LWECiphertext a, LWECiphertext b);
     };
 } // namespace computefhe

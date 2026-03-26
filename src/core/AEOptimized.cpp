@@ -123,3 +123,13 @@ FixedPoint AEOptimized::Mul(const FixedPoint &a, const FixedPoint &b) {
     }
     return out;
 }
+
+LWECiphertext AEOptimized::Mux(LWECiphertext s, LWECiphertext a,
+                               LWECiphertext b) {
+    auto &cc = cfhe_base->GetBinFHEContext();
+    auto &lwe = cc.GetLWEScheme();
+    LWECiphertext t = cc.EvalBinGate(OR, s, a);
+    lwe->EvalAddEq(t, t);
+    lwe->EvalSubEq(t, b);
+    return cc.EvalBinGate(OR, s, t);
+}

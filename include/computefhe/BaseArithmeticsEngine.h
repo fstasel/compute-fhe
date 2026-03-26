@@ -83,5 +83,9 @@ namespace computefhe {
         virtual FixedPoint Mul(const FixedPoint &a, const FixedPoint &b) = 0;
 
         FixedPoint ToggleMSB(const FixedPoint &a);
+        virtual LWECiphertext Mux(LWECiphertext s, LWECiphertext a,
+                                  LWECiphertext b) = 0;
+        virtual FixedPoint Mux(LWECiphertext s, const FixedPoint a,
+                               const FixedPoint b);
     };
 } // namespace computefhe

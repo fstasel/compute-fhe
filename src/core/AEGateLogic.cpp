@@ -240,33 +240,24 @@ FixedPoint AEGateLogic::FullMul(const FixedPoint &a, const FixedPoint &b) {
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    // int bs = 0;
-
     FixedPoint out((n_digit == 1) ? 1 : (n_digit << 1));
     for (uint8_t i = 0; i < n_digit; i++) {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);
-        // bs++;
     }
     for (uint8_t j = 1; j < n_digit; j++) {
         for (uint8_t i = 0; i < n_digit; i++) {
             LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
-            // bs++;
             if (i == 0) {
                 HalfAdder(out[i + j], p, out[i + j], carry);
-                // bs += 2;
             } else if (i < n_digit - 1) {
                 FullAdder(out[i + j], p, carry, out[i + j], carry);
-                // bs += 5;
             } else if (j == 1) {
                 HalfAdder(p, carry, out[i + j], out[i + j + 1]);
-                // bs += 2;
             } else {
                 FullAdder(out[i + j], p, carry, out[i + j], out[i + j + 1]);
-                // bs += 5;
             }
         }
     }
-    // cout << "BS = " << bs << endl;
     return out;
 }
 
@@ -275,33 +266,29 @@ FixedPoint AEGateLogic::Mul(const FixedPoint &a, const FixedPoint &b) {
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    // int bs = 0;
-
     FixedPoint out(n_digit);
     for (uint8_t i = 0; i < n_digit; i++) {
         out[i] = cc.EvalBinGate(AND, a[i], b[0]);
-        // bs++;
     }
     for (uint8_t j = 1; j < n_digit; j++) {
         for (uint8_t i = 0; i < n_digit - j; i++) {
             LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
-            // bs++;
             if (i == 0 && j < n_digit - 1) {
                 HalfAdder(out[i + j], p, out[i + j], carry);
-                // bs += 2;
             } else if (i < n_digit - j - 1) {
                 FullAdder(out[i + j], p, carry, out[i + j], carry);
-                // bs += 5;
             } else if (j < n_digit - 1) {
                 out[i + j] = cc.EvalBinGate(XOR, out[i + j], carry);
                 out[i + j] = cc.EvalBinGate(XOR, out[i + j], p);
-                // bs += 2;
             } else {
                 out[i + j] = cc.EvalBinGate(XOR, out[i + j], p);
-                // bs++;
             }
         }
     }
-    // cout << "BS = " << bs << endl;
     return out;
+}
+
+LWECiphertext AEGateLogic::Mux(LWECiphertext s, LWECiphertext a,
+                               LWECiphertext b) {
+    return cfhe_base->GetBinFHEContext().EvalBinGate(CMUX, vector({a, b, s}));
 }

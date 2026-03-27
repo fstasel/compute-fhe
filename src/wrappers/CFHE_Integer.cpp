@@ -1,8 +1,12 @@
 #include <computefhe/CFHE_Integer.h>
+#include <computefhe/ConditionManager.h>
+
 #define SIZEOF(T) ((std::is_same_v<T, bool>) ? 1 : (sizeof(T) * 8))
 using namespace computefhe;
 
-static ComputeFHE *cfhe_base = nullptr;
+namespace computefhe {
+    ComputeFHE *cfhe_base = nullptr;
+}
 
 void computefhe::Init(CryptoContextParam cc_param,
                       ArithmeticsEngineType ae_type) {
@@ -34,12 +38,26 @@ void computefhe::CFHE_Integer<T, isSigned>::fixSize(bool is_signed) {
     }
 }
 
+template <class T, bool isSigned> void CFHE_Integer<T, isSigned>::_sync_var() {
+    if (ConditionManager::conditional_mode()) {
+        ConditionManager::register_variable((void *)this, &data);
+    }
+}
+
+template <class T, bool isSigned>
+void CFHE_Integer<T, isSigned>::_desync_var() {
+    if (ConditionManager::conditional_mode()) {
+        ConditionManager::unregister_variable((void *)this);
+    }
+}
+
 template <class T, bool isSigned> CFHE_Integer<T, isSigned>::CFHE_Integer() {
     if (cfhe_base == nullptr)
         Init();
     data = cfhe_base->GetConstantInt(0, SIZEOF(T));
     size = SIZEOF(T);
     is_signed = isSigned;
+    // _sync_var();
 }
 
 template <class T, bool isSigned> CFHE_Integer<T, isSigned>::CFHE_Integer(T d) {
@@ -48,6 +66,7 @@ template <class T, bool isSigned> CFHE_Integer<T, isSigned>::CFHE_Integer(T d) {
     data = cfhe_base->GetConstantInt(d, SIZEOF(T));
     size = SIZEOF(T);
     is_signed = isSigned;
+    // _sync_var();
 }
 
 template <class T, bool isSigned>
@@ -62,6 +81,7 @@ computefhe::CFHE_Integer<T, isSigned>::CFHE_Integer(const FixedPoint &fp,
     size = SIZEOF(T);
     this->is_signed = isSigned;
     fixSize(is_signed);
+    // _sync_var();
 }
 
 template <class T, bool isSigned>
@@ -71,7 +91,12 @@ computefhe::CFHE_Integer<T, isSigned>::CFHE_Integer(const CFHE_Integer &other)
 }
 
 template <class T, bool isSigned> CFHE_Integer<T, isSigned>::~CFHE_Integer() {
-    // empty
+    _desync_var();
+}
+
+template <class T, bool isSigned>
+FixedPoint &CFHE_Integer<T, isSigned>::getData() {
+    return data;
 }
 
 template <class T, bool isSigned>
@@ -197,7 +222,9 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator+(U other) {
 template <class T, bool isSigned>
 CFHE_Integer<T, isSigned>
 CFHE_Integer<T, isSigned>::operator+=(const CFHE_Integer &other) {
+    _sync_var();
     data = cfhe_base->GetArithmeticsEngine()->AddNC(data, other.data);
+    _sync_var();
     return *this;
 }
 
@@ -225,7 +252,9 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator-(U other) {
 template <class T, bool isSigned>
 CFHE_Integer<T, isSigned>
 CFHE_Integer<T, isSigned>::operator-=(const CFHE_Integer &other) {
+    _sync_var();
     data = cfhe_base->GetArithmeticsEngine()->SubNC(data, other.data);
+    _sync_var();
     return *this;
 }
 
@@ -253,7 +282,9 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator*(U other) {
 template <class T, bool isSigned>
 CFHE_Integer<T, isSigned>
 CFHE_Integer<T, isSigned>::operator*=(const CFHE_Integer &other) {
+    _sync_var();
     data = cfhe_base->GetArithmeticsEngine()->Mul(data, other.data);
+    _sync_var();
     return *this;
 }
 
@@ -299,22 +330,26 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator&(U other) {
 template <class T, bool isSigned>
 CFHE_Integer<T, isSigned>
 CFHE_Integer<T, isSigned>::operator&=(const CFHE_Integer &other) {
+    _sync_var();
     for (size_t i = 0; i < size; i++) {
         data[i] =
             cfhe_base->GetArithmeticsEngine()->Gate_AND(data[i], other.data[i]);
     }
+    _sync_var();
     return *this;
 }
 
 template <class T, bool isSigned>
 template <class U>
 CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator&=(U other) {
+    _sync_var();
     uint64_t o = static_cast<uint64_t>(other);
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (o >> i) & 1;
         if (!bit)
             data[i] = cfhe_base->GetArithmeticsEngine()->GetConstantFalse();
     }
+    _sync_var();
     return *this;
 }
 
@@ -347,22 +382,26 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator|(U other) {
 template <class T, bool isSigned>
 CFHE_Integer<T, isSigned>
 CFHE_Integer<T, isSigned>::operator|=(const CFHE_Integer &other) {
+    _sync_var();
     for (size_t i = 0; i < size; i++) {
         data[i] =
             cfhe_base->GetArithmeticsEngine()->Gate_OR(data[i], other.data[i]);
     }
+    _sync_var();
     return *this;
 }
 
 template <class T, bool isSigned>
 template <class U>
 CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator|=(U other) {
+    _sync_var();
     uint64_t o = static_cast<uint64_t>(other);
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (o >> i) & 1;
         if (bit)
             data[i] = cfhe_base->GetArithmeticsEngine()->GetConstantTrue();
     }
+    _sync_var();
     return *this;
 }
 
@@ -395,22 +434,26 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator^(U other) {
 template <class T, bool isSigned>
 CFHE_Integer<T, isSigned>
 CFHE_Integer<T, isSigned>::operator^=(const CFHE_Integer &other) {
+    _sync_var();
     for (size_t i = 0; i < size; i++) {
         data[i] =
             cfhe_base->GetArithmeticsEngine()->Gate_XOR(data[i], other.data[i]);
     }
+    _sync_var();
     return *this;
 }
 
 template <class T, bool isSigned>
 template <class U>
 CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator^=(U other) {
+    _sync_var();
     uint64_t o = static_cast<uint64_t>(other);
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (o >> i) & 1;
         if (bit)
             data[i] = cfhe_base->GetArithmeticsEngine()->Gate_NOT(data[i]);
     }
+    _sync_var();
     return *this;
 }
 
@@ -497,6 +540,7 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator<<(int s) {
 
 template <class T, bool isSigned>
 CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator<<=(int s) {
+    _sync_var();
     int sz = (int)size;
     s = clamp<int>(s, 0, size - 1);
     for (int i = sz - 1; i >= 0; i--) {
@@ -504,6 +548,7 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator<<=(int s) {
                       ? cfhe_base->GetArithmeticsEngine()->GetConstantFalse()
                       : data[i - s];
     }
+    _sync_var();
     return *this;
 }
 
@@ -525,6 +570,7 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator>>(int s) {
 
 template <class T, bool isSigned>
 CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator>>=(int s) {
+    _sync_var();
     int sz = (int)size;
     s = clamp<int>(s, 0, size - 1);
     for (int i = 0; i < sz; i++) {
@@ -535,6 +581,27 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator>>=(int s) {
                        : cfhe_base->GetArithmeticsEngine()->GetConstantFalse())
                 : data[i + s];
     }
+    _sync_var();
+    return *this;
+}
+template <class T, bool isSigned>
+CFHE_Integer<T, isSigned> &
+CFHE_Integer<T, isSigned>::operator=(const CFHE_Integer &other) {
+    _sync_var();
+    data = other.data;
+    size = other.size;
+    is_signed = other.is_signed;
+    _sync_var();
+    return *this;
+}
+
+template <class T, bool isSigned>
+template <class U>
+CFHE_Integer<T, isSigned> &CFHE_Integer<T, isSigned>::operator=(U other) {
+    _sync_var();
+    *this = CFHE_Integer(cfhe_base->GetConstantInt(other, size),
+                         std::is_signed_v<U>);
+    _sync_var();
     return *this;
 }
 
@@ -828,6 +895,15 @@ ostream &computefhe::operator<<(ostream &out, const CFHE_Integer<U, S> &obj) {
     template Ebool CFHE_Integer<T, S>::operator||(int8_t);                     \
     template Ebool CFHE_Integer<T, S>::operator||(int16_t);                    \
     template Ebool CFHE_Integer<T, S>::operator||(int32_t);                    \
-    template Ebool CFHE_Integer<T, S>::operator||(int64_t);
+    template Ebool CFHE_Integer<T, S>::operator||(int64_t);                    \
+    template CFHE_Integer<T, S> &CFHE_Integer<T, S>::operator=(bool);          \
+    template CFHE_Integer<T, S> &CFHE_Integer<T, S>::operator=(uint8_t);       \
+    template CFHE_Integer<T, S> &CFHE_Integer<T, S>::operator=(uint16_t);      \
+    template CFHE_Integer<T, S> &CFHE_Integer<T, S>::operator=(uint32_t);      \
+    template CFHE_Integer<T, S> &CFHE_Integer<T, S>::operator=(uint64_t);      \
+    template CFHE_Integer<T, S> &CFHE_Integer<T, S>::operator=(int8_t);        \
+    template CFHE_Integer<T, S> &CFHE_Integer<T, S>::operator=(int16_t);       \
+    template CFHE_Integer<T, S> &CFHE_Integer<T, S>::operator=(int32_t);       \
+    template CFHE_Integer<T, S> &CFHE_Integer<T, S>::operator=(int64_t);
 
 CFHE_TYPES(INSTANTIATE_CFHE_INTEGER)

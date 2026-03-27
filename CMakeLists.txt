@@ -66,9 +66,9 @@ set(CORE_SOURCES
     src/core/AEOptimized.cpp
 )
 
-set(WRAPPER_SOURCES
-    src/wrappers/CFHE_Integer.cpp
-    src/wrappers/ConditionManager.cpp
+set(CPPUTILS_SOURCES
+    src/cpputils/CFHE_Integer.cpp
+    src/cpputils/ConditionManager.cpp
 )
 
 set(TEST_SOURCES
@@ -79,7 +79,7 @@ set(TEST_SOURCES
 add_executable(computefhe
     app/main.cpp
     ${CORE_SOURCES}
-    ${WRAPPER_SOURCES}
+    ${CPPUTILS_SOURCES}
     ${TEST_SOURCES}
 )
 

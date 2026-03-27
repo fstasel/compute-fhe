@@ -526,6 +526,32 @@ CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator~() {
 }
 
 template <class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator++() {
+    *this += 1;
+    return *this;
+}
+
+template <class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator++(int) {
+    CFHE_Integer tmp = *this;
+    *this += 1;
+    return tmp;
+}
+
+template <class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator--() {
+    *this -= 1;
+    return *this;
+}
+
+template <class T, bool isSigned>
+CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator--(int) {
+    CFHE_Integer tmp = *this;
+    *this -= 1;
+    return tmp;
+}
+
+template <class T, bool isSigned>
 CFHE_Integer<T, isSigned> CFHE_Integer<T, isSigned>::operator<<(int s) {
     int sz = (int)size;
     FixedPoint fp(size);

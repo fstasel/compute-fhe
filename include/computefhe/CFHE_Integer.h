@@ -83,12 +83,12 @@ namespace computefhe {
         template <class U> CFHE_Integer<bool, false> operator||(U);
         virtual CFHE_Integer<bool, false> operator!();
         virtual CFHE_Integer operator~();
-        // TODO:
+
         // Increment & Decrement operators
-        // virtual CFHE_Integer operator++();
-        // virtual CFHE_Integer operator++(int);
-        // virtual CFHE_Integer operator--();
-        // virtual CFHE_Integer operator--(int);
+        virtual CFHE_Integer operator++();
+        virtual CFHE_Integer operator++(int);
+        virtual CFHE_Integer operator--();
+        virtual CFHE_Integer operator--(int);
 
         // Shift operators
         virtual CFHE_Integer operator<<(int);

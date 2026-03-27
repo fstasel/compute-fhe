@@ -166,6 +166,121 @@ void test_shift_assign_operators() {
     }
 }
 
+void test_inc_dec() {
+    Euint8 a = 0;
+    Euint16 b = 0;
+    Euint32 c = 0;
+    Euint64 d = 0;
+    Eint8 e = 0;
+    Eint16 f = 0;
+    Eint32 g = 0;
+    Eint64 h = 0;
+
+    cout << "---Euint8---" << endl;
+    cout << "[a <- 0]" << endl;
+    cout << " a++: " << (uint)(a++) << endl;
+    cout << " a  : " << (uint)(a) << endl;
+    cout << " ++a: " << (uint)(++a) << endl;
+    cout << " a  : " << (uint)(a) << endl << endl;
+    a = 0;
+    cout << "[a <- 0]" << endl;
+    cout << " a--: " << (uint)(a--) << endl;
+    cout << " a  : " << (uint)(a) << endl;
+    cout << " --a: " << (uint)(--a) << endl;
+    cout << " a  : " << (uint)(a) << endl << endl;
+
+    cout << "---Euint16---" << endl;
+    cout << "[b <- 0]" << endl;
+    cout << " b++: " << b++ << endl;
+    cout << " b  : " << b << endl;
+    cout << " ++b: " << ++b << endl;
+    cout << " b  : " << b << endl << endl;
+    b = 0;
+    cout << "[b <- 0]" << endl;
+    cout << " b--: " << b-- << endl;
+    cout << " b  : " << b << endl;
+    cout << " --b: " << --b << endl;
+    cout << " b  : " << b << endl << endl;
+
+    cout << "---Euint32---" << endl;
+    cout << "[c <- 0]" << endl;
+    cout << " c++: " << c++ << endl;
+    cout << " c  : " << c << endl;
+    cout << " ++c: " << ++c << endl;
+    cout << " c  : " << c << endl << endl;
+    c = 0;
+    cout << "[c <- 0]" << endl;
+    cout << " c--: " << c-- << endl;
+    cout << " c  : " << c << endl;
+    cout << " --c: " << --c << endl;
+    cout << " c  : " << c << endl << endl;
+
+    cout << "---Euint64---" << endl;
+    cout << "[d <- 0]" << endl;
+    cout << " d++: " << d++ << endl;
+    cout << " d  : " << d << endl;
+    cout << " ++d: " << ++d << endl;
+    cout << " d  : " << d << endl << endl;
+    d = 0;
+    cout << "[d <- 0]" << endl;
+    cout << " d--: " << d-- << endl;
+    cout << " d  : " << d << endl;
+    cout << " --d: " << --d << endl;
+    cout << " d  : " << d << endl << endl;
+
+    cout << "---Eint8---" << endl;
+    cout << "[e <- 0]" << endl;
+    cout << " e++: " << (int)(e++) << endl;
+    cout << " e  : " << (int)(e) << endl;
+    cout << " ++e: " << (int)(++e) << endl;
+    cout << " e  : " << (int)(e) << endl << endl;
+    e = 0;
+    cout << "[e <- 0]" << endl;
+    cout << " e--: " << (int)(e--) << endl;
+    cout << " e  : " << (int)(e) << endl;
+    cout << " --e: " << (int)(--e) << endl;
+    cout << " e  : " << (int)(e) << endl << endl;
+
+    cout << "---Eint16---" << endl;
+    cout << "[f <- 0]" << endl;
+    cout << " f++: " << f++ << endl;
+    cout << " f  : " << f << endl;
+    cout << " ++f: " << ++f << endl;
+    cout << " f  : " << f << endl << endl;
+    f = 0;
+    cout << "[f <- 0]" << endl;
+    cout << " f--: " << f-- << endl;
+    cout << " f  : " << f << endl;
+    cout << " --f: " << --f << endl;
+    cout << " f  : " << f << endl << endl;
+
+    cout << "---Eint32---" << endl;
+    cout << "[g <- 0]" << endl;
+    cout << " g++: " << g++ << endl;
+    cout << " g  : " << g << endl;
+    cout << " ++g: " << ++g << endl;
+    cout << " g  : " << g << endl << endl;
+    g = 0;
+    cout << "[g <- 0]" << endl;
+    cout << " g--: " << g-- << endl;
+    cout << " g  : " << g << endl;
+    cout << " --g: " << --g << endl;
+    cout << " g  : " << g << endl << endl;
+
+    cout << "---Eint64---" << endl;
+    cout << "[h <- 0]" << endl;
+    cout << " h++: " << h++ << endl;
+    cout << " h  : " << h << endl;
+    cout << " ++h: " << ++h << endl;
+    cout << " h  : " << h << endl << endl;
+    h = 0;
+    cout << "[h <- 0]" << endl;
+    cout << " h--: " << h-- << endl;
+    cout << " h  : " << h << endl;
+    cout << " --h: " << --h << endl;
+    cout << " h  : " << h << endl;
+}
+
 void test_condition() {
     Eint16 x = 10;
     Eint16 y = 20;
@@ -202,6 +317,7 @@ int main() {
     // test_shift_operators();
     // test_shift_assign_operators();
     test_condition();
+    // test_inc_dec();
 
     return 0;
 }

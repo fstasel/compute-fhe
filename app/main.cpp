@@ -306,31 +306,6 @@ void test_inc_dec() {
     cout << " h  : " << h << endl;
 }
 
-void test_condition() {
-    Eint16 x = 10;
-    Eint16 y = 20;
-    Eint16 z = 30;
-
-    cout << "Before condition: x = " << x << ", y = " << y << ", z = " << z
-         << endl;
-
-    Eif(Ebool(true)) {
-        Eif(Ebool(false)) { x = y; }
-        else {
-            x = 0;
-        }
-    }
-    else Eif(Ebool(false)) {
-        y = z;
-    }
-    else {
-        z = x;
-    }
-
-    cout << "After condition: x = " << x << ", y = " << y << ", z = " << z
-         << endl;
-}
-
 int main() {
     computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED);
 

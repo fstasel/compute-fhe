@@ -26,7 +26,7 @@ namespace computefhe {
         CFHE_Integer(T d);
         CFHE_Integer(const FixedPoint &fp, bool is_signed);
         CFHE_Integer(const CFHE_Integer &other);
-        ~CFHE_Integer();
+        virtual ~CFHE_Integer();
 
         // Comparison operators
         virtual CFHE_Integer<bool, false> operator==(const CFHE_Integer &);

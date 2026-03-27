@@ -166,6 +166,31 @@ void test_shift_assign_operators() {
     }
 }
 
+void test_condition() {
+    Eint16 x = 10;
+    Eint16 y = 20;
+    Eint16 z = 30;
+
+    cout << "Before condition: x = " << x << ", y = " << y << ", z = " << z
+         << endl;
+
+    Eif(Ebool(true)) {
+        Eif(Ebool(false)) { x = y; }
+        else {
+            x = 0;
+        }
+    }
+    else Eif(Ebool(false)) {
+        y = z;
+    }
+    else {
+        z = x;
+    }
+
+    cout << "After condition: x = " << x << ", y = " << y << ", z = " << z
+         << endl;
+}
+
 void test_inc_dec() {
     Euint8 a = 0;
     Euint16 b = 0;
@@ -291,7 +316,8 @@ int main() {
     // test_logic_assignment_operators();
     // test_shift_operators();
     // test_shift_assign_operators();
-    test_inc_dec();
+    test_condition();
+    // test_inc_dec();
 
     return 0;
 }

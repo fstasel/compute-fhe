@@ -2,6 +2,7 @@
 
 #include <computefhe/BaseArithmeticsEngine.h>
 #include <computefhe/ComputeFHE.h>
+#include <computefhe/ConditionManager.h>
 #include <iostream>
 using namespace std;
 
@@ -18,6 +19,8 @@ namespace computefhe {
         bool is_signed;
 
         virtual void fixSize(bool is_signed);
+        void _sync_var();
+        void _desync_var();
 
       public:
         template <class U, bool S> friend class CFHE_Integer;
@@ -27,6 +30,8 @@ namespace computefhe {
         CFHE_Integer(const FixedPoint &fp, bool is_signed);
         CFHE_Integer(const CFHE_Integer &other);
         virtual ~CFHE_Integer();
+
+        FixedPoint &getData();
 
         // Comparison operators
         virtual CFHE_Integer<bool, false> operator==(const CFHE_Integer &);
@@ -90,6 +95,10 @@ namespace computefhe {
         virtual CFHE_Integer operator<<=(int);
         virtual CFHE_Integer operator>>(int);
         virtual CFHE_Integer operator>>=(int);
+
+        // Assignment operators
+        virtual CFHE_Integer &operator=(const CFHE_Integer &);
+        template <class U> CFHE_Integer &operator=(U);
 
         // Type conversion
         virtual operator T();

@@ -68,6 +68,7 @@ set(CORE_SOURCES
 
 set(WRAPPER_SOURCES
     src/wrappers/CFHE_Integer.cpp
+    src/wrappers/ConditionManager.cpp
 )
 
 set(TEST_SOURCES

@@ -1,5 +1,6 @@
 #include <computefhe/CFHE_Integer.h>
 #include <computefhe/ComputeFHE.h>
+#include <computefhe/Evector.h>
 
 using namespace computefhe;
 using namespace std;
@@ -306,6 +307,18 @@ void test_inc_dec() {
     cout << " h  : " << h << endl;
 }
 
+void test_vector() {
+    Evector<Eint16> vec(4);
+    vec[0] = Eint16(10);
+    vec[1] = Eint16(20);
+    vec[2] = 30;
+    vec[3] = 40;
+    cout << "vec[0]: " << vec[0] << endl;
+    cout << "vec[1]: " << vec[1] << endl;
+    cout << "vec[2]: " << vec[2] << endl;
+    cout << "vec[3]: " << vec[3] << endl;
+}
+
 int main() {
     computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED);
 
@@ -316,8 +329,11 @@ int main() {
     // test_logic_assignment_operators();
     // test_shift_operators();
     // test_shift_assign_operators();
-    test_condition();
+    // test_condition();
     // test_inc_dec();
+    test_vector();
+
+    computefhe::Finalize();
 
     return 0;
 }

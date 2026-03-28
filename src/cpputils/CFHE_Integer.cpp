@@ -632,6 +632,7 @@ CFHE_Integer<T, isSigned> &CFHE_Integer<T, isSigned>::operator=(U other) {
 }
 
 template <class T, bool isSigned> CFHE_Integer<T, isSigned>::operator T() {
+    // Client-mode only
     return (T)cfhe_base->DecryptInt(data, size);
 }
 
@@ -643,6 +644,7 @@ CFHE_Integer<T, isSigned>::operator CFHE_Integer<U, S>() {
 
 template <class U, bool S>
 ostream &computefhe::operator<<(ostream &out, const CFHE_Integer<U, S> &obj) {
+    // Client-mode only
     out << (U)(cfhe_base->DecryptInt(obj.data, obj.size));
     return out;
 }

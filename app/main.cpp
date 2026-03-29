@@ -309,17 +309,16 @@ void test_inc_dec() {
 
 void test_vector() {
     Evector<Eint16> vec(4);
-    Euint8 d = 3;
+    Euint8 d = 3, e = 4;
     vec[0] = Eint16(10);
     vec[1] = Eint16(20);
     vec[2] = 30;
     vec[d] = 40;
 
-    Eint16 t = vec[d];
     cout << "vec[0]: " << vec[0] << endl;
     cout << "vec[1]: " << vec[1] << endl;
     cout << "vec[2]: " << vec[2] << endl;
-    cout << "vec[d]: " << t << endl;
+    cout << "vec[d]: " << (Eint16)vec[d] << endl;
 }
 
 int main() {

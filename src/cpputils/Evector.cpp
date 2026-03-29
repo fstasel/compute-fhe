@@ -62,6 +62,10 @@ template <class T> Eitem<T>::operator T() {
     return data[p_index];
 }
 
+template <class T> template <class K> Eitem<T>::operator K() {
+    return (K)(T)(*this);
+}
+
 template <class T> const T &Eitem<T>::operator=(const T &value) {
     if (encrypted_index) {
         size_t n = data[0].getData().size();
@@ -133,6 +137,7 @@ template <class T> const T &Eitem<T>::operator=(const T &value) {
     template Eitem<CFHE_Integer<T, S>>::Eitem(Evector<CFHE_Integer<T, S>> &,   \
                                               const Eint32 &);                 \
     template Eitem<CFHE_Integer<T, S>>::Eitem(Evector<CFHE_Integer<T, S>> &,   \
-                                              const Eint64 &);
+                                              const Eint64 &);                 \
+    template Eitem<CFHE_Integer<T, S>>::operator T();
 
 CFHE_TYPES(INSTANTIATE_EVECTOR)

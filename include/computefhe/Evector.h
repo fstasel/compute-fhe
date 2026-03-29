@@ -28,6 +28,7 @@ namespace computefhe {
         Eitem(Evector<T> &vec, const CFHE_Integer<U, S> &idx);
         Eitem(Evector<T> &vec, const size_t idx);
         operator T();
+        template <class K> operator K();
         const T &operator=(const T &value);
     };
 

@@ -12,6 +12,8 @@ namespace computefhe {
 
     void Finalize();
 
+    extern ComputeFHE *cfhe_base;
+
     template <class T, bool isSigned> class CFHE_Integer {
       protected:
         FixedPoint data;
@@ -32,6 +34,8 @@ namespace computefhe {
         virtual ~CFHE_Integer();
 
         FixedPoint &getData();
+        size_t getSize();
+        bool getIsSigned();
 
         // Comparison operators
         virtual CFHE_Integer<bool, false> operator==(const CFHE_Integer &);

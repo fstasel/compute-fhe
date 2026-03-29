@@ -57,7 +57,6 @@ template <class T, bool isSigned> CFHE_Integer<T, isSigned>::CFHE_Integer() {
     data = cfhe_base->GetConstantInt(0, SIZEOF(T));
     size = SIZEOF(T);
     is_signed = isSigned;
-    // _sync_var();
 }
 
 template <class T, bool isSigned> CFHE_Integer<T, isSigned>::CFHE_Integer(T d) {
@@ -66,7 +65,6 @@ template <class T, bool isSigned> CFHE_Integer<T, isSigned>::CFHE_Integer(T d) {
     data = cfhe_base->GetConstantInt(d, SIZEOF(T));
     size = SIZEOF(T);
     is_signed = isSigned;
-    // _sync_var();
 }
 
 template <class T, bool isSigned>
@@ -81,7 +79,6 @@ computefhe::CFHE_Integer<T, isSigned>::CFHE_Integer(const FixedPoint &fp,
     size = SIZEOF(T);
     this->is_signed = isSigned;
     fixSize(is_signed);
-    // _sync_var();
 }
 
 template <class T, bool isSigned>
@@ -97,6 +94,14 @@ template <class T, bool isSigned> CFHE_Integer<T, isSigned>::~CFHE_Integer() {
 template <class T, bool isSigned>
 FixedPoint &CFHE_Integer<T, isSigned>::getData() {
     return data;
+}
+template <class T, bool isSigned> size_t CFHE_Integer<T, isSigned>::getSize() {
+    return size;
+}
+
+template <class T, bool isSigned>
+bool CFHE_Integer<T, isSigned>::getIsSigned() {
+    return is_signed;
 }
 
 template <class T, bool isSigned>

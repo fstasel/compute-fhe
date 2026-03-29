@@ -14,79 +14,78 @@ namespace computefhe {
 
     extern ComputeFHE *cfhe_base;
 
-    template <class T, bool isSigned> class CFHE_Integer {
+    class CFHE_Integer {
       protected:
         FixedPoint data;
         size_t size;
-        bool is_signed;
+        bool sign;
 
         virtual void fixSize(bool is_signed);
+        virtual int64_t sign_extend(uint64_t d, size_t n_digits);
         void _sync_var();
         void _desync_var();
 
       public:
-        template <class U, bool S> friend class CFHE_Integer;
-
-        CFHE_Integer();
-        CFHE_Integer(T d);
-        CFHE_Integer(const FixedPoint &fp, bool is_signed);
+        CFHE_Integer(size_t n_digits, bool is_signed);
+        CFHE_Integer(int64_t d, size_t n_digits);
+        CFHE_Integer(uint64_t d, size_t n_digits);
+        CFHE_Integer(const FixedPoint &fp, bool fp_sign, size_t n_digits,
+                     bool is_signed);
         CFHE_Integer(const CFHE_Integer &other);
         virtual ~CFHE_Integer();
 
-        FixedPoint &getData();
-        size_t getSize();
-        bool getIsSigned();
+        const FixedPoint &getData() const;
+        size_t getSize() const;
+        bool isSigned() const;
 
         // Comparison operators
-        virtual CFHE_Integer<bool, false> operator==(const CFHE_Integer &);
-        virtual CFHE_Integer<bool, false> operator!=(const CFHE_Integer &);
-        virtual CFHE_Integer<bool, false> operator>(const CFHE_Integer &);
-        virtual CFHE_Integer<bool, false> operator>=(const CFHE_Integer &);
-        virtual CFHE_Integer<bool, false> operator<(const CFHE_Integer &);
-        virtual CFHE_Integer<bool, false> operator<=(const CFHE_Integer &);
-        template <class U> CFHE_Integer<bool, false> operator==(U);
-        template <class U> CFHE_Integer<bool, false> operator!=(U);
-        template <class U> CFHE_Integer<bool, false> operator>(U);
-        template <class U> CFHE_Integer<bool, false> operator>=(U);
-        template <class U> CFHE_Integer<bool, false> operator<(U);
-        template <class U> CFHE_Integer<bool, false> operator<=(U);
+        virtual CFHE_Integer operator==(const CFHE_Integer &);
+        virtual CFHE_Integer operator!=(const CFHE_Integer &);
+        virtual CFHE_Integer operator>(const CFHE_Integer &);
+        virtual CFHE_Integer operator>=(const CFHE_Integer &);
+        virtual CFHE_Integer operator<(const CFHE_Integer &);
+        virtual CFHE_Integer operator<=(const CFHE_Integer &);
+        virtual CFHE_Integer operator==(uint64_t);
+        virtual CFHE_Integer operator!=(uint64_t);
+        virtual CFHE_Integer operator>(uint64_t);
+        virtual CFHE_Integer operator>=(uint64_t);
+        virtual CFHE_Integer operator<(uint64_t);
+        virtual CFHE_Integer operator<=(uint64_t);
 
         // Arithmetic operators
         virtual CFHE_Integer operator+(const CFHE_Integer &);
-        template <class U> CFHE_Integer operator+(U);
         virtual CFHE_Integer operator+=(const CFHE_Integer &);
-        template <class U> CFHE_Integer operator+=(U);
         virtual CFHE_Integer operator-(const CFHE_Integer &);
-        template <class U> CFHE_Integer operator-(U);
         virtual CFHE_Integer operator-=(const CFHE_Integer &);
-        template <class U> CFHE_Integer operator-=(U);
         virtual CFHE_Integer operator*(const CFHE_Integer &);
-        template <class U> CFHE_Integer operator*(U);
         virtual CFHE_Integer operator*=(const CFHE_Integer &);
-        template <class U> CFHE_Integer operator*=(U);
+        virtual CFHE_Integer operator+(uint64_t);
+        virtual CFHE_Integer operator+=(uint64_t);
+        virtual CFHE_Integer operator-(uint64_t);
+        virtual CFHE_Integer operator-=(uint64_t);
+        virtual CFHE_Integer operator*(uint64_t);
+        virtual CFHE_Integer operator*=(uint64_t);
         virtual CFHE_Integer operator-();
 
         // Logic operators
         virtual CFHE_Integer operator&(const CFHE_Integer &);
-        template <class U> CFHE_Integer operator&(U);
         virtual CFHE_Integer operator&=(const CFHE_Integer &);
-        template <class U> CFHE_Integer operator&=(U);
         virtual CFHE_Integer operator|(const CFHE_Integer &);
-        template <class U> CFHE_Integer operator|(U);
         virtual CFHE_Integer operator|=(const CFHE_Integer &);
-        template <class U> CFHE_Integer operator|=(U);
         virtual CFHE_Integer operator^(const CFHE_Integer &);
-        template <class U> CFHE_Integer operator^(U);
         virtual CFHE_Integer operator^=(const CFHE_Integer &);
-        template <class U> CFHE_Integer operator^=(U);
-        template <class U, bool S>
-        CFHE_Integer<bool, false> operator&&(const CFHE_Integer<U, S> &);
-        template <class U> CFHE_Integer<bool, false> operator&&(U);
-        template <class U, bool S>
-        CFHE_Integer<bool, false> operator||(const CFHE_Integer<U, S> &);
-        template <class U> CFHE_Integer<bool, false> operator||(U);
-        virtual CFHE_Integer<bool, false> operator!();
+        virtual CFHE_Integer operator&(uint64_t);
+        virtual CFHE_Integer operator&=(uint64_t);
+        virtual CFHE_Integer operator|(uint64_t);
+        virtual CFHE_Integer operator|=(uint64_t);
+        virtual CFHE_Integer operator^(uint64_t);
+        virtual CFHE_Integer operator^=(uint64_t);
+        virtual CFHE_Integer operator!();
         virtual CFHE_Integer operator~();
+        virtual CFHE_Integer operator&&(const CFHE_Integer &);
+        virtual CFHE_Integer operator&&(uint64_t);
+        virtual CFHE_Integer operator||(const CFHE_Integer &);
+        virtual CFHE_Integer operator||(uint64_t);
 
         // Increment & Decrement operators
         virtual CFHE_Integer operator++();
@@ -101,28 +100,77 @@ namespace computefhe {
         virtual CFHE_Integer operator>>=(int);
 
         // Assignment operators
-        virtual CFHE_Integer &operator=(const CFHE_Integer &);
-        template <class U> CFHE_Integer &operator=(U);
+        CFHE_Integer &operator=(const CFHE_Integer &);
+        CFHE_Integer &operator=(uint64_t);
 
         // Type conversion
-        virtual operator T();
-        template <class U, bool S> operator CFHE_Integer<U, S>();
+        virtual explicit operator bool();
+        virtual explicit operator int8_t();
+        virtual explicit operator uint8_t();
+        virtual explicit operator int16_t();
+        virtual explicit operator uint16_t();
+        virtual explicit operator int32_t();
+        virtual explicit operator uint32_t();
+        virtual explicit operator int64_t();
+        virtual explicit operator uint64_t();
 
         // Friend functions
-        template <class U, bool S>
-        friend ostream &operator<<(ostream &out, const CFHE_Integer<U, S> &obj);
+        friend ostream &operator<<(ostream &out, const CFHE_Integer &obj);
     };
 
-    template <class U, bool S>
-    ostream &operator<<(ostream &out, const CFHE_Integer<U, S> &obj);
+    ostream &operator<<(ostream &out, const CFHE_Integer &obj);
 
-    using Ebool = CFHE_Integer<bool, false>;
-    using Eint8 = CFHE_Integer<int8_t, true>;
-    using Euint8 = CFHE_Integer<uint8_t, false>;
-    using Eint16 = CFHE_Integer<int16_t, true>;
-    using Euint16 = CFHE_Integer<uint16_t, false>;
-    using Eint32 = CFHE_Integer<int32_t, true>;
-    using Euint32 = CFHE_Integer<uint32_t, false>;
-    using Eint64 = CFHE_Integer<int64_t, true>;
-    using Euint64 = CFHE_Integer<uint64_t, false>;
+    class Ebool : public CFHE_Integer {
+      public:
+        Ebool(bool d = false);
+        Ebool(const CFHE_Integer &other);
+    };
+
+    class Eint8 : public CFHE_Integer {
+      public:
+        Eint8(int8_t d = 0);
+        Eint8(const CFHE_Integer &other);
+    };
+
+    class Euint8 : public CFHE_Integer {
+      public:
+        Euint8(uint8_t d = 0);
+        Euint8(const CFHE_Integer &other);
+    };
+
+    class Eint16 : public CFHE_Integer {
+      public:
+        Eint16(int16_t d = 0);
+        Eint16(const CFHE_Integer &other);
+    };
+
+    class Euint16 : public CFHE_Integer {
+      public:
+        Euint16(uint16_t d = 0);
+        Euint16(const CFHE_Integer &other);
+    };
+
+    class Eint32 : public CFHE_Integer {
+      public:
+        Eint32(int32_t d = 0);
+        Eint32(const CFHE_Integer &other);
+    };
+
+    class Euint32 : public CFHE_Integer {
+      public:
+        Euint32(uint32_t d = 0);
+        Euint32(const CFHE_Integer &other);
+    };
+
+    class Eint64 : public CFHE_Integer {
+      public:
+        Eint64(int64_t d = 0);
+        Eint64(const CFHE_Integer &other);
+    };
+
+    class Euint64 : public CFHE_Integer {
+      public:
+        Euint64(uint64_t d = 0);
+        Euint64(const CFHE_Integer &other);
+    };
 } // namespace computefhe

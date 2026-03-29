@@ -23,7 +23,7 @@ namespace computefhe {
         unordered_map<void *, ConditionalVar> registry;
 
       public:
-        ConditionManager(LWECiphertext &condition);
+        ConditionManager(ConstLWECiphertext &condition);
         ~ConditionManager();
         static void register_variable(void *var_instance, FixedPoint *data);
         static void unregister_variable(void *var_instance);

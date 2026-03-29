@@ -7,10 +7,18 @@ using namespace std;
 
 void test_arithmetic_operators() {
     Eint32 a = -20000;
-    Eint32 b = -30000;
-    Eint16 c = a + 50000;
+    Eint32 b = 65537;
+    Eint16 c = b;
+    Eint16 d = c + 1000;
+    Eint16 e = c - d;
+    Eint16 f = c + (Eint8)d;
 
-    cout << "a: " << a << endl << "b: " << b << endl << "c: " << c << endl;
+    cout << "a: " << a << endl
+         << "b: " << b << endl
+         << "c: " << c << endl
+         << "d: " << d << endl
+         << "e: " << e << endl
+         << "f: " << f << endl;
 }
 
 void test_arithmetic_assignment_operators() {
@@ -69,7 +77,7 @@ void test_logic_operators() {
          << endl;
     cout << "x | 0x00FF: " << (x | 0x00FF) << "  Expected: " << (xx | 0x00FF)
          << endl;
-    cout << "x ˆ 0x00FF: " << (x ^ 0x00FF) << "  Expected: " << (xx ^ 0x00FF)
+    cout << "x ^ 0x00FF: " << (x ^ 0x00FF) << "  Expected: " << (xx ^ 0x00FF)
          << endl;
 
     Ebool a = true;
@@ -111,7 +119,7 @@ void test_logic_assignment_operators() {
          << endl;
     x = 0x1111;
     xx = 0x1111;
-    cout << "x ˆ= 0x00FF: " << (x ^= 0x00FF) << "  Expected: " << (xx ^= 0x00FF)
+    cout << "x ^= 0x00FF: " << (x ^= 0x00FF) << "  Expected: " << (xx ^= 0x00FF)
          << endl;
 }
 
@@ -309,16 +317,16 @@ void test_inc_dec() {
 
 void test_vector() {
     Evector<Eint16> vec(4);
-    Euint8 d = 3, e = 4;
+    Euint8 d = 3, e = 1;
     vec[0] = Eint16(10);
-    vec[1] = Eint16(20);
-    vec[2] = 30;
-    vec[d] = 40;
+    vec[1] = 20;
+    vec[2] = vec[0] + vec[e];
+    vec[d] = (Eint16)vec[e] + vec[0];
 
     cout << "vec[0]: " << vec[0] << endl;
     cout << "vec[1]: " << vec[1] << endl;
     cout << "vec[2]: " << vec[2] << endl;
-    cout << "vec[d]: " << (Eint16)vec[d] << endl;
+    cout << "vec[d]: " << vec[d] << endl;
 }
 
 int main() {

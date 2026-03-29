@@ -12,8 +12,7 @@ namespace computefhe {
       public:
         using std::vector<T>::vector;
         using std::vector<T>::operator[];
-        template <class U, bool S>
-        Eitem<T> operator[](CFHE_Integer<U, S> &index);
+        template <class I> Eitem<T> operator[](I &index);
     };
 
     template <class T> class Eitem {
@@ -24,11 +23,9 @@ namespace computefhe {
         bool encrypted_index;
 
       public:
-        template <class U, bool S>
-        Eitem(Evector<T> &vec, const CFHE_Integer<U, S> &idx);
+        template <class I> Eitem(Evector<T> &vec, const I &idx);
         Eitem(Evector<T> &vec, const size_t idx);
         operator T();
-        template <class K> operator K();
         const T &operator=(const T &value);
     };
 

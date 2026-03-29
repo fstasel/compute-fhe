@@ -9,7 +9,7 @@ namespace computefhe {
     static stack<ConditionManager *> conditional_stack;
 } // namespace computefhe
 
-ConditionManager::ConditionManager(LWECiphertext &condition) : state(0) {
+ConditionManager::ConditionManager(ConstLWECiphertext &condition) : state(0) {
     cond = COPY_CT(condition);
     conditional_stack.push(this);
 }

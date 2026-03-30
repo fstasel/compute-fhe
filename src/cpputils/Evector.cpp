@@ -36,7 +36,7 @@ Eitem<T>::Eitem(Evector<T> &vec, const size_t idx)
     // empty
 }
 
-template <class T> Eitem<T>::operator T() {
+template <class T> Eitem<T>::operator T() const {
     if (encrypted_index) {
         // TODO: optimize this by using ciphertext-plaintext comparison
         LWECiphertext c = cfhe_base->GetArithmeticsEngine()->CmpEq(
@@ -119,3 +119,115 @@ template <class T> const T &Eitem<T>::operator=(const T &value) {
     template Eitem<T>::Eitem(Evector<T> &, const Eint64 &);
 
 CFHE_TYPES(INSTANTIATE_EVECTOR)
+
+#undef CAST
+#undef CFHE_TYPES
+#undef INSTANTIATE_EVECTOR
+
+// Helper macros for implementing Eitem operators
+#define IMPLEMENT_E_ITEM_BINARY(NAME, OP, RET)                                 \
+    RET computefhe::operator OP(const Eitem<NAME> &a,                          \
+                                const CFHE_Integer & b) {                      \
+        return static_cast<NAME>(a) OP b;                                      \
+    }                                                                          \
+    RET computefhe::operator OP(const Eitem<NAME> &a, uint64_t b) {            \
+        return static_cast<NAME>(a) OP b;                                      \
+    }
+
+#define IMPLEMENT_E_ITEM_SHIFT(NAME, OP)                                       \
+    NAME computefhe::operator OP(const Eitem<NAME> &a, int b) {                \
+        return static_cast<NAME>(a) OP b;                                      \
+    }
+
+#define IMPLEMENT_E_ITEM_ASSIGN(NAME, OP, BIN_OP)                              \
+    Eitem<NAME> computefhe::operator OP(Eitem<NAME> a,                         \
+                                        const CFHE_Integer & b) {              \
+        a = static_cast<NAME>(a) BIN_OP b;                                     \
+        return a;                                                              \
+    }                                                                          \
+    Eitem<NAME> computefhe::operator OP(Eitem<NAME> a, uint64_t b) {           \
+        a = static_cast<NAME>(a) BIN_OP b;                                     \
+        return a;                                                              \
+    }
+
+#define IMPLEMENT_E_ITEM_SHIFT_ASSIGN(NAME, OP, BIN_OP)                        \
+    Eitem<NAME> computefhe::operator OP(Eitem<NAME> a, int b) {                \
+        a = static_cast<NAME>(a) BIN_OP b;                                     \
+        return a;                                                              \
+    }
+
+#define IMPLEMENT_E_ITEM_UNARY(NAME, OP, RET)                                  \
+    RET computefhe::operator OP(const Eitem<NAME> &a) {                        \
+        return OP static_cast<NAME>(a);                                        \
+    }
+
+#define IMPLEMENT_E_ITEM_INC_DEC(NAME, OP)                                     \
+    NAME computefhe::operator OP(Eitem<NAME> a) {                              \
+        NAME val = static_cast<NAME>(a);                                       \
+        OP val;                                                                \
+        a = val;                                                               \
+        return val;                                                            \
+    }                                                                          \
+    NAME computefhe::operator OP(Eitem<NAME> a, int) {                         \
+        NAME val = static_cast<NAME>(a);                                       \
+        NAME old = val;                                                        \
+        OP val;                                                                \
+        a = val;                                                               \
+        return old;                                                            \
+    }
+
+#define IMPLEMENT_E_ITEM_ALL_OPS(NAME)                                         \
+    IMPLEMENT_E_ITEM_BINARY(NAME, +, NAME)                                     \
+    IMPLEMENT_E_ITEM_BINARY(NAME, -, NAME)                                     \
+    IMPLEMENT_E_ITEM_BINARY(NAME, *, NAME)                                     \
+    IMPLEMENT_E_ITEM_BINARY(NAME, &, NAME)                                     \
+    IMPLEMENT_E_ITEM_BINARY(NAME, |, NAME)                                     \
+    IMPLEMENT_E_ITEM_BINARY(NAME, ^, NAME)                                     \
+    IMPLEMENT_E_ITEM_BINARY(NAME, ==, CFHE_Integer)                            \
+    IMPLEMENT_E_ITEM_BINARY(NAME, !=, CFHE_Integer)                            \
+    IMPLEMENT_E_ITEM_BINARY(NAME, >, CFHE_Integer)                             \
+    IMPLEMENT_E_ITEM_BINARY(NAME, >=, CFHE_Integer)                            \
+    IMPLEMENT_E_ITEM_BINARY(NAME, <, CFHE_Integer)                             \
+    IMPLEMENT_E_ITEM_BINARY(NAME, <=, CFHE_Integer)                            \
+    IMPLEMENT_E_ITEM_BINARY(NAME, &&, CFHE_Integer)                            \
+    IMPLEMENT_E_ITEM_BINARY(NAME, ||, CFHE_Integer)                            \
+    IMPLEMENT_E_ITEM_SHIFT(NAME, <<)                                           \
+    IMPLEMENT_E_ITEM_SHIFT(NAME, >>)                                           \
+    IMPLEMENT_E_ITEM_ASSIGN(NAME, +=, +)                                       \
+    IMPLEMENT_E_ITEM_ASSIGN(NAME, -=, -)                                       \
+    IMPLEMENT_E_ITEM_ASSIGN(NAME, *=, *)                                       \
+    IMPLEMENT_E_ITEM_ASSIGN(NAME, &=, &)                                       \
+    IMPLEMENT_E_ITEM_ASSIGN(NAME, |=, |)                                       \
+    IMPLEMENT_E_ITEM_ASSIGN(NAME, ^=, ^)                                       \
+    IMPLEMENT_E_ITEM_SHIFT_ASSIGN(NAME, <<=, <<)                               \
+    IMPLEMENT_E_ITEM_SHIFT_ASSIGN(NAME, >>=, >>)                               \
+    IMPLEMENT_E_ITEM_UNARY(NAME, !, CFHE_Integer)                              \
+    IMPLEMENT_E_ITEM_UNARY(NAME, ~, CFHE_Integer)                              \
+    IMPLEMENT_E_ITEM_UNARY(NAME, -, NAME)                                      \
+    IMPLEMENT_E_ITEM_INC_DEC(NAME, ++)                                         \
+    IMPLEMENT_E_ITEM_INC_DEC(NAME, --)
+
+#define IMPLEMENT_E_TYPE(NAME, TYPE, BITS, SIGNED, CAST)                       \
+    NAME::NAME(TYPE d) : CFHE_Integer((CAST)d, BITS##UL) {}                    \
+    NAME::NAME(const CFHE_Integer &other)                                      \
+        : CFHE_Integer(other.getData(), other.isSigned(), BITS##UL, SIGNED) {} \
+    IMPLEMENT_E_ITEM_ALL_OPS(NAME)
+
+IMPLEMENT_E_TYPE(Ebool, bool, 1, false, uint64_t)
+IMPLEMENT_E_TYPE(Eint8, int8_t, 8, true, int64_t)
+IMPLEMENT_E_TYPE(Euint8, uint8_t, 8, false, uint64_t)
+IMPLEMENT_E_TYPE(Eint16, int16_t, 16, true, int64_t)
+IMPLEMENT_E_TYPE(Euint16, uint16_t, 16, false, uint64_t)
+IMPLEMENT_E_TYPE(Eint32, int32_t, 32, true, int64_t)
+IMPLEMENT_E_TYPE(Euint32, uint32_t, 32, false, uint64_t)
+IMPLEMENT_E_TYPE(Eint64, int64_t, 64, true, int64_t)
+IMPLEMENT_E_TYPE(Euint64, uint64_t, 64, false, uint64_t)
+
+#undef IMPLEMENT_E_ITEM_BINARY
+#undef IMPLEMENT_E_ITEM_SHIFT
+#undef IMPLEMENT_E_ITEM_ASSIGN
+#undef IMPLEMENT_E_ITEM_SHIFT_ASSIGN
+#undef IMPLEMENT_E_ITEM_UNARY
+#undef IMPLEMENT_E_ITEM_INC_DEC
+#undef IMPLEMENT_E_ITEM_ALL_OPS
+#undef IMPLEMENT_E_TYPE

@@ -1,4 +1,3 @@
-#include <cassert>
 #include <computefhe/BaseArithmeticsEngine.h>
 using namespace computefhe;
 
@@ -81,7 +80,9 @@ FixedPoint BaseArithmeticsEngine::ToggleMSB(const FixedPoint &a) {
 
 FixedPoint BaseArithmeticsEngine::Mux(LWECiphertext s, const FixedPoint a,
                                       const FixedPoint b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     size_t n_digit = a.size();
 
     FixedPoint out(n_digit);

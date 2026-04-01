@@ -1,4 +1,3 @@
-#include <cassert>
 #include <computefhe/AEOptimized.h>
 using namespace computefhe;
 
@@ -43,7 +42,9 @@ LWECiphertext AEOptimized::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a,
 }
 
 LWECiphertext AEOptimized::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
@@ -57,7 +58,9 @@ LWECiphertext AEOptimized::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
 }
 
 LWECiphertext AEOptimized::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
@@ -71,7 +74,9 @@ LWECiphertext AEOptimized::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
 }
 
 FixedPoint AEOptimized::FullMul(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
@@ -98,7 +103,9 @@ FixedPoint AEOptimized::FullMul(const FixedPoint &a, const FixedPoint &b) {
 }
 
 FixedPoint AEOptimized::Mul(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 

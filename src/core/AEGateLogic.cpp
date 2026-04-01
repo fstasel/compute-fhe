@@ -1,4 +1,3 @@
-#include <cassert>
 #include <computefhe/AEGateLogic.h>
 using namespace computefhe;
 
@@ -50,7 +49,9 @@ LWECiphertext AEGateLogic::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a,
 }
 
 FixedPoint AEGateLogic::Add(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     size_t n_digit = a.size();
 
     FixedPoint out(n_digit);
@@ -62,7 +63,9 @@ FixedPoint AEGateLogic::Add(const FixedPoint &a, const FixedPoint &b) {
 }
 
 FixedPoint AEGateLogic::AddC(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     size_t n_digit = a.size();
 
     FixedPoint out(n_digit);
@@ -73,7 +76,9 @@ FixedPoint AEGateLogic::AddC(const FixedPoint &a, const FixedPoint &b) {
 }
 
 FixedPoint AEGateLogic::AddNC(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     size_t n_digit = a.size();
 
     FixedPoint out(n_digit);
@@ -89,7 +94,9 @@ FixedPoint AEGateLogic::AddNC(const FixedPoint &a, const FixedPoint &b) {
 }
 
 FixedPoint AEGateLogic::Sub(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
@@ -103,7 +110,9 @@ FixedPoint AEGateLogic::Sub(const FixedPoint &a, const FixedPoint &b) {
 }
 
 FixedPoint AEGateLogic::SubC(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
@@ -116,7 +125,9 @@ FixedPoint AEGateLogic::SubC(const FixedPoint &a, const FixedPoint &b) {
 }
 
 FixedPoint AEGateLogic::SubNC(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
@@ -152,7 +163,9 @@ FixedPoint AEGateLogic::Neg(const FixedPoint &a) {
 }
 
 LWECiphertext AEGateLogic::CmpNotEq(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
@@ -165,7 +178,9 @@ LWECiphertext AEGateLogic::CmpNotEq(const FixedPoint &a, const FixedPoint &b) {
 }
 
 LWECiphertext AEGateLogic::CmpEq(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
@@ -178,7 +193,9 @@ LWECiphertext AEGateLogic::CmpEq(const FixedPoint &a, const FixedPoint &b) {
 }
 
 LWECiphertext AEGateLogic::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
@@ -195,7 +212,9 @@ LWECiphertext AEGateLogic::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
 }
 
 LWECiphertext AEGateLogic::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
@@ -236,7 +255,9 @@ LWECiphertext AEGateLogic::CmpLT(const FixedPoint &a, const FixedPoint &b) {
 }
 
 FixedPoint AEGateLogic::FullMul(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
@@ -262,7 +283,9 @@ FixedPoint AEGateLogic::FullMul(const FixedPoint &a, const FixedPoint &b) {
 }
 
 FixedPoint AEGateLogic::Mul(const FixedPoint &a, const FixedPoint &b) {
-    assert(a.size() == b.size());
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 

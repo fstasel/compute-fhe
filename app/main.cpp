@@ -343,17 +343,17 @@ void test_vector() {
 }
 
 int main() {
-    computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED);
+    computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED, true);
 
-    // test_arithmetic_operators();
-    // test_arithmetic_assignment_operators();
-    // test_comparison_operators();
-    // test_logic_operators();
-    // test_logic_assignment_operators();
-    // test_shift_operators();
-    // test_shift_assign_operators();
-    // test_condition();
-    // test_inc_dec();
+    test_arithmetic_operators();
+    test_arithmetic_assignment_operators();
+    test_comparison_operators();
+    test_logic_operators();
+    test_logic_assignment_operators();
+    test_shift_operators();
+    test_shift_assign_operators();
+    test_condition();
+    test_inc_dec();
     test_vector();
 
     computefhe::Finalize();

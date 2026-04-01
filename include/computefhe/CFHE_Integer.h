@@ -8,11 +8,11 @@ using namespace std;
 
 namespace computefhe {
     void Init(CryptoContextParam = CCPARAM_STD128_3,
-              ArithmeticsEngineType = AE_OPTIMIZED);
-
+              ArithmeticsEngineType = AE_OPTIMIZED, bool = false);
     void Finalize();
 
     extern ComputeFHE *cfhe_base;
+    extern bool CLIENT_MODE;
 
     class CFHE_Integer {
       protected:

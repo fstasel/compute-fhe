@@ -5,13 +5,15 @@ using namespace computefhe;
 
 namespace computefhe {
     ComputeFHE *cfhe_base = nullptr;
-}
+    bool CLIENT_MODE = false;
+} // namespace computefhe
 
 void computefhe::Init(CryptoContextParam cc_param,
-                      ArithmeticsEngineType ae_type) {
+                      ArithmeticsEngineType ae_type, bool client_mode) {
     if (cfhe_base != nullptr)
         delete cfhe_base;
     cfhe_base = new ComputeFHE(cc_param, ae_type);
+    CLIENT_MODE = client_mode;
 }
 
 void computefhe::Finalize() {
@@ -711,51 +713,81 @@ CFHE_Integer &CFHE_Integer::operator=(uint64_t other) {
 
 CFHE_Integer::operator bool() const {
     // Client-mode only
+    if (!CLIENT_MODE)
+        OPENFHE_THROW("Not allowed in server mode.");
+
     return (bool)cfhe_base->DecryptInt(data, size);
 }
 
 CFHE_Integer::operator int8_t() const {
     // Client-mode only
+    if (!CLIENT_MODE)
+        OPENFHE_THROW("Not allowed in server mode.");
+
     return (int8_t)sign_extend(cfhe_base->DecryptInt(data, size), size);
 }
 
 CFHE_Integer::operator uint8_t() const {
     // Client-mode only
+    if (!CLIENT_MODE)
+        OPENFHE_THROW("Not allowed in server mode.");
+
     return (uint8_t)cfhe_base->DecryptInt(data, size);
 }
 
 CFHE_Integer::operator int16_t() const {
     // Client-mode only
+    if (!CLIENT_MODE)
+        OPENFHE_THROW("Not allowed in server mode.");
+
     return (int16_t)sign_extend(cfhe_base->DecryptInt(data, size), size);
 }
 
 CFHE_Integer::operator uint16_t() const {
     // Client-mode only
+    if (!CLIENT_MODE)
+        OPENFHE_THROW("Not allowed in server mode.");
+
     return (uint16_t)cfhe_base->DecryptInt(data, size);
 }
 
 CFHE_Integer::operator int32_t() const {
     // Client-mode only
+    if (!CLIENT_MODE)
+        OPENFHE_THROW("Not allowed in server mode.");
+
     return (int32_t)sign_extend(cfhe_base->DecryptInt(data, size), size);
 }
 
 CFHE_Integer::operator uint32_t() const {
     // Client-mode only
+    if (!CLIENT_MODE)
+        OPENFHE_THROW("Not allowed in server mode.");
+
     return (uint32_t)cfhe_base->DecryptInt(data, size);
 }
 
 CFHE_Integer::operator int64_t() const {
     // Client-mode only
+    if (!CLIENT_MODE)
+        OPENFHE_THROW("Not allowed in server mode.");
+
     return (int64_t)sign_extend(cfhe_base->DecryptInt(data, size), size);
 }
 
 CFHE_Integer::operator uint64_t() const {
     // Client-mode only
+    if (!CLIENT_MODE)
+        OPENFHE_THROW("Not allowed in server mode.");
+
     return (uint64_t)cfhe_base->DecryptInt(data, size);
 }
 
 ostream &computefhe::operator<<(ostream &out, const CFHE_Integer &obj) {
     // Client-mode only
+    if (!CLIENT_MODE)
+        OPENFHE_THROW("Not allowed in server mode.");
+
     if (obj.sign) {
         out << const_cast<CFHE_Integer &>(obj).sign_extend(
             cfhe_base->DecryptInt(obj.data, obj.size), obj.size);

@@ -39,53 +39,53 @@ namespace computefhe {
         bool isSigned() const;
 
         // Comparison operators
-        virtual const CFHE_Integer operator==(const CFHE_Integer &);
-        virtual const CFHE_Integer operator!=(const CFHE_Integer &);
-        virtual const CFHE_Integer operator>(const CFHE_Integer &);
-        virtual const CFHE_Integer operator>=(const CFHE_Integer &);
-        virtual const CFHE_Integer operator<(const CFHE_Integer &);
-        virtual const CFHE_Integer operator<=(const CFHE_Integer &);
-        virtual const CFHE_Integer operator==(uint64_t);
-        virtual const CFHE_Integer operator!=(uint64_t);
-        virtual const CFHE_Integer operator>(uint64_t);
-        virtual const CFHE_Integer operator>=(uint64_t);
-        virtual const CFHE_Integer operator<(uint64_t);
-        virtual const CFHE_Integer operator<=(uint64_t);
+        virtual const CFHE_Integer operator==(const CFHE_Integer &) const;
+        virtual const CFHE_Integer operator!=(const CFHE_Integer &) const;
+        virtual const CFHE_Integer operator>(const CFHE_Integer &) const;
+        virtual const CFHE_Integer operator>=(const CFHE_Integer &) const;
+        virtual const CFHE_Integer operator<(const CFHE_Integer &) const;
+        virtual const CFHE_Integer operator<=(const CFHE_Integer &) const;
+        virtual const CFHE_Integer operator==(uint64_t) const;
+        virtual const CFHE_Integer operator!=(uint64_t) const;
+        virtual const CFHE_Integer operator>(uint64_t) const;
+        virtual const CFHE_Integer operator>=(uint64_t) const;
+        virtual const CFHE_Integer operator<(uint64_t) const;
+        virtual const CFHE_Integer operator<=(uint64_t) const;
 
         // Arithmetic operators
-        virtual const CFHE_Integer operator+(const CFHE_Integer &);
+        virtual const CFHE_Integer operator+(const CFHE_Integer &) const;
         virtual const CFHE_Integer operator+=(const CFHE_Integer &);
-        virtual const CFHE_Integer operator-(const CFHE_Integer &);
+        virtual const CFHE_Integer operator-(const CFHE_Integer &) const;
         virtual const CFHE_Integer operator-=(const CFHE_Integer &);
-        virtual const CFHE_Integer operator*(const CFHE_Integer &);
+        virtual const CFHE_Integer operator*(const CFHE_Integer &) const;
         virtual const CFHE_Integer operator*=(const CFHE_Integer &);
-        virtual const CFHE_Integer operator+(uint64_t);
+        virtual const CFHE_Integer operator+(uint64_t) const;
         virtual const CFHE_Integer operator+=(uint64_t);
-        virtual const CFHE_Integer operator-(uint64_t);
+        virtual const CFHE_Integer operator-(uint64_t) const;
         virtual const CFHE_Integer operator-=(uint64_t);
-        virtual const CFHE_Integer operator*(uint64_t);
+        virtual const CFHE_Integer operator*(uint64_t) const;
         virtual const CFHE_Integer operator*=(uint64_t);
-        virtual const CFHE_Integer operator-();
+        virtual const CFHE_Integer operator-() const;
 
         // Logic operators
-        virtual const CFHE_Integer operator&(const CFHE_Integer &);
+        virtual const CFHE_Integer operator&(const CFHE_Integer &) const;
         virtual const CFHE_Integer operator&=(const CFHE_Integer &);
-        virtual const CFHE_Integer operator|(const CFHE_Integer &);
+        virtual const CFHE_Integer operator|(const CFHE_Integer &) const;
         virtual const CFHE_Integer operator|=(const CFHE_Integer &);
-        virtual const CFHE_Integer operator^(const CFHE_Integer &);
+        virtual const CFHE_Integer operator^(const CFHE_Integer &) const;
         virtual const CFHE_Integer operator^=(const CFHE_Integer &);
-        virtual const CFHE_Integer operator&(uint64_t);
+        virtual const CFHE_Integer operator&(uint64_t) const;
         virtual const CFHE_Integer operator&=(uint64_t);
-        virtual const CFHE_Integer operator|(uint64_t);
+        virtual const CFHE_Integer operator|(uint64_t) const;
         virtual const CFHE_Integer operator|=(uint64_t);
-        virtual const CFHE_Integer operator^(uint64_t);
+        virtual const CFHE_Integer operator^(uint64_t) const;
         virtual const CFHE_Integer operator^=(uint64_t);
-        virtual const CFHE_Integer operator!();
-        virtual const CFHE_Integer operator~();
-        virtual const CFHE_Integer operator&&(const CFHE_Integer &);
-        virtual const CFHE_Integer operator&&(uint64_t);
-        virtual const CFHE_Integer operator||(const CFHE_Integer &);
-        virtual const CFHE_Integer operator||(uint64_t);
+        virtual const CFHE_Integer operator!() const;
+        virtual const CFHE_Integer operator~() const;
+        virtual const CFHE_Integer operator&&(const CFHE_Integer &) const;
+        virtual const CFHE_Integer operator&&(uint64_t) const;
+        virtual const CFHE_Integer operator||(const CFHE_Integer &) const;
+        virtual const CFHE_Integer operator||(uint64_t) const;
 
         // Increment & Decrement operators
         virtual const CFHE_Integer operator++();

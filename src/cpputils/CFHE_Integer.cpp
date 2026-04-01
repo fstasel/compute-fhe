@@ -111,7 +111,7 @@ size_t CFHE_Integer::getSize() const { return size; }
 
 bool CFHE_Integer::isSigned() const { return sign; }
 
-const CFHE_Integer CFHE_Integer::operator==(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator==(const CFHE_Integer &other) const {
     if (size == other.size) {
         return CFHE_Integer(
             {cfhe_base->GetArithmeticsEngine()->CmpEq(data, other.data)}, false,
@@ -123,7 +123,7 @@ const CFHE_Integer CFHE_Integer::operator==(const CFHE_Integer &other) {
         false);
 }
 
-const CFHE_Integer CFHE_Integer::operator!=(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator!=(const CFHE_Integer &other) const {
     if (size == other.size) {
         return CFHE_Integer(
             {cfhe_base->GetArithmeticsEngine()->CmpNotEq(data, other.data)},
@@ -135,7 +135,7 @@ const CFHE_Integer CFHE_Integer::operator!=(const CFHE_Integer &other) {
         false);
 }
 
-const CFHE_Integer CFHE_Integer::operator>(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator>(const CFHE_Integer &other) const {
     if (size == other.size) {
         if (sign) {
             return CFHE_Integer(
@@ -159,7 +159,7 @@ const CFHE_Integer CFHE_Integer::operator>(const CFHE_Integer &other) {
     }
 }
 
-const CFHE_Integer CFHE_Integer::operator>=(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator>=(const CFHE_Integer &other) const {
     if (size == other.size) {
         if (sign) {
             return CFHE_Integer(
@@ -183,7 +183,7 @@ const CFHE_Integer CFHE_Integer::operator>=(const CFHE_Integer &other) {
     }
 }
 
-const CFHE_Integer CFHE_Integer::operator<(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator<(const CFHE_Integer &other) const {
     if (size == other.size) {
         if (sign) {
             return CFHE_Integer(
@@ -207,7 +207,7 @@ const CFHE_Integer CFHE_Integer::operator<(const CFHE_Integer &other) {
     }
 }
 
-const CFHE_Integer CFHE_Integer::operator<=(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator<=(const CFHE_Integer &other) const {
     if (size == other.size) {
         if (sign) {
             return CFHE_Integer(
@@ -231,43 +231,43 @@ const CFHE_Integer CFHE_Integer::operator<=(const CFHE_Integer &other) {
     }
 }
 
-const CFHE_Integer CFHE_Integer::operator==(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator==(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
     return *this == CFHE_Integer(cfhe_base->GetConstantInt(other, size), false,
                                  size, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator!=(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator!=(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
     return *this != CFHE_Integer(cfhe_base->GetConstantInt(other, size), false,
                                  size, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator>(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator>(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
     return *this > CFHE_Integer(cfhe_base->GetConstantInt(other, size), false,
                                 size, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator>=(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator>=(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
     return *this >= CFHE_Integer(cfhe_base->GetConstantInt(other, size), false,
                                  size, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator<(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator<(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
     return *this < CFHE_Integer(cfhe_base->GetConstantInt(other, size), false,
                                 size, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator<=(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator<=(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
     return *this <= CFHE_Integer(cfhe_base->GetConstantInt(other, size), false,
                                  size, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator+(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator+(const CFHE_Integer &other) const {
     if (size == other.size) {
         return CFHE_Integer(
             cfhe_base->GetArithmeticsEngine()->AddNC(data, other.data), sign,
@@ -290,7 +290,7 @@ const CFHE_Integer CFHE_Integer::operator+=(const CFHE_Integer &other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator-(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator-(const CFHE_Integer &other) const {
     if (size == other.size) {
         return CFHE_Integer(
             cfhe_base->GetArithmeticsEngine()->SubNC(data, other.data), sign,
@@ -313,7 +313,7 @@ const CFHE_Integer CFHE_Integer::operator-=(const CFHE_Integer &other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator*(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator*(const CFHE_Integer &other) const {
     if (size == other.size) {
         return CFHE_Integer(
             cfhe_base->GetArithmeticsEngine()->Mul(data, other.data), sign,
@@ -336,7 +336,7 @@ const CFHE_Integer CFHE_Integer::operator*=(const CFHE_Integer &other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator+(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator+(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext arithmetic
     return *this + CFHE_Integer(cfhe_base->GetConstantInt(other, size), sign,
                                 size, sign);
@@ -348,7 +348,7 @@ const CFHE_Integer CFHE_Integer::operator+=(uint64_t other) {
                                  size, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator-(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator-(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext arithmetic
     return *this - CFHE_Integer(cfhe_base->GetConstantInt(other, size), sign,
                                 size, sign);
@@ -360,7 +360,7 @@ const CFHE_Integer CFHE_Integer::operator-=(uint64_t other) {
                                  size, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator*(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator*(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext arithmetic
     return *this * CFHE_Integer(cfhe_base->GetConstantInt(other, size), sign,
                                 size, sign);
@@ -372,12 +372,12 @@ const CFHE_Integer CFHE_Integer::operator*=(uint64_t other) {
                                  size, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator-() {
+const CFHE_Integer CFHE_Integer::operator-() const {
     return CFHE_Integer(cfhe_base->GetArithmeticsEngine()->Neg(data), sign,
                         size, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator&(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator&(const CFHE_Integer &other) const {
     if (size == other.size) {
         FixedPoint fp(size);
         for (size_t i = 0; i < size; i++) {
@@ -412,7 +412,7 @@ const CFHE_Integer CFHE_Integer::operator&=(const CFHE_Integer &other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator&(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator&(uint64_t other) const {
     CFHE_Integer r(size, sign);
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
@@ -435,7 +435,7 @@ const CFHE_Integer CFHE_Integer::operator&=(uint64_t other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator|(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator|(const CFHE_Integer &other) const {
     if (size == other.size) {
         FixedPoint fp(size);
         for (size_t i = 0; i < size; i++) {
@@ -470,7 +470,7 @@ const CFHE_Integer CFHE_Integer::operator|=(const CFHE_Integer &other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator|(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator|(uint64_t other) const {
     CFHE_Integer r(size, sign);
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
@@ -493,7 +493,7 @@ const CFHE_Integer CFHE_Integer::operator|=(uint64_t other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator^(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator^(const CFHE_Integer &other) const {
     if (size == other.size) {
         FixedPoint fp(size);
         for (size_t i = 0; i < size; i++) {
@@ -528,7 +528,7 @@ const CFHE_Integer CFHE_Integer::operator^=(const CFHE_Integer &other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator^(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator^(uint64_t other) const {
     CFHE_Integer r(size, sign);
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
@@ -551,7 +551,7 @@ const CFHE_Integer CFHE_Integer::operator^=(uint64_t other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator!() {
+const CFHE_Integer CFHE_Integer::operator!() const {
     LWECiphertext r = data[0];
     for (size_t i = 1; i < size; i++) {
         r = cfhe_base->GetArithmeticsEngine()->Gate_OR(r, data[i]);
@@ -560,11 +560,11 @@ const CFHE_Integer CFHE_Integer::operator!() {
                         1UL, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator~() {
+const CFHE_Integer CFHE_Integer::operator~() const {
     return *this ^ 0xFFFFFFFFFFFFFFFFUL;
 }
 
-const CFHE_Integer CFHE_Integer::operator&&(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator&&(const CFHE_Integer &other) const {
     LWECiphertext r1 = data[0];
     for (size_t i = 1; i < size; i++) {
         r1 = cfhe_base->GetArithmeticsEngine()->Gate_OR(r1, data[i]);
@@ -577,7 +577,7 @@ const CFHE_Integer CFHE_Integer::operator&&(const CFHE_Integer &other) {
                         false, 1UL, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator&&(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator&&(uint64_t other) const {
     if (!other)
         return CFHE_Integer(
             {cfhe_base->GetArithmeticsEngine()->GetConstantFalse()}, false, 1UL,
@@ -589,7 +589,7 @@ const CFHE_Integer CFHE_Integer::operator&&(uint64_t other) {
     return CFHE_Integer({r}, false, 1UL, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator||(const CFHE_Integer &other) {
+const CFHE_Integer CFHE_Integer::operator||(const CFHE_Integer &other) const {
     LWECiphertext r1 = data[0];
     for (size_t i = 1; i < size; i++) {
         r1 = cfhe_base->GetArithmeticsEngine()->Gate_OR(r1, data[i]);
@@ -602,7 +602,7 @@ const CFHE_Integer CFHE_Integer::operator||(const CFHE_Integer &other) {
                         false, 1UL, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator||(uint64_t other) {
+const CFHE_Integer CFHE_Integer::operator||(uint64_t other) const {
     if (other)
         return CFHE_Integer(
             {cfhe_base->GetArithmeticsEngine()->GetConstantTrue()}, false, 1UL,

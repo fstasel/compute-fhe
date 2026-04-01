@@ -6,10 +6,14 @@ using namespace computefhe;
 
 template <class T>
 template <class I>
-Eitem<T> Evector<T>::operator[](I &index) {
+Eitem<T> Evector<T>::operator[](const I &index) {
     return Eitem<T>(*this, index);
     // TODO: Use below in client-mode only
     return Eitem<T>(*this, (uint64_t)index);
+}
+
+template <class T> T &Evector<T>::operator[](const int idx) {
+    return this->at(idx);
 }
 
 template <class T>
@@ -41,12 +45,12 @@ template <class T> Eitem<T>::operator T() const {
         // TODO: optimize this by using ciphertext-plaintext comparison
         LWECiphertext c = cfhe_base->GetArithmeticsEngine()->CmpEq(
             index, cfhe_base->GetConstantInt(0, index.size()));
-        size_t n = data[0].getData().size();
+        size_t n = data.at(0).getData().size();
         FixedPoint result(n);
 
         for (size_t d = 0; d < n; ++d) {
             result[d] = cfhe_base->GetArithmeticsEngine()->Gate_AND(
-                c, data[0].getData()[d]);
+                c, data.at(0).getData()[d]);
         }
         for (size_t i = 1; i < data.size(); ++i) {
             // TODO: optimize this by using ciphertext-plaintext comparison
@@ -57,15 +61,15 @@ template <class T> Eitem<T>::operator T() const {
                     c, data[i].getData()[d], result[d]);
             }
         }
-        return T(
-            CFHE_Integer(result, data[0].isSigned(), n, data[0].isSigned()));
+        return T(CFHE_Integer(result, data.at(0).isSigned(), n,
+                              data.at(0).isSigned()));
     }
     return data[p_index];
 }
 
 template <class T> const T &Eitem<T>::operator=(const T &value) {
     if (encrypted_index) {
-        size_t n = data[0].getData().size();
+        size_t n = data.at(0).getData().size();
         for (size_t i = 0; i < data.size(); ++i) {
             // TODO: optimize this by using ciphertext-plaintext comparison
             LWECiphertext c = cfhe_base->GetArithmeticsEngine()->CmpEq(
@@ -98,15 +102,16 @@ template <class T> const T &Eitem<T>::operator=(const T &value) {
 
 #define INSTANTIATE_EVECTOR(T)                                                 \
     template class Evector<T>;                                                 \
-    template Eitem<T> Evector<T>::operator[](Ebool &);                         \
-    template Eitem<T> Evector<T>::operator[](Euint8 &);                        \
-    template Eitem<T> Evector<T>::operator[](Euint16 &);                       \
-    template Eitem<T> Evector<T>::operator[](Euint32 &);                       \
-    template Eitem<T> Evector<T>::operator[](Euint64 &);                       \
-    template Eitem<T> Evector<T>::operator[](Eint8 &);                         \
-    template Eitem<T> Evector<T>::operator[](Eint16 &);                        \
-    template Eitem<T> Evector<T>::operator[](Eint32 &);                        \
-    template Eitem<T> Evector<T>::operator[](Eint64 &);                        \
+    template Eitem<T> Evector<T>::operator[](const Ebool &);                   \
+    template Eitem<T> Evector<T>::operator[](const Euint8 &);                  \
+    template Eitem<T> Evector<T>::operator[](const Euint16 &);                 \
+    template Eitem<T> Evector<T>::operator[](const Euint32 &);                 \
+    template Eitem<T> Evector<T>::operator[](const Euint64 &);                 \
+    template Eitem<T> Evector<T>::operator[](const Eint8 &);                   \
+    template Eitem<T> Evector<T>::operator[](const Eint16 &);                  \
+    template Eitem<T> Evector<T>::operator[](const Eint32 &);                  \
+    template Eitem<T> Evector<T>::operator[](const Eint64 &);                  \
+    template Eitem<T> Evector<T>::operator[](const CFHE_Integer &);            \
     template class Eitem<T>;                                                   \
     template Eitem<T>::Eitem(Evector<T> &, const Ebool &);                     \
     template Eitem<T>::Eitem(Evector<T> &, const Euint8 &);                    \

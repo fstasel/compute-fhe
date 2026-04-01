@@ -12,7 +12,8 @@ namespace computefhe {
       public:
         using std::vector<T>::vector;
         using std::vector<T>::operator[];
-        template <class I> Eitem<T> operator[](I &index);
+        template <class I> Eitem<T> operator[](const I &index);
+        T &operator[](const int idx);
     };
 
     template <class T> class Eitem {

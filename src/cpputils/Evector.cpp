@@ -61,8 +61,7 @@ template <class T> Eitem<T>::operator T() const {
                     c, data[i].getData()[d], result[d]);
             }
         }
-        return T(CFHE_Integer(result, data.at(0).isSigned(), n,
-                              data.at(0).isSigned()));
+        return T(CFHE_Integer(result, data.at(0).isSigned()));
     }
     return data[p_index];
 }
@@ -214,8 +213,12 @@ CFHE_TYPES(INSTANTIATE_EVECTOR)
 
 #define IMPLEMENT_E_TYPE(NAME, TYPE, BITS, SIGNED, CAST)                       \
     NAME::NAME(TYPE d) : CFHE_Integer((CAST)d, BITS##UL) {}                    \
-    NAME::NAME(const CFHE_Integer &other)                                      \
-        : CFHE_Integer(other.getData(), other.isSigned(), BITS##UL, SIGNED) {} \
+    NAME::NAME(const CFHE_Integer &other) : CFHE_Integer(BITS##UL, SIGNED) {   \
+        FixedPoint o = promote(other, BITS);                                   \
+        for (size_t i = 0; i < BITS; i++) {                                    \
+            data[i] = COPY_CT(o[i]);                                           \
+        }                                                                      \
+    }                                                                          \
     IMPLEMENT_E_ITEM_ALL_OPS(NAME)
 
 IMPLEMENT_E_TYPE(Ebool, bool, 1, false, uint64_t)
@@ -236,3 +239,7 @@ IMPLEMENT_E_TYPE(Euint64, uint64_t, 64, false, uint64_t)
 #undef IMPLEMENT_E_ITEM_INC_DEC
 #undef IMPLEMENT_E_ITEM_ALL_OPS
 #undef IMPLEMENT_E_TYPE
+
+// TODO: Ebool operators must behave differently
+// bool op integral_t -> (int)bool op integral_t -> Promoted -> (bool)Promoted
+// (bool)x = 0 if x == 0, else 1

@@ -20,17 +20,18 @@ namespace computefhe {
         size_t size;
         bool sign;
 
-        virtual void fixSize(bool is_signed);
-        virtual int64_t sign_extend(uint64_t d, size_t n_digits) const;
+        static int64_t sign_extend(uint64_t d, size_t n_digits);
         void _sync_var();
         void _desync_var();
+        static bool promote(const CFHE_Integer &a, const CFHE_Integer &b,
+                            FixedPoint &a_out, FixedPoint &b_out);
+        static FixedPoint promote(const CFHE_Integer &a, size_t s);
 
       public:
         CFHE_Integer(size_t n_digits, bool is_signed);
         CFHE_Integer(int64_t d, size_t n_digits);
         CFHE_Integer(uint64_t d, size_t n_digits);
-        CFHE_Integer(const FixedPoint &fp, bool fp_sign, size_t n_digits,
-                     bool is_signed);
+        CFHE_Integer(const FixedPoint &fp, bool is_signed);
         CFHE_Integer(const CFHE_Integer &other);
         virtual ~CFHE_Integer();
 

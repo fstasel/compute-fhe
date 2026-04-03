@@ -70,6 +70,7 @@ set(CPPUTILS_SOURCES
     src/cpputils/CFHE_Integer.cpp
     src/cpputils/ConditionManager.cpp
     src/cpputils/Evector.cpp
+    src/cpputils/CFHE_FixedPoint.cpp
 )
 
 set(TEST_SOURCES

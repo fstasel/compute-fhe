@@ -1,3 +1,4 @@
+#include <computefhe/CFHE_FixedPoint.h>
 #include <computefhe/CFHE_Integer.h>
 #include <computefhe/ComputeFHE.h>
 #include <computefhe/Evector.h>
@@ -342,19 +343,39 @@ void test_vector() {
     cout << "-vec[d]: " << -vec[d] << endl;
 }
 
+void test_fp() {
+    CFHE_FixedPoint a(-7.9, 8, 4, true);
+    CFHE_FixedPoint b(1.5, 8, 4, false);
+    CFHE_FixedPoint c(1.5, 4, 2, true);
+    cout << "a: " << a << endl;
+    cout << "b: " << b << endl;
+    cout << "c: " << c << endl;
+    cout << "a + c: " << a + c << endl;
+    a += b;
+    cout << "a += b: " << a << endl;
+    a += c;
+    cout << "a += c: " << a << endl;
+    cout << "b == c: " << (b == c) << endl;
+    a += 1.25;
+    cout << "a += 1.25: " << a << endl;
+    double d = (double)a;
+    cout << "double d = a: " << d << endl;
+}
+
 int main() {
     computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED, true);
 
-    test_arithmetic_operators();
-    test_arithmetic_assignment_operators();
-    test_comparison_operators();
-    test_logic_operators();
-    test_logic_assignment_operators();
-    test_shift_operators();
-    test_shift_assign_operators();
-    test_condition();
-    test_inc_dec();
-    test_vector();
+    // test_arithmetic_operators();
+    // test_arithmetic_assignment_operators();
+    // test_comparison_operators();
+    // test_logic_operators();
+    // test_logic_assignment_operators();
+    // test_shift_operators();
+    // test_shift_assign_operators();
+    // test_condition();
+    // test_inc_dec();
+    // test_vector();
+    test_fp();
 
     computefhe::Finalize();
 

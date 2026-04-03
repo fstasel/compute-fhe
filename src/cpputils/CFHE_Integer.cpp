@@ -674,15 +674,24 @@ CFHE_Integer::operator uint64_t() const {
     return (uint64_t)cfhe_base->DecryptInt(data, size);
 }
 
+CFHE_Integer::operator double() const {
+    // Client-mode only
+    if (!CLIENT_MODE)
+        OPENFHE_THROW("Not allowed in server mode.");
+
+    return (double)sign_extend(cfhe_base->DecryptInt(data, size), size);
+}
+
 ostream &computefhe::operator<<(ostream &out, const CFHE_Integer &obj) {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
 
     if (obj.sign) {
-        out << const_cast<CFHE_Integer &>(obj).sign_extend(
+        out << CFHE_Integer::sign_extend(
             cfhe_base->DecryptInt(obj.data, obj.size), obj.size);
-    } else
+    } else {
         out << (uint64_t)(cfhe_base->DecryptInt(obj.data, obj.size));
+    }
     return out;
 }

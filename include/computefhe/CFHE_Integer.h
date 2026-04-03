@@ -114,6 +114,7 @@ namespace computefhe {
         virtual explicit operator uint32_t() const;
         virtual explicit operator int64_t() const;
         virtual explicit operator uint64_t() const;
+        virtual explicit operator double() const;
 
         // Friend functions
         friend ostream &operator<<(ostream &out, const CFHE_Integer &obj);

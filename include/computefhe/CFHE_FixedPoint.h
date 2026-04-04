@@ -59,8 +59,7 @@ namespace computefhe {
         virtual const CFHE_FixedPoint operator+=(double);
         virtual const CFHE_FixedPoint operator-(double) const;
         virtual const CFHE_FixedPoint operator-=(double);
-        // TODO (fix):
-        // virtual const CFHE_Integer operator-() const;
+        const CFHE_FixedPoint operator-() const;
 
         // Assignment operators
         CFHE_FixedPoint &operator=(const CFHE_FixedPoint &);

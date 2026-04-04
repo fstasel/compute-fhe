@@ -279,11 +279,10 @@ const CFHE_FixedPoint CFHE_FixedPoint::operator-=(double other) {
     return *this -= CFHE_FixedPoint(other, size, frac_size, sign);
 }
 
-// TODO (fix):
-/*const CFHE_Integer CFHE_FixedPoint::operator-() const {
+const CFHE_FixedPoint CFHE_FixedPoint::operator-() const {
     return CFHE_FixedPoint(cfhe_base->GetArithmeticsEngine()->Neg(data),
                            frac_size, sign);
-}*/
+}
 
 CFHE_FixedPoint &CFHE_FixedPoint::operator=(const CFHE_FixedPoint &other) {
     _sync_var();

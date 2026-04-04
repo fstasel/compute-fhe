@@ -66,7 +66,7 @@ namespace computefhe {
         virtual const CFHE_Integer operator-=(uint64_t);
         virtual const CFHE_Integer operator*(uint64_t) const;
         virtual const CFHE_Integer operator*=(uint64_t);
-        virtual const CFHE_Integer operator-() const;
+        const CFHE_Integer operator-() const;
 
         // Logic operators
         virtual const CFHE_Integer operator&(const CFHE_Integer &) const;

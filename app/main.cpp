@@ -399,6 +399,26 @@ void test_fp() {
     if (a > -6.875)
         cout << "a > -6.875" << endl;
     cout << "-a: " << -a << endl;
+    a <<= 1;
+    cout << "a <<= 1: " << a << endl;
+    CFHE_FixedPoint p = a * b;
+    cout << "p = a * b: " << p << endl;
+    CFHE_FixedPoint q = a * c;
+    cout << "q = a * c: " << q << endl;
+    CFHE_FixedPoint t = a;
+    a *= b;
+    cout << "a *= b: " << a << endl;
+    a = t;
+    a *= c;
+    cout << "a *= c: " << a << endl;
+    p = a * -0.5;
+    cout << "p = a * -0.5: " << p << endl;
+    q = a * 0.25;
+    cout << "q = a * 0.25: " << q << endl;
+    a *= -0.5;
+    cout << "a *= -0.5: " << a << endl;
+    a++;
+    cout << "a++: " << a << endl;
 }
 
 int main() {

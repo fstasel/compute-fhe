@@ -279,6 +279,47 @@ const CFHE_FixedPoint CFHE_FixedPoint::operator-=(double other) {
     return *this -= CFHE_FixedPoint(other, size, frac_size, sign);
 }
 
+const CFHE_FixedPoint
+CFHE_FixedPoint::operator*(const CFHE_FixedPoint &other) const {
+    FixedPoint a, b;
+    size_t n_digits, n_frac;
+    bool sign;
+    promote(*this, other, a, b, n_digits, n_frac, sign);
+    size_t mul_frac_a = n_frac >> 1;
+    size_t mul_frac_b = n_frac - mul_frac_a;
+    a.erase(a.begin(), a.begin() + mul_frac_b);
+    b.erase(b.begin(), b.begin() + mul_frac_a);
+    a = promote(CFHE_FixedPoint(a, mul_frac_a, sign), n_digits, mul_frac_a);
+    b = promote(CFHE_FixedPoint(b, mul_frac_b, sign), n_digits, mul_frac_b);
+    FixedPoint fp(cfhe_base->GetArithmeticsEngine()->Mul(a, b));
+    return CFHE_FixedPoint(fp, n_frac, sign);
+}
+
+const CFHE_FixedPoint
+CFHE_FixedPoint::operator*=(const CFHE_FixedPoint &other) {
+    _sync_var();
+    FixedPoint o = promote(other, size, frac_size);
+    size_t mul_frac_a = frac_size >> 1;
+    size_t mul_frac_b = frac_size - mul_frac_a;
+    FixedPoint d(data.begin() + mul_frac_b, data.end());
+    o.erase(o.begin(), o.begin() + mul_frac_a);
+    d = promote(CFHE_FixedPoint(d, mul_frac_a, sign), size, mul_frac_a);
+    o = promote(CFHE_FixedPoint(o, mul_frac_b, sign), size, mul_frac_b);
+    data = cfhe_base->GetArithmeticsEngine()->Mul(d, o);
+    _sync_var();
+    return *this;
+}
+
+const CFHE_FixedPoint CFHE_FixedPoint::operator*(double other) const {
+    // TODO: optimize this by using ciphertext-plaintext comparison
+    return *this * CFHE_FixedPoint(other, size, frac_size, sign);
+}
+
+const CFHE_FixedPoint CFHE_FixedPoint::operator*=(double other) {
+    // TODO: optimize this by using ciphertext-plaintext comparison
+    return *this *= CFHE_FixedPoint(other, size, frac_size, sign);
+}
+
 const CFHE_FixedPoint CFHE_FixedPoint::operator-() const {
     return CFHE_FixedPoint(cfhe_base->GetArithmeticsEngine()->Neg(data),
                            frac_size, sign);

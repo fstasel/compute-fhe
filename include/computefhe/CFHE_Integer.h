@@ -89,10 +89,10 @@ namespace computefhe {
         virtual const CFHE_Integer operator||(uint64_t) const;
 
         // Increment & Decrement operators
-        virtual const CFHE_Integer operator++();
-        virtual const CFHE_Integer operator++(int);
-        virtual const CFHE_Integer operator--();
-        virtual const CFHE_Integer operator--(int);
+        const CFHE_Integer operator++();
+        const CFHE_Integer operator++(int);
+        const CFHE_Integer operator--();
+        const CFHE_Integer operator--(int);
 
         // Shift operators
         virtual const CFHE_Integer operator<<(int);

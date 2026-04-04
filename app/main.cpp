@@ -345,8 +345,8 @@ void test_vector() {
 
 void test_fp() {
     CFHE_FixedPoint a(-7.9, 8, 4, true);
-    CFHE_FixedPoint b(1.5, 8, 4, false);
-    CFHE_FixedPoint c(1.5, 4, 2, true);
+    CFHE_FixedPoint b(1.5, 8, 4, true);
+    CFHE_FixedPoint c(1.25, 4, 2, true);
     cout << "a: " << a << endl;
     cout << "b: " << b << endl;
     cout << "c: " << c << endl;
@@ -366,6 +366,39 @@ void test_fp() {
     cout << "a = -5.7: " << a << endl;
     a = c;
     cout << "a = c: " << a << endl;
+    cout << "a: " << a << ", b: " << b << ", c: " << c << endl;
+    a -= b;
+    cout << "a -= b: " << a << endl;
+    a -= 1.75;
+    cout << "a -= 1.75: " << a << endl;
+
+    cout << "a: " << a << ", b: " << b << endl;
+    if (c == b)
+        cout << "c == b" << endl;
+    if (c != b)
+        cout << "c != b" << endl;
+    if (c >= b)
+        cout << "c >= b" << endl;
+    if (c <= b)
+        cout << "c <= b" << endl;
+    if (c < b)
+        cout << "c < b" << endl;
+    if (c > b)
+        cout << "c > b" << endl;
+
+    if (a == -6.875)
+        cout << "a == -6.875" << endl;
+    if (a != -6.875)
+        cout << "a != -6.875" << endl;
+    if (a >= -6.875)
+        cout << "a >= -6.875" << endl;
+    if (a <= -6.875)
+        cout << "a <= -6.875" << endl;
+    if (a < -6.875)
+        cout << "a < -6.875" << endl;
+    if (a > -6.875)
+        cout << "a > -6.875" << endl;
+    cout << "-a: " << -a << endl;
 }
 
 int main() {

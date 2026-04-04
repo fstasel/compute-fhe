@@ -28,16 +28,39 @@ namespace computefhe {
 
         // Comparison operators
         using CFHE_Integer::operator==;
+        using CFHE_Integer::operator!=;
+        using CFHE_Integer::operator>;
+        using CFHE_Integer::operator>=;
+        using CFHE_Integer::operator<;
+        using CFHE_Integer::operator<=;
         virtual const CFHE_Integer operator==(const CFHE_FixedPoint &) const;
+        virtual const CFHE_Integer operator!=(const CFHE_FixedPoint &) const;
+        virtual const CFHE_Integer operator>(const CFHE_FixedPoint &) const;
+        virtual const CFHE_Integer operator>=(const CFHE_FixedPoint &) const;
+        virtual const CFHE_Integer operator<(const CFHE_FixedPoint &) const;
+        virtual const CFHE_Integer operator<=(const CFHE_FixedPoint &) const;
+        virtual const CFHE_Integer operator==(double) const;
+        virtual const CFHE_Integer operator!=(double) const;
+        virtual const CFHE_Integer operator>(double) const;
+        virtual const CFHE_Integer operator>=(double) const;
+        virtual const CFHE_Integer operator<(double) const;
+        virtual const CFHE_Integer operator<=(double) const;
 
         // Arithmetic operators
         using CFHE_Integer::operator+;
         using CFHE_Integer::operator+=;
+        using CFHE_Integer::operator-;
+        using CFHE_Integer::operator-=;
         virtual const CFHE_FixedPoint operator+(const CFHE_FixedPoint &) const;
         virtual const CFHE_FixedPoint operator+=(const CFHE_FixedPoint &);
-
+        virtual const CFHE_FixedPoint operator-(const CFHE_FixedPoint &) const;
+        virtual const CFHE_FixedPoint operator-=(const CFHE_FixedPoint &);
         virtual const CFHE_FixedPoint operator+(double) const;
         virtual const CFHE_FixedPoint operator+=(double);
+        virtual const CFHE_FixedPoint operator-(double) const;
+        virtual const CFHE_FixedPoint operator-=(double);
+        // TODO (fix):
+        // virtual const CFHE_Integer operator-() const;
 
         // Assignment operators
         CFHE_FixedPoint &operator=(const CFHE_FixedPoint &);

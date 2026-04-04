@@ -133,6 +133,94 @@ CFHE_FixedPoint::operator==(const CFHE_FixedPoint &other) const {
     return CFHE_Integer(fp, false);
 }
 
+const CFHE_Integer
+CFHE_FixedPoint::operator!=(const CFHE_FixedPoint &other) const {
+    FixedPoint a, b;
+    size_t n_digits, n_frac;
+    bool sign;
+    promote(*this, other, a, b, n_digits, n_frac, sign);
+    FixedPoint fp({cfhe_base->GetArithmeticsEngine()->CmpNotEq(a, b)});
+    return CFHE_Integer(fp, false);
+}
+
+const CFHE_Integer
+CFHE_FixedPoint::operator>(const CFHE_FixedPoint &other) const {
+    FixedPoint a, b;
+    size_t n_digits, n_frac;
+    bool sign;
+    promote(*this, other, a, b, n_digits, n_frac, sign);
+    FixedPoint fp({(sign && other.sign)
+                       ? cfhe_base->GetArithmeticsEngine()->CmpGT(a, b)
+                       : cfhe_base->GetArithmeticsEngine()->CmpGT_U(a, b)});
+    return CFHE_Integer(fp, false);
+}
+
+const CFHE_Integer
+CFHE_FixedPoint::operator>=(const CFHE_FixedPoint &other) const {
+    FixedPoint a, b;
+    size_t n_digits, n_frac;
+    bool sign;
+    promote(*this, other, a, b, n_digits, n_frac, sign);
+    FixedPoint fp({(sign && other.sign)
+                       ? cfhe_base->GetArithmeticsEngine()->CmpGTEq(a, b)
+                       : cfhe_base->GetArithmeticsEngine()->CmpGTEq_U(a, b)});
+    return CFHE_Integer(fp, false);
+}
+
+const CFHE_Integer
+CFHE_FixedPoint::operator<(const CFHE_FixedPoint &other) const {
+    FixedPoint a, b;
+    size_t n_digits, n_frac;
+    bool sign;
+    promote(*this, other, a, b, n_digits, n_frac, sign);
+    FixedPoint fp({(sign && other.sign)
+                       ? cfhe_base->GetArithmeticsEngine()->CmpLT(a, b)
+                       : cfhe_base->GetArithmeticsEngine()->CmpLT_U(a, b)});
+    return CFHE_Integer(fp, false);
+}
+
+const CFHE_Integer
+CFHE_FixedPoint::operator<=(const CFHE_FixedPoint &other) const {
+    FixedPoint a, b;
+    size_t n_digits, n_frac;
+    bool sign;
+    promote(*this, other, a, b, n_digits, n_frac, sign);
+    FixedPoint fp({(sign && other.sign)
+                       ? cfhe_base->GetArithmeticsEngine()->CmpLTEq(a, b)
+                       : cfhe_base->GetArithmeticsEngine()->CmpLTEq_U(a, b)});
+    return CFHE_Integer(fp, false);
+}
+
+const CFHE_Integer CFHE_FixedPoint::operator==(double other) const {
+    // TODO: optimize this by using ciphertext-plaintext comparison
+    return *this == CFHE_FixedPoint(other, size, frac_size, sign);
+}
+
+const CFHE_Integer CFHE_FixedPoint::operator!=(double other) const {
+    // TODO: optimize this by using ciphertext-plaintext comparison
+    return *this != CFHE_FixedPoint(other, size, frac_size, sign);
+}
+
+const CFHE_Integer CFHE_FixedPoint::operator>(double other) const {
+    // TODO: optimize this by using ciphertext-plaintext comparison
+    return *this > CFHE_FixedPoint(other, size, frac_size, sign);
+}
+
+const CFHE_Integer CFHE_FixedPoint::operator>=(double other) const {
+    // TODO: optimize this by using ciphertext-plaintext comparison
+    return *this >= CFHE_FixedPoint(other, size, frac_size, sign);
+}
+
+const CFHE_Integer CFHE_FixedPoint::operator<(double other) const {
+    // TODO: optimize this by using ciphertext-plaintext comparison
+    return *this < CFHE_FixedPoint(other, size, frac_size, sign);
+}
+
+const CFHE_Integer CFHE_FixedPoint::operator<=(double other) const {
+    // TODO: optimize this by using ciphertext-plaintext comparison
+    return *this <= CFHE_FixedPoint(other, size, frac_size, sign);
+}
+
 const CFHE_FixedPoint
 CFHE_FixedPoint::operator+(const CFHE_FixedPoint &other) const {
     FixedPoint a, b;
@@ -153,12 +241,49 @@ CFHE_FixedPoint::operator+=(const CFHE_FixedPoint &other) {
 }
 
 const CFHE_FixedPoint CFHE_FixedPoint::operator+(double other) const {
+    // TODO: optimize this by using ciphertext-plaintext comparison
     return *this + CFHE_FixedPoint(other, size, frac_size, sign);
 }
 
 const CFHE_FixedPoint CFHE_FixedPoint::operator+=(double other) {
+    // TODO: optimize this by using ciphertext-plaintext comparison
     return *this += CFHE_FixedPoint(other, size, frac_size, sign);
 }
+
+const CFHE_FixedPoint
+CFHE_FixedPoint::operator-(const CFHE_FixedPoint &other) const {
+    FixedPoint a, b;
+    size_t n_digits, n_frac;
+    bool sign;
+    promote(*this, other, a, b, n_digits, n_frac, sign);
+    FixedPoint fp(cfhe_base->GetArithmeticsEngine()->SubNC(a, b));
+    return CFHE_FixedPoint(fp, n_frac, sign);
+}
+
+const CFHE_FixedPoint
+CFHE_FixedPoint::operator-=(const CFHE_FixedPoint &other) {
+    _sync_var();
+    FixedPoint o = promote(other, size, frac_size);
+    data = cfhe_base->GetArithmeticsEngine()->SubNC(data, o);
+    _sync_var();
+    return *this;
+}
+
+const CFHE_FixedPoint CFHE_FixedPoint::operator-(double other) const {
+    // TODO: optimize this by using ciphertext-plaintext comparison
+    return *this - CFHE_FixedPoint(other, size, frac_size, sign);
+}
+
+const CFHE_FixedPoint CFHE_FixedPoint::operator-=(double other) {
+    // TODO: optimize this by using ciphertext-plaintext comparison
+    return *this -= CFHE_FixedPoint(other, size, frac_size, sign);
+}
+
+// TODO (fix):
+/*const CFHE_Integer CFHE_FixedPoint::operator-() const {
+    return CFHE_FixedPoint(cfhe_base->GetArithmeticsEngine()->Neg(data),
+                           frac_size, sign);
+}*/
 
 CFHE_FixedPoint &CFHE_FixedPoint::operator=(const CFHE_FixedPoint &other) {
     _sync_var();

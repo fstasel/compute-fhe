@@ -360,6 +360,12 @@ void test_fp() {
     cout << "a += 1.25: " << a << endl;
     double d = (double)a;
     cout << "double d = a: " << d << endl;
+    Eint16 k = a.toInteger();
+    cout << "Eint16 k = a: " << k << endl;
+    a = -5.7;
+    cout << "a = -5.7: " << a << endl;
+    a = c;
+    cout << "a = c: " << a << endl;
 }
 
 int main() {

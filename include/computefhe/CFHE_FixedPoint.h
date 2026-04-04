@@ -39,6 +39,10 @@ namespace computefhe {
         virtual const CFHE_FixedPoint operator+(double) const;
         virtual const CFHE_FixedPoint operator+=(double);
 
+        // Assignment operators
+        CFHE_FixedPoint &operator=(const CFHE_FixedPoint &);
+        CFHE_FixedPoint &operator=(double);
+
         // Type conversion
         using CFHE_Integer::operator bool;
         using CFHE_Integer::operator int8_t;
@@ -51,6 +55,7 @@ namespace computefhe {
         using CFHE_Integer::operator uint64_t;
         using CFHE_Integer::operator double;
         virtual explicit operator double() const;
+        CFHE_Integer toInteger() const;
 
         // Friend functions
         friend ostream &operator<<(ostream &out, const CFHE_FixedPoint &obj);

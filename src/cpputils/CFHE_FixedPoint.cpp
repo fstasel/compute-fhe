@@ -160,6 +160,23 @@ const CFHE_FixedPoint CFHE_FixedPoint::operator+=(double other) {
     return *this += CFHE_FixedPoint(other, size, frac_size, sign);
 }
 
+CFHE_FixedPoint &CFHE_FixedPoint::operator=(const CFHE_FixedPoint &other) {
+    _sync_var();
+    FixedPoint o = promote(other, size, frac_size);
+    for (size_t i = 0; i < data.size(); i++) {
+        data[i] = COPY_CT(o[i]);
+    }
+    _sync_var();
+    return *this;
+}
+
+CFHE_FixedPoint &CFHE_FixedPoint::operator=(double other) {
+    _sync_var();
+    *this = CFHE_FixedPoint(other, size, frac_size, sign);
+    _sync_var();
+    return *this;
+}
+
 CFHE_FixedPoint::operator double() const {
     // Client-mode only
     if (!CLIENT_MODE)
@@ -172,6 +189,10 @@ CFHE_FixedPoint::operator double() const {
     } else {
         return (double)cfhe_base->DecryptInt(data, size) / (1 << frac_size);
     }
+}
+
+CFHE_Integer CFHE_FixedPoint::toInteger() const {
+    return CFHE_Integer(FixedPoint(data.begin() + frac_size, data.end()), sign);
 }
 
 ostream &computefhe::operator<<(ostream &out, const CFHE_FixedPoint &obj) {

@@ -67,12 +67,11 @@ namespace computefhe {
         virtual const CFHE_FixedPoint operator*=(double);
         const CFHE_FixedPoint operator-() const;
 
-        // TODO:
         // Increment & Decrement operators
-        // const CFHE_FixedPoint operator++();
-        // const CFHE_FixedPoint operator++(int);
-        // const CFHE_FixedPoint operator--();
-        // const CFHE_FixedPoint operator--(int);
+        const CFHE_FixedPoint operator++();
+        const CFHE_FixedPoint operator++(int);
+        const CFHE_FixedPoint operator--();
+        const CFHE_FixedPoint operator--(int);
 
         // Assignment operators
         CFHE_FixedPoint &operator=(const CFHE_FixedPoint &);

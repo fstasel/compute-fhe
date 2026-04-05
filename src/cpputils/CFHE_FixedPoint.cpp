@@ -325,6 +325,28 @@ const CFHE_FixedPoint CFHE_FixedPoint::operator-() const {
                            frac_size, sign);
 }
 
+const CFHE_FixedPoint CFHE_FixedPoint::operator++() {
+    *this += 1.;
+    return *this;
+}
+
+const CFHE_FixedPoint CFHE_FixedPoint::operator++(int) {
+    CFHE_Integer tmp = *this;
+    *this += 1.;
+    return tmp;
+}
+
+const CFHE_FixedPoint CFHE_FixedPoint::operator--() {
+    *this -= 1.;
+    return *this;
+}
+
+const CFHE_FixedPoint CFHE_FixedPoint::operator--(int) {
+    CFHE_Integer tmp = *this;
+    *this -= 1.;
+    return tmp;
+}
+
 CFHE_FixedPoint &CFHE_FixedPoint::operator=(const CFHE_FixedPoint &other) {
     _sync_var();
     FixedPoint o = promote(other, size, frac_size);

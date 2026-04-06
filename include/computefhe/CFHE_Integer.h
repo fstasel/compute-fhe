@@ -97,10 +97,10 @@ namespace computefhe {
         const CFHE_Integer operator--(int);
 
         // Shift operators
-        virtual const CFHE_Integer operator<<(int);
-        virtual const CFHE_Integer operator<<=(int);
-        virtual const CFHE_Integer operator>>(int);
-        virtual const CFHE_Integer operator>>=(int);
+        const CFHE_Integer operator<<(int);
+        const CFHE_Integer operator<<=(int);
+        const CFHE_Integer operator>>(int);
+        const CFHE_Integer operator>>=(int);
 
         // Assignment operators
         CFHE_Integer &operator=(const CFHE_Integer &);

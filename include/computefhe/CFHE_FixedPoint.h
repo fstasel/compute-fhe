@@ -74,6 +74,12 @@ namespace computefhe {
         const CFHE_FixedPoint operator--();
         const CFHE_FixedPoint operator--(int);
 
+        // Shift operators
+        const CFHE_FixedPoint operator<<(int);
+        const CFHE_FixedPoint operator<<=(int);
+        const CFHE_FixedPoint operator>>(int);
+        const CFHE_FixedPoint operator>>=(int);
+
         // Assignment operators
         CFHE_FixedPoint &operator=(const CFHE_FixedPoint &);
         CFHE_FixedPoint &operator=(double);

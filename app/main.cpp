@@ -457,6 +457,28 @@ void test_fp() {
     cout << "a++: " << a << endl;
 }
 
+void test_fp_vector() {
+    Evector<CFHE_FixedPoint> vec(4);
+    vec[0] = CFHE_FixedPoint(1.5, 4, 2, true);
+    vec[1] = CFHE_FixedPoint(-2.25, 8, 4, true);
+    vec[2] = vec[0] + vec[1];
+    vec[3] = vec[0] * vec[1];
+
+    Euint8 idx = 2;
+    cout << "vec[0]: " << vec[0] << endl;
+    cout << "vec[1]: " << vec[1] << endl;
+    cout << "vec[idx]: " << vec[idx] << endl;
+    cout << "vec[3]: " << vec[3] << endl;
+    cout << "vec[0] << 1: " << (vec[0] << 1) << endl;
+    cout << "++vec[0]: " << (++vec[0]) << endl;
+    vec[0] >>= 1;
+    cout << "vec[0] >>= 1: " << vec[0] << endl;
+    vec[idx] *= -1.5;
+    cout << "vec[idx] *= -1.5: " << vec[idx] << endl;
+    cout << "-vec[idx]: " << -vec[idx] << endl;
+    cout << "++vec[idx]: " << (++vec[idx]) << endl;
+}
+
 int main() {
     computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED, true);
 
@@ -470,8 +492,9 @@ int main() {
     // test_condition();
     // test_inc_dec();
     // test_vector();
-    test_vector_custom();
+    // test_vector_custom();
     // test_fp();
+    test_fp_vector();
 
     computefhe::Finalize();
 

@@ -92,9 +92,14 @@ FixedPoint CFHE_Integer::promote(const CFHE_Integer &a, size_t s) {
     return out;
 }
 
+CFHE_Integer::CFHE_Integer() : CFHE_Integer(8, false) {}
+
+CFHE_Integer::CFHE_Integer(int64_t d) : CFHE_Integer(d, 8) {}
+
 CFHE_Integer::CFHE_Integer(size_t n_digits, bool is_signed) {
     if (cfhe_base == nullptr)
         Init();
+    // TODO: In client-mode, this should be done by encrypting
     data = cfhe_base->GetConstantInt(0, n_digits);
     size = n_digits;
     sign = is_signed;
@@ -103,6 +108,7 @@ CFHE_Integer::CFHE_Integer(size_t n_digits, bool is_signed) {
 CFHE_Integer::CFHE_Integer(int64_t d, size_t n_digits) {
     if (cfhe_base == nullptr)
         Init();
+    // TODO: In client-mode, this should be done by encrypting
     data = cfhe_base->GetConstantInt((uint64_t)d, n_digits);
     size = n_digits;
     sign = true;
@@ -111,6 +117,7 @@ CFHE_Integer::CFHE_Integer(int64_t d, size_t n_digits) {
 CFHE_Integer::CFHE_Integer(uint64_t d, size_t n_digits) {
     if (cfhe_base == nullptr)
         Init();
+    // TODO: In client-mode, this should be done by encrypting
     data = cfhe_base->GetConstantInt(d, n_digits);
     size = n_digits;
     sign = false;
@@ -597,6 +604,7 @@ CFHE_Integer &CFHE_Integer::operator=(const CFHE_Integer &other) {
 
 CFHE_Integer &CFHE_Integer::operator=(uint64_t other) {
     _sync_var();
+    // TODO: In client-mode, this should be done by encrypting
     *this = CFHE_Integer(cfhe_base->GetConstantInt(other, size), sign);
     _sync_var();
     return *this;
@@ -695,3 +703,18 @@ ostream &computefhe::operator<<(ostream &out, const CFHE_Integer &obj) {
     }
     return out;
 }
+
+// Explicitly instantiate EType variants for standard types
+template class EType<bool, 1, false>;
+template class EType<int8_t, 8, true>;
+template class EType<uint8_t, 8, false>;
+template class EType<int16_t, 16, true>;
+template class EType<uint16_t, 16, false>;
+template class EType<int32_t, 32, true>;
+template class EType<uint32_t, 32, false>;
+template class EType<int64_t, 64, true>;
+template class EType<uint64_t, 64, false>;
+
+// TODO: Ebool operators must behave differently
+// bool op integral_t -> (int)bool op integral_t -> Promoted -> (bool)Promoted
+// (bool)x = 0 if x == 0, else 1

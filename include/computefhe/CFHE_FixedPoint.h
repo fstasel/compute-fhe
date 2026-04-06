@@ -16,6 +16,7 @@ namespace computefhe {
                                   size_t n_frac);
 
       public:
+        CFHE_FixedPoint();
         CFHE_FixedPoint(size_t n_digits, size_t n_frac, bool is_signed);
         CFHE_FixedPoint(double d, size_t n_digits, size_t n_frac,
                         bool is_signed);

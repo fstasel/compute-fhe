@@ -324,6 +324,42 @@ void test_vector() {
     vec[2] = vec[0] + vec[e];
     vec[d] = vec[e] + vec[0];
     vec[4] = vec[d] + 5;
+    vec[5] = vec[d] | vec[e];
+    vec[6] = 60;
+    vec[6] += vec[5];
+    vec[d] = -vec[d];
+    vec[e] <<= 1;
+    vec[d]++;
+
+    cout << "vec[0]: " << vec[0] << endl;
+    cout << "vec[1]: " << vec[1] << endl;
+    cout << "vec[2]: " << vec[2] << endl;
+    cout << "vec[d]: " << vec[d] << endl;
+    cout << "vec[4]: " << vec[4] << endl;
+    cout << "vec[5]: " << vec[5] << endl;
+    cout << "vec[6]: " << vec[6] << endl;
+    cout << "vec[7]: " << vec[7] << endl;
+    cout << "vec[d] < vec[4]: " << (vec[d] < vec[4]) << endl;
+    cout << "-vec[d]: " << -vec[d] << endl;
+}
+
+void test_vector_custom() {
+    using MyEint = EType<int16_t, 6, true>;
+    using MyEuint = EType<uint8_t, 3, false>;
+
+    MyEuint d = 3, e = 1;
+    cout << "d: " << d << ", e: " << e << endl;
+    MyEint k = 10;
+    cout << "k: " << k << endl;
+    cout << "d + 1: " << d + 1 << endl;
+    cout << "k + 1: " << k + 1 << endl;
+
+    Evector<MyEint> vec(8);
+    vec[0] = MyEint(10);
+    vec[1] = 20;
+    vec[2] = vec[0] + vec[e];
+    vec[d] = vec[e] + vec[0];
+    vec[4] = vec[d] + 5;
     vec[5] = vec[d] | vec[2];
     vec[6] = 60;
     vec[6] += vec[5];
@@ -434,7 +470,8 @@ int main() {
     // test_condition();
     // test_inc_dec();
     // test_vector();
-    test_fp();
+    test_vector_custom();
+    // test_fp();
 
     computefhe::Finalize();
 

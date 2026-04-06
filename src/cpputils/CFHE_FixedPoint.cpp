@@ -89,6 +89,8 @@ FixedPoint CFHE_FixedPoint::promote(const CFHE_FixedPoint &a, size_t n_digits,
     return out;
 }
 
+CFHE_FixedPoint::CFHE_FixedPoint() : CFHE_FixedPoint(8, 4, true) {}
+
 CFHE_FixedPoint::CFHE_FixedPoint(size_t n_digits, size_t n_frac, bool is_signed)
     : CFHE_Integer(n_digits, is_signed) {
     frac_size = n_frac < n_digits ? n_frac : n_digits;

@@ -532,50 +532,23 @@ const CFHE_Integer CFHE_Integer::operator--(int) {
 }
 
 const CFHE_Integer CFHE_Integer::operator<<(int s) {
-    int sz = (int)size;
-    FixedPoint fp(size);
-    s = clamp<int>(s, 0, size - 1);
-    for (int i = sz - 1; i >= 0; i--) {
-        fp[i] =
-            (i - s < 0) ? cfhe_base->GetALU()->GetConstantFalse() : data[i - s];
-    }
-    return CFHE_Integer(fp, sign);
+    return CFHE_Integer(cfhe_base->GetALU()->ShiftLeft(data, s), sign);
 }
 
 const CFHE_Integer CFHE_Integer::operator<<=(int s) {
     _sync_var();
-    int sz = (int)size;
-    s = clamp<int>(s, 0, size - 1);
-    for (int i = sz - 1; i >= 0; i--) {
-        data[i] =
-            (i - s < 0) ? cfhe_base->GetALU()->GetConstantFalse() : data[i - s];
-    }
+    data = cfhe_base->GetALU()->ShiftLeft(data, s);
     _sync_var();
     return *this;
 }
 
 const CFHE_Integer CFHE_Integer::operator>>(int s) {
-    int sz = (int)size;
-    FixedPoint fp(size);
-    s = clamp<int>(s, 0, size - 1);
-    for (int i = 0; i < sz; i++) {
-        fp[i] = (i + s >= sz) ? (sign ? data[fp.size() - 1]
-                                      : cfhe_base->GetALU()->GetConstantFalse())
-                              : data[i + s];
-    }
-    return CFHE_Integer(fp, sign);
+    return CFHE_Integer(cfhe_base->GetALU()->ShiftRight(data, s, sign), sign);
 }
 
 const CFHE_Integer CFHE_Integer::operator>>=(int s) {
     _sync_var();
-    int sz = (int)size;
-    s = clamp<int>(s, 0, size - 1);
-    for (int i = 0; i < sz; i++) {
-        data[i] = (i + s >= sz)
-                      ? (sign ? data[size - 1]
-                              : cfhe_base->GetALU()->GetConstantFalse())
-                      : data[i + s];
-    }
+    data = cfhe_base->GetALU()->ShiftRight(data, s, sign);
     _sync_var();
     return *this;
 }

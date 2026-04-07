@@ -36,6 +36,17 @@ namespace computefhe {
                                         ConstLWECiphertext &b);
         virtual LWECiphertext Gate_NOT(ConstLWECiphertext &a);
 
+        FixedPoint ToggleMSB(const FixedPoint &a);
+
+        virtual FixedPoint ShiftLeft(const FixedPoint &a, size_t shift);
+        virtual FixedPoint ShiftRight(const FixedPoint &a, size_t shift,
+                                      bool is_arithmetic = false);
+
+        virtual FixedPoint Mux(LWECiphertext s, const FixedPoint a,
+                               const FixedPoint b);
+        virtual LWECiphertext Mux(LWECiphertext s, LWECiphertext a,
+                                  LWECiphertext b) = 0;
+
         virtual void HalfAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
                                LWECiphertext &sum,
                                LWECiphertext &carry_out) = 0;
@@ -81,11 +92,5 @@ namespace computefhe {
         virtual FixedPoint FullMul(const FixedPoint &a,
                                    const FixedPoint &b) = 0;
         virtual FixedPoint Mul(const FixedPoint &a, const FixedPoint &b) = 0;
-
-        FixedPoint ToggleMSB(const FixedPoint &a);
-        virtual LWECiphertext Mux(LWECiphertext s, LWECiphertext a,
-                                  LWECiphertext b) = 0;
-        virtual FixedPoint Mux(LWECiphertext s, const FixedPoint a,
-                               const FixedPoint b);
     };
 } // namespace computefhe

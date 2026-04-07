@@ -16,8 +16,6 @@ namespace computefhe {
         LWECiphertext MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a,
                              ConstLWECiphertext &b,
                              LWECiphertext *carry_out = nullptr);
-        // LWECiphertext CmpNotEq(const FixedPoint &a, const FixedPoint &b);
-        // LWECiphertext CmpEq(const FixedPoint &a, const FixedPoint &b);
         LWECiphertext CmpLTEq_U(const FixedPoint &a, const FixedPoint &b);
         LWECiphertext CmpGT_U(const FixedPoint &a, const FixedPoint &b);
         FixedPoint FullMul(const FixedPoint &a, const FixedPoint &b);

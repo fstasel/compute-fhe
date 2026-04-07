@@ -66,6 +66,29 @@ FixedPoint BaseALU::ToggleMSB(const FixedPoint &a) {
     return t;
 }
 
+FixedPoint BaseALU::ShiftLeft(const FixedPoint &a, size_t shift) {
+    int sz = (int)a.size();
+    FixedPoint fp(a.size());
+    int s = shift > a.size() ? a.size() : shift;
+    for (int i = sz - 1; i >= 0; i--) {
+        fp[i] = (i - s < 0) ? GetConstantFalse() : a[i - s];
+    }
+    return fp;
+}
+
+FixedPoint BaseALU::ShiftRight(const FixedPoint &a, size_t shift,
+                               bool is_arithmetic) {
+    int sz = (int)a.size();
+    FixedPoint fp(a.size());
+    int s = shift > a.size() ? a.size() : shift;
+    for (int i = 0; i < sz; i++) {
+        fp[i] = (i + s >= sz)
+                    ? (is_arithmetic ? a[a.size() - 1] : GetConstantFalse())
+                    : a[i + s];
+    }
+    return fp;
+}
+
 FixedPoint BaseALU::Mux(LWECiphertext s, const FixedPoint a,
                         const FixedPoint b) {
     if (a.size() != b.size()) {

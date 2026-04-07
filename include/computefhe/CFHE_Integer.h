@@ -28,6 +28,8 @@ namespace computefhe {
         static FixedPoint promote(const CFHE_Integer &a, size_t s);
 
       public:
+        CFHE_Integer();
+        CFHE_Integer(int64_t d);
         CFHE_Integer(size_t n_digits, bool is_signed);
         CFHE_Integer(int64_t d, size_t n_digits);
         CFHE_Integer(uint64_t d, size_t n_digits);
@@ -66,7 +68,7 @@ namespace computefhe {
         virtual const CFHE_Integer operator-=(uint64_t);
         virtual const CFHE_Integer operator*(uint64_t) const;
         virtual const CFHE_Integer operator*=(uint64_t);
-        virtual const CFHE_Integer operator-() const;
+        const CFHE_Integer operator-() const;
 
         // Logic operators
         virtual const CFHE_Integer operator&(const CFHE_Integer &) const;
@@ -89,16 +91,16 @@ namespace computefhe {
         virtual const CFHE_Integer operator||(uint64_t) const;
 
         // Increment & Decrement operators
-        virtual const CFHE_Integer operator++();
-        virtual const CFHE_Integer operator++(int);
-        virtual const CFHE_Integer operator--();
-        virtual const CFHE_Integer operator--(int);
+        const CFHE_Integer operator++();
+        const CFHE_Integer operator++(int);
+        const CFHE_Integer operator--();
+        const CFHE_Integer operator--(int);
 
         // Shift operators
-        virtual const CFHE_Integer operator<<(int);
-        virtual const CFHE_Integer operator<<=(int);
-        virtual const CFHE_Integer operator>>(int);
-        virtual const CFHE_Integer operator>>=(int);
+        const CFHE_Integer operator<<(int);
+        const CFHE_Integer operator<<=(int);
+        const CFHE_Integer operator>>(int);
+        const CFHE_Integer operator>>=(int);
 
         // Assignment operators
         CFHE_Integer &operator=(const CFHE_Integer &);
@@ -114,10 +116,29 @@ namespace computefhe {
         virtual explicit operator uint32_t() const;
         virtual explicit operator int64_t() const;
         virtual explicit operator uint64_t() const;
+        virtual explicit operator double() const;
 
         // Friend functions
         friend ostream &operator<<(ostream &out, const CFHE_Integer &obj);
     };
 
     ostream &operator<<(ostream &out, const CFHE_Integer &obj);
+
+    template <typename T, size_t BITS, bool SIGNED>
+    class EInt : public CFHE_Integer {
+      public:
+        EInt(T d = 0) : CFHE_Integer((uint64_t)d, BITS) { this->sign = SIGNED; }
+        EInt(const CFHE_Integer &other)
+            : CFHE_Integer(promote(other, BITS), SIGNED) {}
+    };
+
+    using Ebool = EInt<bool, 1, false>;
+    using Eint8 = EInt<int8_t, 8, true>;
+    using Euint8 = EInt<uint8_t, 8, false>;
+    using Eint16 = EInt<int16_t, 16, true>;
+    using Euint16 = EInt<uint16_t, 16, false>;
+    using Eint32 = EInt<int32_t, 32, true>;
+    using Euint32 = EInt<uint32_t, 32, false>;
+    using Eint64 = EInt<int64_t, 64, true>;
+    using Euint64 = EInt<uint64_t, 64, false>;
 } // namespace computefhe

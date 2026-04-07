@@ -92,9 +92,14 @@ FixedPoint CFHE_Integer::promote(const CFHE_Integer &a, size_t s) {
     return out;
 }
 
+CFHE_Integer::CFHE_Integer() : CFHE_Integer(8, false) {}
+
+CFHE_Integer::CFHE_Integer(int64_t d) : CFHE_Integer(d, 8) {}
+
 CFHE_Integer::CFHE_Integer(size_t n_digits, bool is_signed) {
     if (cfhe_base == nullptr)
         Init();
+    // TODO: In client-mode, this should be done by encrypting
     data = cfhe_base->GetConstantInt(0, n_digits);
     size = n_digits;
     sign = is_signed;
@@ -103,6 +108,7 @@ CFHE_Integer::CFHE_Integer(size_t n_digits, bool is_signed) {
 CFHE_Integer::CFHE_Integer(int64_t d, size_t n_digits) {
     if (cfhe_base == nullptr)
         Init();
+    // TODO: In client-mode, this should be done by encrypting
     data = cfhe_base->GetConstantInt((uint64_t)d, n_digits);
     size = n_digits;
     sign = true;
@@ -111,6 +117,7 @@ CFHE_Integer::CFHE_Integer(int64_t d, size_t n_digits) {
 CFHE_Integer::CFHE_Integer(uint64_t d, size_t n_digits) {
     if (cfhe_base == nullptr)
         Init();
+    // TODO: In client-mode, this should be done by encrypting
     data = cfhe_base->GetConstantInt(d, n_digits);
     size = n_digits;
     sign = false;
@@ -597,6 +604,7 @@ CFHE_Integer &CFHE_Integer::operator=(const CFHE_Integer &other) {
 
 CFHE_Integer &CFHE_Integer::operator=(uint64_t other) {
     _sync_var();
+    // TODO: In client-mode, this should be done by encrypting
     *this = CFHE_Integer(cfhe_base->GetConstantInt(other, size), sign);
     _sync_var();
     return *this;
@@ -674,15 +682,39 @@ CFHE_Integer::operator uint64_t() const {
     return (uint64_t)cfhe_base->DecryptInt(data, size);
 }
 
+CFHE_Integer::operator double() const {
+    // Client-mode only
+    if (!CLIENT_MODE)
+        OPENFHE_THROW("Not allowed in server mode.");
+
+    return (double)sign_extend(cfhe_base->DecryptInt(data, size), size);
+}
+
 ostream &computefhe::operator<<(ostream &out, const CFHE_Integer &obj) {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
 
     if (obj.sign) {
-        out << const_cast<CFHE_Integer &>(obj).sign_extend(
+        out << CFHE_Integer::sign_extend(
             cfhe_base->DecryptInt(obj.data, obj.size), obj.size);
-    } else
+    } else {
         out << (uint64_t)(cfhe_base->DecryptInt(obj.data, obj.size));
+    }
     return out;
 }
+
+// Explicitly instantiate EInt variants for standard types
+template class EInt<bool, 1, false>;
+template class EInt<int8_t, 8, true>;
+template class EInt<uint8_t, 8, false>;
+template class EInt<int16_t, 16, true>;
+template class EInt<uint16_t, 16, false>;
+template class EInt<int32_t, 32, true>;
+template class EInt<uint32_t, 32, false>;
+template class EInt<int64_t, 64, true>;
+template class EInt<uint64_t, 64, false>;
+
+// TODO: Ebool operators must behave differently
+// bool op integral_t -> (int)bool op integral_t -> Promoted -> (bool)Promoted
+// (bool)x = 0 if x == 0, else 1

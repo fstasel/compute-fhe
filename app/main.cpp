@@ -1,3 +1,4 @@
+#include <computefhe/CFHE_FixedPoint.h>
 #include <computefhe/CFHE_Integer.h>
 #include <computefhe/ComputeFHE.h>
 #include <computefhe/Evector.h>
@@ -323,6 +324,42 @@ void test_vector() {
     vec[2] = vec[0] + vec[e];
     vec[d] = vec[e] + vec[0];
     vec[4] = vec[d] + 5;
+    vec[5] = vec[d] | vec[e];
+    vec[6] = 60;
+    vec[6] += vec[5];
+    vec[d] = -vec[d];
+    vec[e] <<= 1;
+    vec[d]++;
+
+    cout << "vec[0]: " << vec[0] << endl;
+    cout << "vec[1]: " << vec[1] << endl;
+    cout << "vec[2]: " << vec[2] << endl;
+    cout << "vec[d]: " << vec[d] << endl;
+    cout << "vec[4]: " << vec[4] << endl;
+    cout << "vec[5]: " << vec[5] << endl;
+    cout << "vec[6]: " << vec[6] << endl;
+    cout << "vec[7]: " << vec[7] << endl;
+    cout << "vec[d] < vec[4]: " << (vec[d] < vec[4]) << endl;
+    cout << "-vec[d]: " << -vec[d] << endl;
+}
+
+void test_vector_custom() {
+    using MyEint = EInt<int16_t, 6, true>;
+    using MyEuint = EInt<uint8_t, 3, false>;
+
+    MyEuint d = 3, e = 1;
+    cout << "d: " << d << ", e: " << e << endl;
+    MyEint k = 10;
+    cout << "k: " << k << endl;
+    cout << "d + 1: " << d + 1 << endl;
+    cout << "k + 1: " << k + 1 << endl;
+
+    Evector<MyEint> vec(8);
+    vec[0] = MyEint(10);
+    vec[1] = 20;
+    vec[2] = vec[0] + vec[e];
+    vec[d] = vec[e] + vec[0];
+    vec[4] = vec[d] + 5;
     vec[5] = vec[d] | vec[2];
     vec[6] = 60;
     vec[6] += vec[5];
@@ -342,19 +379,153 @@ void test_vector() {
     cout << "-vec[d]: " << -vec[d] << endl;
 }
 
+void test_fp() {
+    CFHE_FixedPoint a(-7.9, 8, 4, true);
+    CFHE_FixedPoint b(1.5, 8, 4, true);
+    CFHE_FixedPoint c(1.25, 4, 2, true);
+    cout << "a: " << a << endl;
+    cout << "b: " << b << endl;
+    cout << "c: " << c << endl;
+    cout << "a + c: " << a + c << endl;
+    a += b;
+    cout << "a += b: " << a << endl;
+    a += c;
+    cout << "a += c: " << a << endl;
+    cout << "b == c: " << (b == c) << endl;
+    a += 1.25;
+    cout << "a += 1.25: " << a << endl;
+    double d = (double)a;
+    cout << "double d = a: " << d << endl;
+    Eint16 k = a.toInteger();
+    cout << "Eint16 k = a: " << k << endl;
+    a = -5.7;
+    cout << "a = -5.7: " << a << endl;
+    a = c;
+    cout << "a = c: " << a << endl;
+    cout << "a: " << a << ", b: " << b << ", c: " << c << endl;
+    a -= b;
+    cout << "a -= b: " << a << endl;
+    a -= 1.75;
+    cout << "a -= 1.75: " << a << endl;
+
+    cout << "a: " << a << ", b: " << b << endl;
+    if (c == b)
+        cout << "c == b" << endl;
+    if (c != b)
+        cout << "c != b" << endl;
+    if (c >= b)
+        cout << "c >= b" << endl;
+    if (c <= b)
+        cout << "c <= b" << endl;
+    if (c < b)
+        cout << "c < b" << endl;
+    if (c > b)
+        cout << "c > b" << endl;
+
+    if (a == -6.875)
+        cout << "a == -6.875" << endl;
+    if (a != -6.875)
+        cout << "a != -6.875" << endl;
+    if (a >= -6.875)
+        cout << "a >= -6.875" << endl;
+    if (a <= -6.875)
+        cout << "a <= -6.875" << endl;
+    if (a < -6.875)
+        cout << "a < -6.875" << endl;
+    if (a > -6.875)
+        cout << "a > -6.875" << endl;
+    cout << "-a: " << -a << endl;
+    a <<= 1;
+    cout << "a <<= 1: " << a << endl;
+    CFHE_FixedPoint p = a * b;
+    cout << "p = a * b: " << p << endl;
+    CFHE_FixedPoint q = a * c;
+    cout << "q = a * c: " << q << endl;
+    CFHE_FixedPoint t = a;
+    a *= b;
+    cout << "a *= b: " << a << endl;
+    a = t;
+    a *= c;
+    cout << "a *= c: " << a << endl;
+    p = a * -0.5;
+    cout << "p = a * -0.5: " << p << endl;
+    q = a * 0.25;
+    cout << "q = a * 0.25: " << q << endl;
+    a *= -0.5;
+    cout << "a *= -0.5: " << a << endl;
+    a++;
+    cout << "a++: " << a << endl;
+}
+
+void test_fp_vector() {
+    Evector<CFHE_FixedPoint> vec(4);
+    vec[0] = CFHE_FixedPoint(1.5, 4, 2, true);
+    vec[1] = CFHE_FixedPoint(-2.25, 8, 4, true);
+    vec[2] = vec[0] + vec[1];
+    vec[3] = vec[0] * vec[1];
+
+    Euint8 idx = 2;
+    cout << "vec[0]: " << vec[0] << endl;
+    cout << "vec[1]: " << vec[1] << endl;
+    cout << "vec[idx]: " << vec[idx] << endl;
+    cout << "vec[3]: " << vec[3] << endl;
+    cout << "vec[0] << 1: " << (vec[0] << 1) << endl;
+    cout << "++vec[0]: " << (++vec[0]) << endl;
+    vec[0] >>= 1;
+    cout << "vec[0] >>= 1: " << vec[0] << endl;
+    vec[idx] *= -1.5;
+    cout << "vec[idx] *= -1.5: " << vec[idx] << endl;
+    cout << "-vec[idx]: " << -vec[idx] << endl;
+    cout << "++vec[idx]: " << (++vec[idx]) << endl;
+}
+
+void test_fp_custom() {
+    using MyEfix = EFix<7, 4, true>;
+    MyEfix a = 1.5;
+    cout << "a: " << a << endl;
+    MyEfix b = -2.25;
+    cout << "b: " << b << endl;
+    MyEfix c = a + b;
+    cout << "c = a + b: " << c << endl;
+
+    Evector<MyEfix> vec(4);
+    vec[0] = 1.5;
+    vec[1] = -2.25;
+    vec[2] = vec[0] + vec[1];
+    vec[3] = vec[0] * vec[1];
+
+    Euint8 idx = 2;
+    cout << "vec[0]: " << vec[0] << endl;
+    cout << "vec[1]: " << vec[1] << endl;
+    cout << "vec[idx]: " << vec[idx] << endl;
+    cout << "vec[3]: " << vec[3] << endl;
+    cout << "vec[0] << 1: " << (vec[0] << 1) << endl;
+    cout << "++vec[0]: " << (++vec[0]) << endl;
+    vec[0] >>= 1;
+    cout << "vec[0] >>= 1: " << vec[0] << endl;
+    vec[idx] *= -1.5;
+    cout << "vec[idx] *= -1.5: " << vec[idx] << endl;
+    cout << "-vec[idx]: " << -vec[idx] << endl;
+    cout << "++vec[idx]: " << (++vec[idx]) << endl;
+}
+
 int main() {
     computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED, true);
 
-    test_arithmetic_operators();
-    test_arithmetic_assignment_operators();
-    test_comparison_operators();
-    test_logic_operators();
-    test_logic_assignment_operators();
-    test_shift_operators();
-    test_shift_assign_operators();
-    test_condition();
-    test_inc_dec();
-    test_vector();
+    // test_arithmetic_operators();
+    // test_arithmetic_assignment_operators();
+    // test_comparison_operators();
+    // test_logic_operators();
+    // test_logic_assignment_operators();
+    // test_shift_operators();
+    // test_shift_assign_operators();
+    // test_condition();
+    // test_inc_dec();
+    // test_vector();
+    // test_vector_custom();
+    // test_fp();
+    // test_fp_vector();
+    test_fp_custom();
 
     computefhe::Finalize();
 

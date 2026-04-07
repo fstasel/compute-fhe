@@ -1,6 +1,6 @@
 
-#include <computefhe/AEGateLogic.h>
-#include <computefhe/AEOptimized.h>
+#include <computefhe/ALUGateLogic.h>
+#include <computefhe/ALUOptimized.h>
 #include <computefhe/ComputeFHE.h>
 
 #include <iostream>
@@ -92,43 +92,42 @@ double ComputeFHE::extractNoise(ConstLWECiphertext &ct) {
     return error * mod.ConvertToDouble() / static_cast<double>(p);
 }
 
-void ComputeFHE::createAE() {
-    switch (ae_type) {
-    case AE_OPTIMIZED:
-        ae = new AEOptimized(this);
+void ComputeFHE::createALU() {
+    switch (alu_type) {
+    case ALU_OPTIMIZED:
+        alu = new ALUOptimized(this);
         break;
 
-    case AE_GATELOGIC:
+    case ALU_GATELOGIC:
     default:
-        ae = new AEGateLogic(this);
+        alu = new ALUGateLogic(this);
     }
 }
 
-ComputeFHE::ComputeFHE() : ComputeFHE(CCPARAM_STD128, AE_GATELOGIC) {}
+ComputeFHE::ComputeFHE() : ComputeFHE(CCPARAM_STD128, ALU_GATELOGIC) {}
 
 ComputeFHE::ComputeFHE(CryptoContextParam param)
-    : ComputeFHE(param, AE_GATELOGIC) {}
+    : ComputeFHE(param, ALU_GATELOGIC) {}
 
-ComputeFHE::ComputeFHE(ArithmeticsEngineType engine_type)
-    : ComputeFHE(CCPARAM_STD128, engine_type) {}
+ComputeFHE::ComputeFHE(ALUType alu_type)
+    : ComputeFHE(CCPARAM_STD128, alu_type) {}
 
-ComputeFHE::~ComputeFHE() { delete ae; }
+ComputeFHE::~ComputeFHE() { delete alu; }
 
-ComputeFHE::ComputeFHE(CryptoContextParam param,
-                       ArithmeticsEngineType engine_type)
-    : cc_param(param), ae_type(engine_type) {
+ComputeFHE::ComputeFHE(CryptoContextParam param, ALUType alu_type)
+    : cc_param(param), alu_type(alu_type) {
     createCC();
     generateKeys();
-    createAE();
+    createALU();
 }
 
 BinFHEContext &ComputeFHE::GetBinFHEContext() { return cc; }
 
-BaseArithmeticsEngine *ComputeFHE::GetArithmeticsEngine() { return ae; }
+BaseALU *ComputeFHE::GetALU() { return alu; }
 
 CryptoContextParam ComputeFHE::GetCryptoContextParam() { return cc_param; }
 
-ArithmeticsEngineType ComputeFHE::GetArithmeticsEngineType() { return ae_type; }
+ALUType ComputeFHE::GetALUType() { return alu_type; }
 
 const LWEPrivateKey &ComputeFHE::GetLWEPrivateKey() { return sk; }
 
@@ -173,7 +172,7 @@ FixedPoint computefhe::ComputeFHE::GetConstantInt(uint64_t pt,
                                                   size_t n_digits) {
     FixedPoint out(n_digits);
     for (size_t i = 0; i < n_digits; i++) {
-        out[i] = (pt % 2) ? ae->GetConstantTrue() : ae->GetConstantFalse();
+        out[i] = (pt % 2) ? alu->GetConstantTrue() : alu->GetConstantFalse();
         pt /= 2;
     }
     return out;

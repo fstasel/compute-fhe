@@ -1,5 +1,5 @@
 #include "include/CFHE_Test.h"
-#include <computefhe/BaseArithmeticsEngine.h>
+#include <computefhe/BaseALU.h>
 
 #include <iostream>
 using namespace std;
@@ -15,8 +15,8 @@ TestReport CFHE_Test::TestHalfAdder() {
     uint expected_sum = n1 ^ n2;
     uint expected_carry = n1 & n2;
     StartTimer();
-    cfhe_base->GetArithmeticsEngine()->HalfAdder(ct_n1, ct_n2, ct_result_sum,
-                                                 ct_result_carry);
+    cfhe_base->GetALU()->HalfAdder(ct_n1, ct_n2, ct_result_sum,
+                                   ct_result_carry);
     report.delta_t = ReadTimer();
     uint result_sum = cfhe_base->DecryptBool(ct_result_sum);
     uint result_carry = cfhe_base->DecryptBool(ct_result_carry);
@@ -41,8 +41,8 @@ TestReport CFHE_Test::TestFullAdder() {
     uint expected_sum = n1 ^ n2 ^ n3;
     uint expected_carry = (n1 & n2) | (n1 & n3) | (n2 & n3);
     StartTimer();
-    cfhe_base->GetArithmeticsEngine()->FullAdder(
-        ct_n1, ct_n2, ct_n3, ct_result_sum, ct_result_carry);
+    cfhe_base->GetALU()->FullAdder(ct_n1, ct_n2, ct_n3, ct_result_sum,
+                                   ct_result_carry);
     report.delta_t = ReadTimer();
     uint result_sum = cfhe_base->DecryptBool(ct_result_sum);
     uint result_carry = cfhe_base->DecryptBool(ct_result_carry);
@@ -66,7 +66,7 @@ TestReport CFHE_Test::TestXOR3() {
     LWECiphertext ct_n3 = cfhe_base->EncryptBool(n3, GetTestFresh());
     uint expected = n1 ^ n2 ^ n3;
     StartTimer();
-    ct_result = cfhe_base->GetArithmeticsEngine()->XOR3(ct_n1, ct_n2, ct_n3);
+    ct_result = cfhe_base->GetALU()->XOR3(ct_n1, ct_n2, ct_n3);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -86,8 +86,8 @@ TestReport CFHE_Test::TestMulAdd() {
     uint expected_sum = (n1 & n2) ^ n3;
     uint expected_carry = n1 & n2 & n3;
     StartTimer();
-    ct_result_sum = cfhe_base->GetArithmeticsEngine()->MulAdd(
-        ct_n1, ct_n2, ct_n3, &ct_result_carry);
+    ct_result_sum =
+        cfhe_base->GetALU()->MulAdd(ct_n1, ct_n2, ct_n3, &ct_result_carry);
     report.delta_t = ReadTimer();
     uint result_sum = cfhe_base->DecryptBool(ct_result_sum);
     uint result_carry = cfhe_base->DecryptBool(ct_result_carry);
@@ -108,7 +108,7 @@ TestReport CFHE_Test::TestAdd(uint n_digits) {
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 + n2) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->Add(ct_n1, ct_n2);
+    FixedPoint ct_result = cfhe_base->GetALU()->Add(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -124,11 +124,9 @@ TestReport CFHE_Test::TestAddC(uint n_digits) {
     FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 + n2 + n3) & ((1UL << n_digits) - 1);
-    cfhe_base->GetArithmeticsEngine()->SetCarry(
-        cfhe_base->EncryptBool(n3, GetTestFresh()));
+    cfhe_base->GetALU()->SetCarry(cfhe_base->EncryptBool(n3, GetTestFresh()));
     StartTimer();
-    FixedPoint ct_result =
-        cfhe_base->GetArithmeticsEngine()->AddC(ct_n1, ct_n2);
+    FixedPoint ct_result = cfhe_base->GetALU()->AddC(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -144,8 +142,7 @@ TestReport CFHE_Test::TestAddNC(uint n_digits) {
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 + n2) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result =
-        cfhe_base->GetArithmeticsEngine()->AddNC(ct_n1, ct_n2);
+    FixedPoint ct_result = cfhe_base->GetALU()->AddNC(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -161,7 +158,7 @@ TestReport CFHE_Test::TestSub(uint n_digits) {
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 + (UINT32_MAX - n2 + 1)) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->Sub(ct_n1, ct_n2);
+    FixedPoint ct_result = cfhe_base->GetALU()->Sub(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -177,11 +174,9 @@ TestReport CFHE_Test::TestSubC(uint n_digits) {
     FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 + (UINT32_MAX - n2 + n3)) & ((1UL << n_digits) - 1);
-    cfhe_base->GetArithmeticsEngine()->SetCarry(
-        cfhe_base->EncryptBool(n3, GetTestFresh()));
+    cfhe_base->GetALU()->SetCarry(cfhe_base->EncryptBool(n3, GetTestFresh()));
     StartTimer();
-    FixedPoint ct_result =
-        cfhe_base->GetArithmeticsEngine()->SubC(ct_n1, ct_n2);
+    FixedPoint ct_result = cfhe_base->GetALU()->SubC(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -197,8 +192,7 @@ TestReport CFHE_Test::TestSubNC(uint n_digits) {
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 + (UINT32_MAX - n2 + 1)) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result =
-        cfhe_base->GetArithmeticsEngine()->SubNC(ct_n1, ct_n2);
+    FixedPoint ct_result = cfhe_base->GetALU()->SubNC(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -212,7 +206,7 @@ TestReport CFHE_Test::TestNeg(uint n_digits) {
     FixedPoint ct_n = cfhe_base->EncryptInt(n, n_digits, GetTestFresh());
     uint expected = (UINT32_MAX - n + 1) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->Neg(ct_n);
+    FixedPoint ct_result = cfhe_base->GetALU()->Neg(ct_n);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -228,8 +222,7 @@ TestReport CFHE_Test::TestCmpNotEq(uint n_digits) {
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 != n2) ? 1 : 0;
     StartTimer();
-    LWECiphertext ct_result =
-        cfhe_base->GetArithmeticsEngine()->CmpNotEq(ct_n1, ct_n2);
+    LWECiphertext ct_result = cfhe_base->GetALU()->CmpNotEq(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -245,8 +238,7 @@ TestReport CFHE_Test::TestCmpEq(uint n_digits) {
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 == n2) ? 1 : 0;
     StartTimer();
-    LWECiphertext ct_result =
-        cfhe_base->GetArithmeticsEngine()->CmpEq(ct_n1, ct_n2);
+    LWECiphertext ct_result = cfhe_base->GetALU()->CmpEq(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -262,8 +254,7 @@ TestReport CFHE_Test::TestCmpLTEq_U(uint n_digits) {
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 <= n2) ? 1 : 0;
     StartTimer();
-    LWECiphertext ct_result =
-        cfhe_base->GetArithmeticsEngine()->CmpLTEq_U(ct_n1, ct_n2);
+    LWECiphertext ct_result = cfhe_base->GetALU()->CmpLTEq_U(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -279,8 +270,7 @@ TestReport CFHE_Test::TestCmpGT_U(uint n_digits) {
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 > n2) ? 1 : 0;
     StartTimer();
-    LWECiphertext ct_result =
-        cfhe_base->GetArithmeticsEngine()->CmpGT_U(ct_n1, ct_n2);
+    LWECiphertext ct_result = cfhe_base->GetALU()->CmpGT_U(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -296,8 +286,7 @@ TestReport CFHE_Test::TestCmpGTEq_U(uint n_digits) {
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 >= n2) ? 1 : 0;
     StartTimer();
-    LWECiphertext ct_result =
-        cfhe_base->GetArithmeticsEngine()->CmpGTEq_U(ct_n1, ct_n2);
+    LWECiphertext ct_result = cfhe_base->GetALU()->CmpGTEq_U(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -313,8 +302,7 @@ TestReport CFHE_Test::TestCmpLT_U(uint n_digits) {
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 < n2) ? 1 : 0;
     StartTimer();
-    LWECiphertext ct_result =
-        cfhe_base->GetArithmeticsEngine()->CmpLT_U(ct_n1, ct_n2);
+    LWECiphertext ct_result = cfhe_base->GetALU()->CmpLT_U(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -334,8 +322,7 @@ TestReport CFHE_Test::TestCmpLTEq(uint n_digits) {
     n2 = (n2 > max_val) ? (n2 - bound) : n2;
     uint expected = (n1 <= n2) ? 1 : 0;
     StartTimer();
-    LWECiphertext ct_result =
-        cfhe_base->GetArithmeticsEngine()->CmpLTEq(ct_n1, ct_n2);
+    LWECiphertext ct_result = cfhe_base->GetALU()->CmpLTEq(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -355,8 +342,7 @@ TestReport CFHE_Test::TestCmpGT(uint n_digits) {
     n2 = (n2 > max_val) ? (n2 - bound) : n2;
     uint expected = (n1 > n2) ? 1 : 0;
     StartTimer();
-    LWECiphertext ct_result =
-        cfhe_base->GetArithmeticsEngine()->CmpGT(ct_n1, ct_n2);
+    LWECiphertext ct_result = cfhe_base->GetALU()->CmpGT(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -376,8 +362,7 @@ TestReport CFHE_Test::TestCmpGTEq(uint n_digits) {
     n2 = (n2 > max_val) ? (n2 - bound) : n2;
     uint expected = (n1 >= n2) ? 1 : 0;
     StartTimer();
-    LWECiphertext ct_result =
-        cfhe_base->GetArithmeticsEngine()->CmpGTEq(ct_n1, ct_n2);
+    LWECiphertext ct_result = cfhe_base->GetALU()->CmpGTEq(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -397,8 +382,7 @@ TestReport CFHE_Test::TestCmpLT(uint n_digits) {
     n2 = (n2 > max_val) ? (n2 - bound) : n2;
     uint expected = (n1 < n2) ? 1 : 0;
     StartTimer();
-    LWECiphertext ct_result =
-        cfhe_base->GetArithmeticsEngine()->CmpLT(ct_n1, ct_n2);
+    LWECiphertext ct_result = cfhe_base->GetALU()->CmpLT(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -414,8 +398,7 @@ TestReport CFHE_Test::TestFullMul(uint n_digits) {
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = n1 * n2;
     StartTimer();
-    FixedPoint ct_result =
-        cfhe_base->GetArithmeticsEngine()->FullMul(ct_n1, ct_n2);
+    FixedPoint ct_result = cfhe_base->GetALU()->FullMul(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -431,7 +414,7 @@ TestReport CFHE_Test::TestMul(uint n_digits) {
     FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
     uint expected = (n1 * n2) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetArithmeticsEngine()->Mul(ct_n1, ct_n2);
+    FixedPoint ct_result = cfhe_base->GetALU()->Mul(ct_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;

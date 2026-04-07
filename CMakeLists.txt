@@ -61,9 +61,9 @@ endif()
 
 set(CORE_SOURCES
     src/core/ComputeFHE.cpp
-    src/core/BaseArithmeticsEngine.cpp
-    src/core/AEGateLogic.cpp
-    src/core/AEOptimized.cpp
+    src/core/BaseALU.cpp
+    src/core/ALUGateLogic.cpp
+    src/core/ALUOptimized.cpp
 )
 
 set(CPPUTILS_SOURCES
@@ -75,7 +75,7 @@ set(CPPUTILS_SOURCES
 
 set(TEST_SOURCES
     tests/CFHE_Test.cpp
-    tests/CFHE_AE_Test.cpp
+    tests/CFHE_ALU_Test.cpp
 )
 
 add_executable(computefhe

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <computefhe/AEGateLogic.h>
+#include <computefhe/ALUGateLogic.h>
 
 namespace computefhe {
 
-    class AEOptimized : public AEGateLogic {
+    class ALUOptimized : public ALUGateLogic {
       public:
-        AEOptimized(ComputeFHE *cfhe);
+        ALUOptimized(ComputeFHE *cfhe);
 
         void FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
                        ConstLWECiphertext &c, LWECiphertext &sum,

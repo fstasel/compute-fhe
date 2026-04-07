@@ -6,14 +6,14 @@ using namespace lbcrypto;
 
 namespace computefhe {
 
-    class BaseArithmeticsEngine {
+    class BaseALU {
       protected:
         LWECiphertext carry;
         ComputeFHE *cfhe_base;
 
       public:
-        BaseArithmeticsEngine(ComputeFHE *cfhe);
-        virtual ~BaseArithmeticsEngine();
+        BaseALU(ComputeFHE *cfhe);
+        virtual ~BaseALU();
 
         LWECiphertext GetCarry();
         void SetCarry(LWECiphertext value);

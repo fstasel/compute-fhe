@@ -14,30 +14,30 @@ namespace computefhe {
 
     using FixedPoint = vector<LWECiphertext>;
 
-    class BaseArithmeticsEngine;
+    class BaseALU;
 
     class ComputeFHE {
       private:
         CryptoContextParam cc_param;
-        ArithmeticsEngineType ae_type;
+        ALUType alu_type;
         BinFHEContext cc;
         LWEPrivateKey sk;
-        BaseArithmeticsEngine *ae;
+        BaseALU *alu;
 
         void createCC();
-        void createAE();
+        void createALU();
 
       public:
         ComputeFHE();
         ComputeFHE(CryptoContextParam param);
-        ComputeFHE(CryptoContextParam param, ArithmeticsEngineType engine_type);
-        ComputeFHE(ArithmeticsEngineType engine_type);
+        ComputeFHE(CryptoContextParam param, ALUType alu_type);
+        ComputeFHE(ALUType alu_type);
         ~ComputeFHE();
 
         BinFHEContext &GetBinFHEContext();
-        BaseArithmeticsEngine *GetArithmeticsEngine();
+        BaseALU *GetALU();
         CryptoContextParam GetCryptoContextParam();
-        ArithmeticsEngineType GetArithmeticsEngineType();
+        ALUType GetALUType();
         const LWEPrivateKey &GetLWEPrivateKey();
         void generateKeys();
 

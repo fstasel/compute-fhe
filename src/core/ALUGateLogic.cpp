@@ -1,25 +1,26 @@
-#include <computefhe/AEGateLogic.h>
+#include <computefhe/ALUGateLogic.h>
 using namespace computefhe;
 
-AEGateLogic::AEGateLogic(ComputeFHE *cfhe) : BaseArithmeticsEngine(cfhe) {}
+ALUGateLogic::ALUGateLogic(ComputeFHE *cfhe) : BaseALU(cfhe) {}
 
-void AEGateLogic::HalfAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                            LWECiphertext &sum, LWECiphertext &carry_out) {
+void ALUGateLogic::HalfAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
+                             LWECiphertext &sum, LWECiphertext &carry_out) {
     auto &cc = cfhe_base->GetBinFHEContext();
     sum = cc.EvalBinGate(XOR, a, b);
     carry_out = cc.EvalBinGate(AND, a, b);
 }
 
-void AEGateLogic::HalfSubtractor(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                                 LWECiphertext &sum, LWECiphertext &carry_out) {
+void ALUGateLogic::HalfSubtractor(ConstLWECiphertext &a, ConstLWECiphertext &b,
+                                  LWECiphertext &sum,
+                                  LWECiphertext &carry_out) {
     auto &cc = cfhe_base->GetBinFHEContext();
     sum = cc.EvalBinGate(XOR, a, b);
     carry_out = cc.EvalBinGate(OR, a, cc.EvalNOT(b));
 }
 
-void AEGateLogic::FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                            ConstLWECiphertext &c, LWECiphertext &sum,
-                            LWECiphertext &carry_out) {
+void ALUGateLogic::FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
+                             ConstLWECiphertext &c, LWECiphertext &sum,
+                             LWECiphertext &carry_out) {
     auto &cc = cfhe_base->GetBinFHEContext();
     sum = cc.EvalBinGate(XOR, a, b);
     LWECiphertext carry1 = cc.EvalBinGate(AND, a, b);
@@ -28,17 +29,17 @@ void AEGateLogic::FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
     carry_out = cc.EvalBinGate(OR, carry1, carry2);
 }
 
-LWECiphertext AEGateLogic::XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                                ConstLWECiphertext &c) {
+LWECiphertext ALUGateLogic::XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b,
+                                 ConstLWECiphertext &c) {
     auto &cc = cfhe_base->GetBinFHEContext();
     LWECiphertext sum = cc.EvalBinGate(XOR, a, b);
     sum = cc.EvalBinGate(XOR, sum, c);
     return sum;
 }
 
-LWECiphertext AEGateLogic::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a,
-                                  ConstLWECiphertext &b,
-                                  LWECiphertext *carry_out) {
+LWECiphertext ALUGateLogic::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a,
+                                   ConstLWECiphertext &b,
+                                   LWECiphertext *carry_out) {
     auto &cc = cfhe_base->GetBinFHEContext();
     LWECiphertext ma = cc.EvalBinGate(AND, m, a);
     LWECiphertext sum = cc.EvalBinGate(XOR, ma, b);
@@ -48,7 +49,7 @@ LWECiphertext AEGateLogic::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a,
     return sum;
 }
 
-FixedPoint AEGateLogic::Add(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUGateLogic::Add(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -62,7 +63,7 @@ FixedPoint AEGateLogic::Add(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint AEGateLogic::AddC(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUGateLogic::AddC(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -75,7 +76,7 @@ FixedPoint AEGateLogic::AddC(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint AEGateLogic::AddNC(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUGateLogic::AddNC(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -93,7 +94,7 @@ FixedPoint AEGateLogic::AddNC(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint AEGateLogic::Sub(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUGateLogic::Sub(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -109,7 +110,7 @@ FixedPoint AEGateLogic::Sub(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint AEGateLogic::SubC(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUGateLogic::SubC(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -124,7 +125,7 @@ FixedPoint AEGateLogic::SubC(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint AEGateLogic::SubNC(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUGateLogic::SubNC(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -144,7 +145,7 @@ FixedPoint AEGateLogic::SubNC(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint AEGateLogic::Neg(const FixedPoint &a) {
+FixedPoint ALUGateLogic::Neg(const FixedPoint &a) {
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
@@ -162,7 +163,7 @@ FixedPoint AEGateLogic::Neg(const FixedPoint &a) {
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpNotEq(const FixedPoint &a, const FixedPoint &b) {
+LWECiphertext ALUGateLogic::CmpNotEq(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -177,7 +178,7 @@ LWECiphertext AEGateLogic::CmpNotEq(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpEq(const FixedPoint &a, const FixedPoint &b) {
+LWECiphertext ALUGateLogic::CmpEq(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -192,7 +193,8 @@ LWECiphertext AEGateLogic::CmpEq(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
+LWECiphertext ALUGateLogic::CmpLTEq_U(const FixedPoint &a,
+                                      const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -211,7 +213,7 @@ LWECiphertext AEGateLogic::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
+LWECiphertext ALUGateLogic::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -230,31 +232,32 @@ LWECiphertext AEGateLogic::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-LWECiphertext AEGateLogic::CmpGTEq_U(const FixedPoint &a, const FixedPoint &b) {
+LWECiphertext ALUGateLogic::CmpGTEq_U(const FixedPoint &a,
+                                      const FixedPoint &b) {
     return CmpLTEq_U(b, a);
 }
 
-LWECiphertext AEGateLogic::CmpLT_U(const FixedPoint &a, const FixedPoint &b) {
+LWECiphertext ALUGateLogic::CmpLT_U(const FixedPoint &a, const FixedPoint &b) {
     return CmpGT_U(b, a);
 }
 
-LWECiphertext AEGateLogic::CmpLTEq(const FixedPoint &a, const FixedPoint &b) {
+LWECiphertext ALUGateLogic::CmpLTEq(const FixedPoint &a, const FixedPoint &b) {
     return CmpLTEq_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-LWECiphertext AEGateLogic::CmpGT(const FixedPoint &a, const FixedPoint &b) {
+LWECiphertext ALUGateLogic::CmpGT(const FixedPoint &a, const FixedPoint &b) {
     return CmpGT_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-LWECiphertext AEGateLogic::CmpGTEq(const FixedPoint &a, const FixedPoint &b) {
+LWECiphertext ALUGateLogic::CmpGTEq(const FixedPoint &a, const FixedPoint &b) {
     return CmpGTEq_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-LWECiphertext AEGateLogic::CmpLT(const FixedPoint &a, const FixedPoint &b) {
+LWECiphertext ALUGateLogic::CmpLT(const FixedPoint &a, const FixedPoint &b) {
     return CmpLT_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-FixedPoint AEGateLogic::FullMul(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUGateLogic::FullMul(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -282,7 +285,7 @@ FixedPoint AEGateLogic::FullMul(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint AEGateLogic::Mul(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUGateLogic::Mul(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -311,7 +314,7 @@ FixedPoint AEGateLogic::Mul(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-LWECiphertext AEGateLogic::Mux(LWECiphertext s, LWECiphertext a,
-                               LWECiphertext b) {
+LWECiphertext ALUGateLogic::Mux(LWECiphertext s, LWECiphertext a,
+                                LWECiphertext b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(CMUX, vector({a, b, s}));
 }

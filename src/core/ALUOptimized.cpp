@@ -1,11 +1,11 @@
-#include <computefhe/AEOptimized.h>
+#include <computefhe/ALUOptimized.h>
 using namespace computefhe;
 
-AEOptimized::AEOptimized(ComputeFHE *cfhe) : AEGateLogic(cfhe) {}
+ALUOptimized::ALUOptimized(ComputeFHE *cfhe) : ALUGateLogic(cfhe) {}
 
-void AEOptimized::FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                            ConstLWECiphertext &c, LWECiphertext &sum,
-                            LWECiphertext &carry_out) {
+void ALUOptimized::FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
+                             ConstLWECiphertext &c, LWECiphertext &sum,
+                             LWECiphertext &carry_out) {
     LWECiphertext _a = COPY_CT(a);
     LWECiphertext _b = COPY_CT(b);
     LWECiphertext _c = COPY_CT(c);
@@ -14,8 +14,8 @@ void AEOptimized::FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
     carry_out = cc.EvalBinGate(MAJORITY, {_a, _b, _c});
 }
 
-LWECiphertext AEOptimized::XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                                ConstLWECiphertext &c) {
+LWECiphertext ALUOptimized::XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b,
+                                 ConstLWECiphertext &c) {
     auto &cc = cfhe_base->GetBinFHEContext();
     auto &lwe = cc.GetLWEScheme();
     LWECiphertext sum = COPY_CT(a);
@@ -24,9 +24,9 @@ LWECiphertext AEOptimized::XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b,
     return sum;
 }
 
-LWECiphertext AEOptimized::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a,
-                                  ConstLWECiphertext &b,
-                                  LWECiphertext *carry_out) {
+LWECiphertext ALUOptimized::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a,
+                                   ConstLWECiphertext &b,
+                                   LWECiphertext *carry_out) {
     auto &cc = cfhe_base->GetBinFHEContext();
     auto &lwe = cc.GetLWEScheme();
     LWECiphertext a_2b = COPY_CT(b);
@@ -41,7 +41,8 @@ LWECiphertext AEOptimized::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a,
     return ma_2b;
 }
 
-LWECiphertext AEOptimized::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
+LWECiphertext ALUOptimized::CmpLTEq_U(const FixedPoint &a,
+                                      const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -57,7 +58,7 @@ LWECiphertext AEOptimized::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
     return c;
 }
 
-LWECiphertext AEOptimized::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
+LWECiphertext ALUOptimized::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -73,7 +74,7 @@ LWECiphertext AEOptimized::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
     return c;
 }
 
-FixedPoint AEOptimized::FullMul(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUOptimized::FullMul(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -102,7 +103,7 @@ FixedPoint AEOptimized::FullMul(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint AEOptimized::Mul(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUOptimized::Mul(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -131,8 +132,8 @@ FixedPoint AEOptimized::Mul(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-LWECiphertext AEOptimized::Mux(LWECiphertext s, LWECiphertext a,
-                               LWECiphertext b) {
+LWECiphertext ALUOptimized::Mux(LWECiphertext s, LWECiphertext a,
+                                LWECiphertext b) {
     auto &cc = cfhe_base->GetBinFHEContext();
     auto &lwe = cc.GetLWEScheme();
     LWECiphertext t = cc.EvalBinGate(OR, s, a);

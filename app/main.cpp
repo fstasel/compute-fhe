@@ -510,7 +510,7 @@ void test_fp_custom() {
 }
 
 int main() {
-    computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED, true);
+    computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true);
 
     // test_arithmetic_operators();
     // test_arithmetic_assignment_operators();

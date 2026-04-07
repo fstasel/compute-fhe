@@ -1,85 +1,73 @@
-#include <computefhe/BaseArithmeticsEngine.h>
+#include <computefhe/BaseALU.h>
 using namespace computefhe;
 
-BaseArithmeticsEngine::BaseArithmeticsEngine(ComputeFHE *cfhe)
-    : cfhe_base(cfhe) {
-    ResetCarry();
-}
+BaseALU::BaseALU(ComputeFHE *cfhe) : cfhe_base(cfhe) { ResetCarry(); }
 
-BaseArithmeticsEngine::~BaseArithmeticsEngine() {}
+BaseALU::~BaseALU() {}
 
-LWECiphertext BaseArithmeticsEngine::GetCarry() { return carry; }
+LWECiphertext BaseALU::GetCarry() { return carry; }
 
-void BaseArithmeticsEngine::SetCarry(LWECiphertext value) {
-    carry = COPY_CT(value);
-}
+void BaseALU::SetCarry(LWECiphertext value) { carry = COPY_CT(value); }
 
-void BaseArithmeticsEngine::SetCarry() { carry = GetConstantTrue(); }
+void BaseALU::SetCarry() { carry = GetConstantTrue(); }
 
-void BaseArithmeticsEngine::ResetCarry() { carry = GetConstantFalse(); }
+void BaseALU::ResetCarry() { carry = GetConstantFalse(); }
 
-LWECiphertext BaseArithmeticsEngine::GetConstantFalse() {
+LWECiphertext BaseALU::GetConstantFalse() {
     LWECiphertext constant_false =
         cfhe_base->GetBinFHEContext().EvalConstant(false);
     return COPY_CT(constant_false);
 }
 
-LWECiphertext BaseArithmeticsEngine::GetConstantTrue() {
+LWECiphertext BaseALU::GetConstantTrue() {
     LWECiphertext constant_true =
         cfhe_base->GetBinFHEContext().EvalConstant(true);
     return COPY_CT(constant_true);
 }
 
-LWECiphertext
-computefhe::BaseArithmeticsEngine::Gate_AND(ConstLWECiphertext &a,
+LWECiphertext computefhe::BaseALU::Gate_AND(ConstLWECiphertext &a,
                                             ConstLWECiphertext &b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::AND, a, b);
 }
 
-LWECiphertext
-computefhe::BaseArithmeticsEngine::Gate_NAND(ConstLWECiphertext &a,
+LWECiphertext computefhe::BaseALU::Gate_NAND(ConstLWECiphertext &a,
                                              ConstLWECiphertext &b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::NAND, a, b);
 }
 
-LWECiphertext
-computefhe::BaseArithmeticsEngine::Gate_OR(ConstLWECiphertext &a,
+LWECiphertext computefhe::BaseALU::Gate_OR(ConstLWECiphertext &a,
                                            ConstLWECiphertext &b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::OR, a, b);
 }
 
-LWECiphertext
-computefhe::BaseArithmeticsEngine::Gate_NOR(ConstLWECiphertext &a,
+LWECiphertext computefhe::BaseALU::Gate_NOR(ConstLWECiphertext &a,
                                             ConstLWECiphertext &b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::NOR, a, b);
 }
 
-LWECiphertext
-computefhe::BaseArithmeticsEngine::Gate_XOR(ConstLWECiphertext &a,
+LWECiphertext computefhe::BaseALU::Gate_XOR(ConstLWECiphertext &a,
                                             ConstLWECiphertext &b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::XOR, a, b);
 }
 
-LWECiphertext
-computefhe::BaseArithmeticsEngine::Gate_XNOR(ConstLWECiphertext &a,
+LWECiphertext computefhe::BaseALU::Gate_XNOR(ConstLWECiphertext &a,
                                              ConstLWECiphertext &b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::XNOR, a, b);
 }
 
-LWECiphertext
-computefhe::BaseArithmeticsEngine::Gate_NOT(ConstLWECiphertext &a) {
+LWECiphertext computefhe::BaseALU::Gate_NOT(ConstLWECiphertext &a) {
     return cfhe_base->GetBinFHEContext().EvalNOT(a);
 }
 
-FixedPoint BaseArithmeticsEngine::ToggleMSB(const FixedPoint &a) {
+FixedPoint BaseALU::ToggleMSB(const FixedPoint &a) {
     auto &cc = cfhe_base->GetBinFHEContext();
     FixedPoint t = FixedPoint(a);
     t.back() = cc.EvalNOT(t.back());
     return t;
 }
 
-FixedPoint BaseArithmeticsEngine::Mux(LWECiphertext s, const FixedPoint a,
-                                      const FixedPoint b) {
+FixedPoint BaseALU::Mux(LWECiphertext s, const FixedPoint a,
+                        const FixedPoint b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }

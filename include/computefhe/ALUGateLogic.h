@@ -1,11 +1,11 @@
 #pragma once
-#include <computefhe/BaseArithmeticsEngine.h>
+#include <computefhe/BaseALU.h>
 
 namespace computefhe {
 
-    class AEGateLogic : public BaseArithmeticsEngine {
+    class ALUGateLogic : public BaseALU {
       public:
-        AEGateLogic(ComputeFHE *cfhe);
+        ALUGateLogic(ComputeFHE *cfhe);
 
         void HalfAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
                        LWECiphertext &sum, LWECiphertext &carry_out);

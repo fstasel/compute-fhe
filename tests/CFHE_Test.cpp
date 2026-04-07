@@ -24,11 +24,10 @@ void CFHE_Test::StartTimer() { t0 = timeNow(); }
 
 double CFHE_Test::ReadTimer() { return (timeNow() - t0).count() / 1e6; }
 
-CFHE_Test::CFHE_Test(CryptoContextParam param,
-                     ArithmeticsEngineType engine_type) {
+CFHE_Test::CFHE_Test(CryptoContextParam param, ALUType alu_type) {
     initRandomGenerator(UINT32_MAX);
     cout << "Creating ComputeFHE instance..." << endl;
-    cfhe_base = new ComputeFHE(param, engine_type);
+    cfhe_base = new ComputeFHE(param, alu_type);
     cout << "done!" << endl;
 }
 
@@ -52,7 +51,7 @@ uint CFHE_Test::CreateRandomNumber() { return dis(gen); }
 
 void CFHE_Test::Test(TestType tt, size_t n_digits) {
     cout << "cc_param: " << ToString(cfhe_base->GetCryptoContextParam())
-         << " ae_type: " << ToString(cfhe_base->GetArithmeticsEngineType())
+         << " alu_type: " << ToString(cfhe_base->GetALUType())
          << " test_type: " << ToString(tt) << " trials: " << num_test
          << " n_digits: " << n_digits << endl;
 
@@ -253,7 +252,7 @@ void CFHE_Test::PrintTestReport(TestReport report, int64_t n1, int64_t n2,
 
 void CFHE_Test::StartNoiseTest() {
     cout << "cc_param: " << ToString(cfhe_base->GetCryptoContextParam())
-         << " ae_type: " << ToString(cfhe_base->GetArithmeticsEngineType())
+         << " alu_type: " << ToString(cfhe_base->GetALUType())
          << " test_type: NOISE" << " trials: " << num_test << endl;
 
     double sum_fresh = 0, sum_bs = 0, noise, noise_bs;
@@ -325,37 +324,37 @@ void CFHE_Test::TestAll() {
     const int NUM_TEST = 1;
     const int VERBOSITY = 4;
     CFHE_Test *c;
-    c = new CFHE_Test(CCPARAM_STD128, AE_GATELOGIC);
+    c = new CFHE_Test(CCPARAM_STD128, ALU_GATELOGIC);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD128_3, AE_OPTIMIZED);
+    c = new CFHE_Test(CCPARAM_STD128_3, ALU_OPTIMIZED);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD192, AE_GATELOGIC);
+    c = new CFHE_Test(CCPARAM_STD192, ALU_GATELOGIC);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD192_3, AE_OPTIMIZED);
+    c = new CFHE_Test(CCPARAM_STD192_3, ALU_OPTIMIZED);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD256, AE_GATELOGIC);
+    c = new CFHE_Test(CCPARAM_STD256, ALU_GATELOGIC);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD256_3, AE_OPTIMIZED);
+    c = new CFHE_Test(CCPARAM_STD256_3, ALU_OPTIMIZED);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
@@ -367,32 +366,32 @@ void CFHE_Test::TestAllNoise() {
     const int NUM_TEST = 10;
     const int VERBOSITY = 2;
     CFHE_Test *c;
-    c = new CFHE_Test(CCPARAM_STD128, AE_GATELOGIC);
+    c = new CFHE_Test(CCPARAM_STD128, ALU_GATELOGIC);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->StartNoiseTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD128_3, AE_OPTIMIZED);
+    c = new CFHE_Test(CCPARAM_STD128_3, ALU_OPTIMIZED);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->StartNoiseTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD192, AE_GATELOGIC);
+    c = new CFHE_Test(CCPARAM_STD192, ALU_GATELOGIC);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->StartNoiseTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD192_3, AE_OPTIMIZED);
+    c = new CFHE_Test(CCPARAM_STD192_3, ALU_OPTIMIZED);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->StartNoiseTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD256, AE_GATELOGIC);
+    c = new CFHE_Test(CCPARAM_STD256, ALU_GATELOGIC);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->StartNoiseTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD256_3, AE_OPTIMIZED);
+    c = new CFHE_Test(CCPARAM_STD256_3, ALU_OPTIMIZED);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->StartNoiseTest();

@@ -8,11 +8,11 @@ namespace computefhe {
     bool CLIENT_MODE = false;
 } // namespace computefhe
 
-void computefhe::Init(CryptoContextParam cc_param,
-                      ArithmeticsEngineType ae_type, bool client_mode) {
+void computefhe::Init(CryptoContextParam cc_param, ALUType alu_type,
+                      bool client_mode) {
     if (cfhe_base != nullptr)
         delete cfhe_base;
-    cfhe_base = new ComputeFHE(cc_param, ae_type);
+    cfhe_base = new ComputeFHE(cc_param, alu_type);
     CLIENT_MODE = client_mode;
 }
 
@@ -63,14 +63,14 @@ bool CFHE_Integer::promote(const CFHE_Integer &a, const CFHE_Integer &b,
         else if (a.sign)
             a_out[i] = last_a;
         else
-            a_out[i] = cfhe_base->GetArithmeticsEngine()->GetConstantFalse();
+            a_out[i] = cfhe_base->GetALU()->GetConstantFalse();
 
         if (i < b.size)
             b_out[i] = b.data[i];
         else if (b.sign)
             b_out[i] = last_b;
         else
-            b_out[i] = cfhe_base->GetArithmeticsEngine()->GetConstantFalse();
+            b_out[i] = cfhe_base->GetALU()->GetConstantFalse();
     }
     return s;
 }
@@ -87,7 +87,7 @@ FixedPoint CFHE_Integer::promote(const CFHE_Integer &a, size_t s) {
         else if (a.sign)
             out[i] = last;
         else
-            out[i] = cfhe_base->GetArithmeticsEngine()->GetConstantFalse();
+            out[i] = cfhe_base->GetALU()->GetConstantFalse();
     }
     return out;
 }
@@ -153,23 +153,22 @@ bool CFHE_Integer::isSigned() const { return sign; }
 const CFHE_Integer CFHE_Integer::operator==(const CFHE_Integer &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    FixedPoint fp({cfhe_base->GetArithmeticsEngine()->CmpEq(a, b)});
+    FixedPoint fp({cfhe_base->GetALU()->CmpEq(a, b)});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator!=(const CFHE_Integer &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    FixedPoint fp({cfhe_base->GetArithmeticsEngine()->CmpNotEq(a, b)});
+    FixedPoint fp({cfhe_base->GetALU()->CmpNotEq(a, b)});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator>(const CFHE_Integer &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    FixedPoint fp({(sign && other.sign)
-                       ? cfhe_base->GetArithmeticsEngine()->CmpGT(a, b)
-                       : cfhe_base->GetArithmeticsEngine()->CmpGT_U(a, b)});
+    FixedPoint fp({(sign && other.sign) ? cfhe_base->GetALU()->CmpGT(a, b)
+                                        : cfhe_base->GetALU()->CmpGT_U(a, b)});
     return CFHE_Integer(fp, false);
 }
 
@@ -177,17 +176,16 @@ const CFHE_Integer CFHE_Integer::operator>=(const CFHE_Integer &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
     FixedPoint fp({(sign && other.sign)
-                       ? cfhe_base->GetArithmeticsEngine()->CmpGTEq(a, b)
-                       : cfhe_base->GetArithmeticsEngine()->CmpGTEq_U(a, b)});
+                       ? cfhe_base->GetALU()->CmpGTEq(a, b)
+                       : cfhe_base->GetALU()->CmpGTEq_U(a, b)});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator<(const CFHE_Integer &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    FixedPoint fp({(sign && other.sign)
-                       ? cfhe_base->GetArithmeticsEngine()->CmpLT(a, b)
-                       : cfhe_base->GetArithmeticsEngine()->CmpLT_U(a, b)});
+    FixedPoint fp({(sign && other.sign) ? cfhe_base->GetALU()->CmpLT(a, b)
+                                        : cfhe_base->GetALU()->CmpLT_U(a, b)});
     return CFHE_Integer(fp, false);
 }
 
@@ -195,57 +193,57 @@ const CFHE_Integer CFHE_Integer::operator<=(const CFHE_Integer &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
     FixedPoint fp({(sign && other.sign)
-                       ? cfhe_base->GetArithmeticsEngine()->CmpLTEq(a, b)
-                       : cfhe_base->GetArithmeticsEngine()->CmpLTEq_U(a, b)});
+                       ? cfhe_base->GetALU()->CmpLTEq(a, b)
+                       : cfhe_base->GetALU()->CmpLTEq_U(a, b)});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator==(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
-    FixedPoint fp({cfhe_base->GetArithmeticsEngine()->CmpEq(
+    FixedPoint fp({cfhe_base->GetALU()->CmpEq(
         data, cfhe_base->GetConstantInt(other, size))});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator!=(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
-    FixedPoint fp({cfhe_base->GetArithmeticsEngine()->CmpNotEq(
+    FixedPoint fp({cfhe_base->GetALU()->CmpNotEq(
         data, cfhe_base->GetConstantInt(other, size))});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator>(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
-    FixedPoint fp({sign ? cfhe_base->GetArithmeticsEngine()->CmpGT(
+    FixedPoint fp({sign ? cfhe_base->GetALU()->CmpGT(
                               data, cfhe_base->GetConstantInt(other, size))
-                        : cfhe_base->GetArithmeticsEngine()->CmpGT_U(
+                        : cfhe_base->GetALU()->CmpGT_U(
                               data, cfhe_base->GetConstantInt(other, size))});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator>=(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
-    FixedPoint fp({sign ? cfhe_base->GetArithmeticsEngine()->CmpGTEq(
+    FixedPoint fp({sign ? cfhe_base->GetALU()->CmpGTEq(
                               data, cfhe_base->GetConstantInt(other, size))
-                        : cfhe_base->GetArithmeticsEngine()->CmpGTEq_U(
+                        : cfhe_base->GetALU()->CmpGTEq_U(
                               data, cfhe_base->GetConstantInt(other, size))});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator<(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
-    FixedPoint fp({sign ? cfhe_base->GetArithmeticsEngine()->CmpLT(
+    FixedPoint fp({sign ? cfhe_base->GetALU()->CmpLT(
                               data, cfhe_base->GetConstantInt(other, size))
-                        : cfhe_base->GetArithmeticsEngine()->CmpLT_U(
+                        : cfhe_base->GetALU()->CmpLT_U(
                               data, cfhe_base->GetConstantInt(other, size))});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator<=(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
-    FixedPoint fp({sign ? cfhe_base->GetArithmeticsEngine()->CmpLTEq(
+    FixedPoint fp({sign ? cfhe_base->GetALU()->CmpLTEq(
                               data, cfhe_base->GetConstantInt(other, size))
-                        : cfhe_base->GetArithmeticsEngine()->CmpLTEq_U(
+                        : cfhe_base->GetALU()->CmpLTEq_U(
                               data, cfhe_base->GetConstantInt(other, size))});
     return CFHE_Integer(fp, false);
 }
@@ -253,14 +251,14 @@ const CFHE_Integer CFHE_Integer::operator<=(uint64_t other) const {
 const CFHE_Integer CFHE_Integer::operator+(const CFHE_Integer &other) const {
     FixedPoint a, b;
     bool s = promote(*this, other, a, b);
-    FixedPoint fp(cfhe_base->GetArithmeticsEngine()->AddNC(a, b));
+    FixedPoint fp(cfhe_base->GetALU()->AddNC(a, b));
     return CFHE_Integer(fp, s);
 }
 
 const CFHE_Integer CFHE_Integer::operator+=(const CFHE_Integer &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
-    data = cfhe_base->GetArithmeticsEngine()->AddNC(data, o);
+    data = cfhe_base->GetALU()->AddNC(data, o);
     _sync_var();
     return *this;
 }
@@ -268,14 +266,14 @@ const CFHE_Integer CFHE_Integer::operator+=(const CFHE_Integer &other) {
 const CFHE_Integer CFHE_Integer::operator-(const CFHE_Integer &other) const {
     FixedPoint a, b;
     bool s = promote(*this, other, a, b);
-    FixedPoint fp(cfhe_base->GetArithmeticsEngine()->SubNC(a, b));
+    FixedPoint fp(cfhe_base->GetALU()->SubNC(a, b));
     return CFHE_Integer(fp, s);
 }
 
 const CFHE_Integer CFHE_Integer::operator-=(const CFHE_Integer &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
-    data = cfhe_base->GetArithmeticsEngine()->SubNC(data, o);
+    data = cfhe_base->GetALU()->SubNC(data, o);
     _sync_var();
     return *this;
 }
@@ -283,14 +281,14 @@ const CFHE_Integer CFHE_Integer::operator-=(const CFHE_Integer &other) {
 const CFHE_Integer CFHE_Integer::operator*(const CFHE_Integer &other) const {
     FixedPoint a, b;
     bool s = promote(*this, other, a, b);
-    FixedPoint fp(cfhe_base->GetArithmeticsEngine()->Mul(a, b));
+    FixedPoint fp(cfhe_base->GetALU()->Mul(a, b));
     return CFHE_Integer(fp, s);
 }
 
 const CFHE_Integer CFHE_Integer::operator*=(const CFHE_Integer &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
-    data = cfhe_base->GetArithmeticsEngine()->Mul(data, o);
+    data = cfhe_base->GetALU()->Mul(data, o);
     _sync_var();
     return *this;
 }
@@ -326,14 +324,14 @@ const CFHE_Integer CFHE_Integer::operator*=(uint64_t other) {
 }
 
 const CFHE_Integer CFHE_Integer::operator-() const {
-    return CFHE_Integer(cfhe_base->GetArithmeticsEngine()->Neg(data), sign);
+    return CFHE_Integer(cfhe_base->GetALU()->Neg(data), sign);
 }
 
 const CFHE_Integer CFHE_Integer::operator&(const CFHE_Integer &other) const {
     FixedPoint o = promote(other, size);
     FixedPoint fp(size);
     for (size_t i = 0; i < size; i++) {
-        fp[i] = cfhe_base->GetArithmeticsEngine()->Gate_AND(data[i], o[i]);
+        fp[i] = cfhe_base->GetALU()->Gate_AND(data[i], o[i]);
     }
     return CFHE_Integer(fp, sign);
 }
@@ -342,7 +340,7 @@ const CFHE_Integer CFHE_Integer::operator&=(const CFHE_Integer &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
     for (size_t i = 0; i < size; i++) {
-        data[i] = cfhe_base->GetArithmeticsEngine()->Gate_AND(data[i], o[i]);
+        data[i] = cfhe_base->GetALU()->Gate_AND(data[i], o[i]);
     }
     _sync_var();
     return *this;
@@ -355,7 +353,7 @@ const CFHE_Integer CFHE_Integer::operator&(uint64_t other) const {
         if (bit)
             r.data[i] = COPY_CT(data[i]);
         else
-            r.data[i] = cfhe_base->GetArithmeticsEngine()->GetConstantFalse();
+            r.data[i] = cfhe_base->GetALU()->GetConstantFalse();
     }
     return r;
 }
@@ -365,7 +363,7 @@ const CFHE_Integer CFHE_Integer::operator&=(uint64_t other) {
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
         if (!bit)
-            data[i] = cfhe_base->GetArithmeticsEngine()->GetConstantFalse();
+            data[i] = cfhe_base->GetALU()->GetConstantFalse();
     }
     _sync_var();
     return *this;
@@ -375,7 +373,7 @@ const CFHE_Integer CFHE_Integer::operator|(const CFHE_Integer &other) const {
     FixedPoint o = promote(other, size);
     FixedPoint fp(size);
     for (size_t i = 0; i < size; i++) {
-        fp[i] = cfhe_base->GetArithmeticsEngine()->Gate_OR(data[i], o[i]);
+        fp[i] = cfhe_base->GetALU()->Gate_OR(data[i], o[i]);
     }
     return CFHE_Integer(fp, sign);
 }
@@ -384,7 +382,7 @@ const CFHE_Integer CFHE_Integer::operator|=(const CFHE_Integer &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
     for (size_t i = 0; i < size; i++) {
-        data[i] = cfhe_base->GetArithmeticsEngine()->Gate_OR(data[i], o[i]);
+        data[i] = cfhe_base->GetALU()->Gate_OR(data[i], o[i]);
     }
     _sync_var();
     return *this;
@@ -395,7 +393,7 @@ const CFHE_Integer CFHE_Integer::operator|(uint64_t other) const {
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
         if (bit)
-            r.data[i] = cfhe_base->GetArithmeticsEngine()->GetConstantTrue();
+            r.data[i] = cfhe_base->GetALU()->GetConstantTrue();
         else
             r.data[i] = COPY_CT(data[i]);
     }
@@ -407,7 +405,7 @@ const CFHE_Integer CFHE_Integer::operator|=(uint64_t other) {
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
         if (bit)
-            data[i] = cfhe_base->GetArithmeticsEngine()->GetConstantTrue();
+            data[i] = cfhe_base->GetALU()->GetConstantTrue();
     }
     _sync_var();
     return *this;
@@ -417,7 +415,7 @@ const CFHE_Integer CFHE_Integer::operator^(const CFHE_Integer &other) const {
     FixedPoint o = promote(other, size);
     FixedPoint fp(size);
     for (size_t i = 0; i < size; i++) {
-        fp[i] = cfhe_base->GetArithmeticsEngine()->Gate_XOR(data[i], o[i]);
+        fp[i] = cfhe_base->GetALU()->Gate_XOR(data[i], o[i]);
     }
     return CFHE_Integer(fp, sign);
 }
@@ -426,7 +424,7 @@ const CFHE_Integer CFHE_Integer::operator^=(const CFHE_Integer &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
     for (size_t i = 0; i < size; i++) {
-        data[i] = cfhe_base->GetArithmeticsEngine()->Gate_XOR(data[i], o[i]);
+        data[i] = cfhe_base->GetALU()->Gate_XOR(data[i], o[i]);
     }
     _sync_var();
     return *this;
@@ -437,7 +435,7 @@ const CFHE_Integer CFHE_Integer::operator^(uint64_t other) const {
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
         if (bit)
-            r.data[i] = cfhe_base->GetArithmeticsEngine()->Gate_NOT(data[i]);
+            r.data[i] = cfhe_base->GetALU()->Gate_NOT(data[i]);
         else
             r.data[i] = COPY_CT(data[i]);
     }
@@ -449,7 +447,7 @@ const CFHE_Integer CFHE_Integer::operator^=(uint64_t other) {
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
         if (bit)
-            data[i] = cfhe_base->GetArithmeticsEngine()->Gate_NOT(data[i]);
+            data[i] = cfhe_base->GetALU()->Gate_NOT(data[i]);
     }
     _sync_var();
     return *this;
@@ -458,10 +456,9 @@ const CFHE_Integer CFHE_Integer::operator^=(uint64_t other) {
 const CFHE_Integer CFHE_Integer::operator!() const {
     LWECiphertext r = data[0];
     for (size_t i = 1; i < size; i++) {
-        r = cfhe_base->GetArithmeticsEngine()->Gate_OR(r, data[i]);
+        r = cfhe_base->GetALU()->Gate_OR(r, data[i]);
     }
-    return CFHE_Integer({cfhe_base->GetArithmeticsEngine()->Gate_NOT(r)},
-                        false);
+    return CFHE_Integer({cfhe_base->GetALU()->Gate_NOT(r)}, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator~() const {
@@ -471,23 +468,21 @@ const CFHE_Integer CFHE_Integer::operator~() const {
 const CFHE_Integer CFHE_Integer::operator&&(const CFHE_Integer &other) const {
     LWECiphertext r1 = data[0];
     for (size_t i = 1; i < size; i++) {
-        r1 = cfhe_base->GetArithmeticsEngine()->Gate_OR(r1, data[i]);
+        r1 = cfhe_base->GetALU()->Gate_OR(r1, data[i]);
     }
     LWECiphertext r2 = other.data[0];
     for (size_t i = 1; i < other.size; i++) {
-        r2 = cfhe_base->GetArithmeticsEngine()->Gate_OR(r2, other.data[i]);
+        r2 = cfhe_base->GetALU()->Gate_OR(r2, other.data[i]);
     }
-    return CFHE_Integer({cfhe_base->GetArithmeticsEngine()->Gate_AND(r1, r2)},
-                        false);
+    return CFHE_Integer({cfhe_base->GetALU()->Gate_AND(r1, r2)}, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator&&(uint64_t other) const {
     if (!other)
-        return CFHE_Integer(
-            {cfhe_base->GetArithmeticsEngine()->GetConstantFalse()}, false);
+        return CFHE_Integer({cfhe_base->GetALU()->GetConstantFalse()}, false);
     LWECiphertext r = data[0];
     for (size_t i = 1; i < size; i++) {
-        r = cfhe_base->GetArithmeticsEngine()->Gate_OR(r, data[i]);
+        r = cfhe_base->GetALU()->Gate_OR(r, data[i]);
     }
     return CFHE_Integer({r}, false);
 }
@@ -495,23 +490,21 @@ const CFHE_Integer CFHE_Integer::operator&&(uint64_t other) const {
 const CFHE_Integer CFHE_Integer::operator||(const CFHE_Integer &other) const {
     LWECiphertext r1 = data[0];
     for (size_t i = 1; i < size; i++) {
-        r1 = cfhe_base->GetArithmeticsEngine()->Gate_OR(r1, data[i]);
+        r1 = cfhe_base->GetALU()->Gate_OR(r1, data[i]);
     }
     LWECiphertext r2 = other.data[0];
     for (size_t i = 1; i < other.size; i++) {
-        r2 = cfhe_base->GetArithmeticsEngine()->Gate_OR(r2, other.data[i]);
+        r2 = cfhe_base->GetALU()->Gate_OR(r2, other.data[i]);
     }
-    return CFHE_Integer({cfhe_base->GetArithmeticsEngine()->Gate_OR(r1, r2)},
-                        false);
+    return CFHE_Integer({cfhe_base->GetALU()->Gate_OR(r1, r2)}, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator||(uint64_t other) const {
     if (other)
-        return CFHE_Integer(
-            {cfhe_base->GetArithmeticsEngine()->GetConstantTrue()}, false);
+        return CFHE_Integer({cfhe_base->GetALU()->GetConstantTrue()}, false);
     LWECiphertext r = data[0];
     for (size_t i = 1; i < size; i++) {
-        r = cfhe_base->GetArithmeticsEngine()->Gate_OR(r, data[i]);
+        r = cfhe_base->GetALU()->Gate_OR(r, data[i]);
     }
     return CFHE_Integer({r}, false);
 }
@@ -543,9 +536,8 @@ const CFHE_Integer CFHE_Integer::operator<<(int s) {
     FixedPoint fp(size);
     s = clamp<int>(s, 0, size - 1);
     for (int i = sz - 1; i >= 0; i--) {
-        fp[i] = (i - s < 0)
-                    ? cfhe_base->GetArithmeticsEngine()->GetConstantFalse()
-                    : data[i - s];
+        fp[i] =
+            (i - s < 0) ? cfhe_base->GetALU()->GetConstantFalse() : data[i - s];
     }
     return CFHE_Integer(fp, sign);
 }
@@ -555,9 +547,8 @@ const CFHE_Integer CFHE_Integer::operator<<=(int s) {
     int sz = (int)size;
     s = clamp<int>(s, 0, size - 1);
     for (int i = sz - 1; i >= 0; i--) {
-        data[i] = (i - s < 0)
-                      ? cfhe_base->GetArithmeticsEngine()->GetConstantFalse()
-                      : data[i - s];
+        data[i] =
+            (i - s < 0) ? cfhe_base->GetALU()->GetConstantFalse() : data[i - s];
     }
     _sync_var();
     return *this;
@@ -568,11 +559,9 @@ const CFHE_Integer CFHE_Integer::operator>>(int s) {
     FixedPoint fp(size);
     s = clamp<int>(s, 0, size - 1);
     for (int i = 0; i < sz; i++) {
-        fp[i] =
-            (i + s >= sz)
-                ? (sign ? data[fp.size() - 1]
-                        : cfhe_base->GetArithmeticsEngine()->GetConstantFalse())
-                : data[i + s];
+        fp[i] = (i + s >= sz) ? (sign ? data[fp.size() - 1]
+                                      : cfhe_base->GetALU()->GetConstantFalse())
+                              : data[i + s];
     }
     return CFHE_Integer(fp, sign);
 }
@@ -582,11 +571,10 @@ const CFHE_Integer CFHE_Integer::operator>>=(int s) {
     int sz = (int)size;
     s = clamp<int>(s, 0, size - 1);
     for (int i = 0; i < sz; i++) {
-        data[i] =
-            (i + s >= sz)
-                ? (sign ? data[size - 1]
-                        : cfhe_base->GetArithmeticsEngine()->GetConstantFalse())
-                : data[i + s];
+        data[i] = (i + s >= sz)
+                      ? (sign ? data[size - 1]
+                              : cfhe_base->GetALU()->GetConstantFalse())
+                      : data[i + s];
     }
     _sync_var();
     return *this;

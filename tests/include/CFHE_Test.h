@@ -31,7 +31,7 @@ namespace computefhe_test {
         void regenerateKeys();
 
       public:
-        CFHE_Test(CryptoContextParam param, ArithmeticsEngineType engine_type);
+        CFHE_Test(CryptoContextParam param, ALUType alu_type);
 
         uint CreateRandomNumber();
         void StartTimer();

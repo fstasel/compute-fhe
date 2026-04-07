@@ -1,14 +1,14 @@
 #pragma once
 
-#include <computefhe/BaseArithmeticsEngine.h>
+#include <computefhe/BaseALU.h>
 #include <computefhe/ComputeFHE.h>
 #include <computefhe/ConditionManager.h>
 #include <iostream>
 using namespace std;
 
 namespace computefhe {
-    void Init(CryptoContextParam = CCPARAM_STD128_3,
-              ArithmeticsEngineType = AE_OPTIMIZED, bool = false);
+    void Init(CryptoContextParam = CCPARAM_STD128_3, ALUType = ALU_OPTIMIZED,
+              bool = false);
     void Finalize();
 
     extern ComputeFHE *cfhe_base;

@@ -14,7 +14,7 @@ Eitem<T, U>::Eitem(Evector<T> &vec, const CFHE_Integer &idx) : data(vec) {
         if (j < fp.size())
             index[j] = fp[j];
         else
-            index[j] = cfhe_base->GetArithmeticsEngine()->GetConstantFalse();
+            index[j] = cfhe_base->GetALU()->GetConstantFalse();
     }
     p_index = 0;
     encrypted_index = true;
@@ -29,22 +29,22 @@ Eitem<T, U>::Eitem(Evector<T> &vec, const size_t idx)
 template <typename T, typename U> Eitem<T, U>::operator T() const {
     if (encrypted_index) {
         // TODO: optimize this by using ciphertext-plaintext comparison
-        LWECiphertext c = cfhe_base->GetArithmeticsEngine()->CmpEq(
+        LWECiphertext c = cfhe_base->GetALU()->CmpEq(
             index, cfhe_base->GetConstantInt(0, index.size()));
         size_t n = data.at(0).getData().size();
         FixedPoint result(n);
 
         for (size_t d = 0; d < n; ++d) {
-            result[d] = cfhe_base->GetArithmeticsEngine()->Gate_AND(
-                c, data.at(0).getData()[d]);
+            result[d] =
+                cfhe_base->GetALU()->Gate_AND(c, data.at(0).getData()[d]);
         }
         for (size_t i = 1; i < data.size(); ++i) {
             // TODO: optimize this by using ciphertext-plaintext comparison
-            c = cfhe_base->GetArithmeticsEngine()->CmpEq(
+            c = cfhe_base->GetALU()->CmpEq(
                 index, cfhe_base->GetConstantInt(i, index.size()));
             for (size_t d = 0; d < n; ++d) {
-                result[d] = cfhe_base->GetArithmeticsEngine()->MulAdd(
-                    c, data[i].getData()[d], result[d]);
+                result[d] = cfhe_base->GetALU()->MulAdd(c, data[i].getData()[d],
+                                                        result[d]);
             }
         }
         return CFHE_Integer(result, data.at(0).isSigned());
@@ -55,22 +55,22 @@ template <typename T, typename U> Eitem<T, U>::operator T() const {
 template <> Eitem<CFHE_FixedPoint, double>::operator CFHE_FixedPoint() const {
     if (encrypted_index) {
         // TODO: optimize this by using ciphertext-plaintext comparison
-        LWECiphertext c = cfhe_base->GetArithmeticsEngine()->CmpEq(
+        LWECiphertext c = cfhe_base->GetALU()->CmpEq(
             index, cfhe_base->GetConstantInt(0, index.size()));
         size_t n = data.at(0).getData().size();
         FixedPoint result(n);
 
         for (size_t d = 0; d < n; ++d) {
-            result[d] = cfhe_base->GetArithmeticsEngine()->Gate_AND(
-                c, data.at(0).getData()[d]);
+            result[d] =
+                cfhe_base->GetALU()->Gate_AND(c, data.at(0).getData()[d]);
         }
         for (size_t i = 1; i < data.size(); ++i) {
             // TODO: optimize this by using ciphertext-plaintext comparison
-            c = cfhe_base->GetArithmeticsEngine()->CmpEq(
+            c = cfhe_base->GetALU()->CmpEq(
                 index, cfhe_base->GetConstantInt(i, index.size()));
             for (size_t d = 0; d < n; ++d) {
-                result[d] = cfhe_base->GetArithmeticsEngine()->MulAdd(
-                    c, data[i].getData()[d], result[d]);
+                result[d] = cfhe_base->GetALU()->MulAdd(c, data[i].getData()[d],
+                                                        result[d]);
             }
         }
         return CFHE_FixedPoint(result, data.at(0).getFracSize(),
@@ -85,14 +85,13 @@ const T &Eitem<T, U>::operator=(const T &value) {
         size_t n = data.at(0).getData().size();
         for (size_t i = 0; i < data.size(); ++i) {
             // TODO: optimize this by using ciphertext-plaintext comparison
-            LWECiphertext c = cfhe_base->GetArithmeticsEngine()->CmpEq(
+            LWECiphertext c = cfhe_base->GetALU()->CmpEq(
                 index, cfhe_base->GetConstantInt(i, index.size()));
             FixedPoint &target_fp = const_cast<FixedPoint &>(data[i].getData());
             for (size_t d = 0; d < n; ++d) {
                 LWECiphertext v = const_cast<T &>(value).getData()[d];
                 // TODO: try optimizing below logic
-                target_fp[d] =
-                    cfhe_base->GetArithmeticsEngine()->Mux(c, target_fp[d], v);
+                target_fp[d] = cfhe_base->GetALU()->Mux(c, target_fp[d], v);
             }
         }
     } else {

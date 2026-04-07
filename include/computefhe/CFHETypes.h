@@ -51,13 +51,13 @@ namespace computefhe {
         }
     }
 
-    enum ArithmeticsEngineType { AE_GATELOGIC, AE_OPTIMIZED };
+    enum ALUType { ALU_GATELOGIC, ALU_OPTIMIZED };
 
-    inline const char *ToString(ArithmeticsEngineType v) {
+    inline const char *ToString(ALUType v) {
         switch (v) {
-        case AE_GATELOGIC:
+        case ALU_GATELOGIC:
             return "GATELOGIC";
-        case AE_OPTIMIZED:
+        case ALU_OPTIMIZED:
             return "OPTIMIZED";
         default:
             return "[Unknown]";

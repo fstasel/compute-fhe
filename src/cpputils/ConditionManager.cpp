@@ -1,4 +1,4 @@
-#include <computefhe/BaseArithmeticsEngine.h>
+#include <computefhe/BaseALU.h>
 #include <computefhe/ConditionManager.h>
 #include <stack>
 #include <unordered_map>
@@ -20,8 +20,8 @@ ConditionManager::~ConditionManager() {
         if (!conditional_stack.empty()) {
             register_variable(it->first, &it->second.prev_value);
         }
-        *it->second.data = cfhe_base->GetArithmeticsEngine()->Mux(
-            cond, it->second.else_value, it->second.if_value);
+        *it->second.data = cfhe_base->GetALU()->Mux(cond, it->second.else_value,
+                                                    it->second.if_value);
         if (!conditional_stack.empty()) {
             register_variable(it->first, it->second.data);
         }

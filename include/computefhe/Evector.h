@@ -97,6 +97,20 @@ namespace computefhe {
         CFHE_Integer &operator[](const int idx) { return this->at(idx); }
     };
 
+    template <> class Evector<CFHE_Integer> : public std::vector<CFHE_Integer> {
+      public:
+        using std::vector<CFHE_Integer>::vector;
+        using std::vector<CFHE_Integer>::operator[];
+
+        Eitem<CFHE_Integer, uint64_t> operator[](const CFHE_Integer &index) {
+            return Eitem<CFHE_Integer, uint64_t>(*this, index);
+            // TODO: Use below in client-mode only
+            return Eitem<CFHE_Integer, uint64_t>(*this, (size_t)index);
+        }
+
+        CFHE_Integer &operator[](const int idx) { return this->at(idx); }
+    };
+
     template <>
     class Evector<CFHE_FixedPoint> : public std::vector<CFHE_FixedPoint> {
       public:
@@ -110,5 +124,23 @@ namespace computefhe {
         }
 
         CFHE_FixedPoint &operator[](const int idx) { return this->at(idx); }
+    };
+
+    template <size_t N, size_t F, bool S>
+    class Evector<EFix<N, F, S>> : public std::vector<EFix<N, F, S>> {
+      public:
+        using std::vector<EFix<N, F, S>>::vector;
+        using std::vector<EFix<N, F, S>>::operator[];
+
+        Eitem<CFHE_FixedPoint, double> operator[](const CFHE_Integer &index) {
+            return Eitem<CFHE_FixedPoint, double>(
+                reinterpret_cast<Evector<CFHE_FixedPoint> &>(*this), index);
+            // TODO: Use below in client-mode only
+            return Eitem<CFHE_FixedPoint, double>(
+                reinterpret_cast<Evector<CFHE_FixedPoint> &>(*this),
+                (size_t)index);
+        }
+
+        EFix<N, F, S> &operator[](const int idx) { return this->at(idx); }
     };
 } // namespace computefhe

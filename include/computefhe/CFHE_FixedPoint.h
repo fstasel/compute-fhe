@@ -103,4 +103,13 @@ namespace computefhe {
     };
     ostream &operator<<(ostream &out, const CFHE_FixedPoint &obj);
 
+    template <size_t TOTAL_BITS, size_t FRAC_BITS, bool SIGNED>
+    class EFix : public CFHE_FixedPoint {
+      public:
+        EFix(double d = 0)
+            : CFHE_FixedPoint(d, TOTAL_BITS, FRAC_BITS, SIGNED) {}
+        EFix(const CFHE_FixedPoint &other)
+            : CFHE_FixedPoint(promote(other, TOTAL_BITS, FRAC_BITS), FRAC_BITS,
+                              SIGNED) {}
+    };
 } // namespace computefhe

@@ -704,16 +704,16 @@ ostream &computefhe::operator<<(ostream &out, const CFHE_Integer &obj) {
     return out;
 }
 
-// Explicitly instantiate EType variants for standard types
-template class EType<bool, 1, false>;
-template class EType<int8_t, 8, true>;
-template class EType<uint8_t, 8, false>;
-template class EType<int16_t, 16, true>;
-template class EType<uint16_t, 16, false>;
-template class EType<int32_t, 32, true>;
-template class EType<uint32_t, 32, false>;
-template class EType<int64_t, 64, true>;
-template class EType<uint64_t, 64, false>;
+// Explicitly instantiate EInt variants for standard types
+template class EInt<bool, 1, false>;
+template class EInt<int8_t, 8, true>;
+template class EInt<uint8_t, 8, false>;
+template class EInt<int16_t, 16, true>;
+template class EInt<uint16_t, 16, false>;
+template class EInt<int32_t, 32, true>;
+template class EInt<uint32_t, 32, false>;
+template class EInt<int64_t, 64, true>;
+template class EInt<uint64_t, 64, false>;
 
 // TODO: Ebool operators must behave differently
 // bool op integral_t -> (int)bool op integral_t -> Promoted -> (bool)Promoted

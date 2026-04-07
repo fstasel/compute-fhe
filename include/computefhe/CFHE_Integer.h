@@ -125,22 +125,20 @@ namespace computefhe {
     ostream &operator<<(ostream &out, const CFHE_Integer &obj);
 
     template <typename T, size_t BITS, bool SIGNED>
-    class EType : public CFHE_Integer {
+    class EInt : public CFHE_Integer {
       public:
-        EType(T d = 0) : CFHE_Integer((uint64_t)d, BITS) {
-            this->sign = SIGNED;
-        }
-        EType(const CFHE_Integer &other)
+        EInt(T d = 0) : CFHE_Integer((uint64_t)d, BITS) { this->sign = SIGNED; }
+        EInt(const CFHE_Integer &other)
             : CFHE_Integer(promote(other, BITS), SIGNED) {}
     };
 
-    using Ebool = EType<bool, 1, false>;
-    using Eint8 = EType<int8_t, 8, true>;
-    using Euint8 = EType<uint8_t, 8, false>;
-    using Eint16 = EType<int16_t, 16, true>;
-    using Euint16 = EType<uint16_t, 16, false>;
-    using Eint32 = EType<int32_t, 32, true>;
-    using Euint32 = EType<uint32_t, 32, false>;
-    using Eint64 = EType<int64_t, 64, true>;
-    using Euint64 = EType<uint64_t, 64, false>;
+    using Ebool = EInt<bool, 1, false>;
+    using Eint8 = EInt<int8_t, 8, true>;
+    using Euint8 = EInt<uint8_t, 8, false>;
+    using Eint16 = EInt<int16_t, 16, true>;
+    using Euint16 = EInt<uint16_t, 16, false>;
+    using Eint32 = EInt<int32_t, 32, true>;
+    using Euint32 = EInt<uint32_t, 32, false>;
+    using Eint64 = EInt<int64_t, 64, true>;
+    using Euint64 = EInt<uint64_t, 64, false>;
 } // namespace computefhe

@@ -344,8 +344,8 @@ void test_vector() {
 }
 
 void test_vector_custom() {
-    using MyEint = EType<int16_t, 6, true>;
-    using MyEuint = EType<uint8_t, 3, false>;
+    using MyEint = EInt<int16_t, 6, true>;
+    using MyEuint = EInt<uint8_t, 3, false>;
 
     MyEuint d = 3, e = 1;
     cout << "d: " << d << ", e: " << e << endl;
@@ -479,6 +479,36 @@ void test_fp_vector() {
     cout << "++vec[idx]: " << (++vec[idx]) << endl;
 }
 
+void test_fp_custom() {
+    using MyEfix = EFix<7, 4, true>;
+    MyEfix a = 1.5;
+    cout << "a: " << a << endl;
+    MyEfix b = -2.25;
+    cout << "b: " << b << endl;
+    MyEfix c = a + b;
+    cout << "c = a + b: " << c << endl;
+
+    Evector<MyEfix> vec(4);
+    vec[0] = 1.5;
+    vec[1] = -2.25;
+    vec[2] = vec[0] + vec[1];
+    vec[3] = vec[0] * vec[1];
+
+    Euint8 idx = 2;
+    cout << "vec[0]: " << vec[0] << endl;
+    cout << "vec[1]: " << vec[1] << endl;
+    cout << "vec[idx]: " << vec[idx] << endl;
+    cout << "vec[3]: " << vec[3] << endl;
+    cout << "vec[0] << 1: " << (vec[0] << 1) << endl;
+    cout << "++vec[0]: " << (++vec[0]) << endl;
+    vec[0] >>= 1;
+    cout << "vec[0] >>= 1: " << vec[0] << endl;
+    vec[idx] *= -1.5;
+    cout << "vec[idx] *= -1.5: " << vec[idx] << endl;
+    cout << "-vec[idx]: " << -vec[idx] << endl;
+    cout << "++vec[idx]: " << (++vec[idx]) << endl;
+}
+
 int main() {
     computefhe::Init(CCPARAM_TOY, AE_OPTIMIZED, true);
 
@@ -494,7 +524,8 @@ int main() {
     // test_vector();
     // test_vector_custom();
     // test_fp();
-    test_fp_vector();
+    // test_fp_vector();
+    test_fp_custom();
 
     computefhe::Finalize();
 

@@ -3,46 +3,44 @@ using namespace computefhe;
 
 ALUGateLogic::ALUGateLogic(ComputeFHE *cfhe) : BaseALU(cfhe) {}
 
-void ALUGateLogic::HalfAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                             LWECiphertext &sum, LWECiphertext &carry_out) {
+void ALUGateLogic::HalfAdder(const BinaryDigit &a, const BinaryDigit &b,
+                             BinaryDigit &sum, BinaryDigit &carry_out) {
     auto &cc = cfhe_base->GetBinFHEContext();
     sum = cc.EvalBinGate(XOR, a, b);
     carry_out = cc.EvalBinGate(AND, a, b);
 }
 
-void ALUGateLogic::HalfSubtractor(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                                  LWECiphertext &sum,
-                                  LWECiphertext &carry_out) {
+void ALUGateLogic::HalfSubtractor(const BinaryDigit &a, const BinaryDigit &b,
+                                  BinaryDigit &sum, BinaryDigit &carry_out) {
     auto &cc = cfhe_base->GetBinFHEContext();
     sum = cc.EvalBinGate(XOR, a, b);
     carry_out = cc.EvalBinGate(OR, a, cc.EvalNOT(b));
 }
 
-void ALUGateLogic::FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                             ConstLWECiphertext &c, LWECiphertext &sum,
-                             LWECiphertext &carry_out) {
+void ALUGateLogic::FullAdder(const BinaryDigit &a, const BinaryDigit &b,
+                             const BinaryDigit &c, BinaryDigit &sum,
+                             BinaryDigit &carry_out) {
     auto &cc = cfhe_base->GetBinFHEContext();
     sum = cc.EvalBinGate(XOR, a, b);
-    LWECiphertext carry1 = cc.EvalBinGate(AND, a, b);
-    LWECiphertext carry2 = cc.EvalBinGate(AND, sum, c);
+    BinaryDigit carry1 = cc.EvalBinGate(AND, a, b);
+    BinaryDigit carry2 = cc.EvalBinGate(AND, sum, c);
     sum = cc.EvalBinGate(XOR, sum, c);
     carry_out = cc.EvalBinGate(OR, carry1, carry2);
 }
 
-LWECiphertext ALUGateLogic::XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                                 ConstLWECiphertext &c) {
+BinaryDigit ALUGateLogic::XOR3(const BinaryDigit &a, const BinaryDigit &b,
+                               const BinaryDigit &c) {
     auto &cc = cfhe_base->GetBinFHEContext();
-    LWECiphertext sum = cc.EvalBinGate(XOR, a, b);
+    BinaryDigit sum = cc.EvalBinGate(XOR, a, b);
     sum = cc.EvalBinGate(XOR, sum, c);
     return sum;
 }
 
-LWECiphertext ALUGateLogic::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a,
-                                   ConstLWECiphertext &b,
-                                   LWECiphertext *carry_out) {
+BinaryDigit ALUGateLogic::MulAdd(const BinaryDigit &m, const BinaryDigit &a,
+                                 const BinaryDigit &b, BinaryDigit *carry_out) {
     auto &cc = cfhe_base->GetBinFHEContext();
-    LWECiphertext ma = cc.EvalBinGate(AND, m, a);
-    LWECiphertext sum = cc.EvalBinGate(XOR, ma, b);
+    BinaryDigit ma = cc.EvalBinGate(AND, m, a);
+    BinaryDigit sum = cc.EvalBinGate(XOR, ma, b);
     if (carry_out) {
         *carry_out = cc.EvalBinGate(AND, ma, b);
     }
@@ -104,7 +102,7 @@ FixedPoint ALUGateLogic::Sub(const FixedPoint &a, const FixedPoint &b) {
     FixedPoint out(n_digit);
     HalfSubtractor(a[0], b[0], out[0], carry);
     for (uint8_t i = 1; i < n_digit; i++) {
-        LWECiphertext inv_b = cc.EvalNOT(b[i]);
+        BinaryDigit inv_b = cc.EvalNOT(b[i]);
         FullAdder(a[i], inv_b, carry, out[i], carry);
     }
     return out;
@@ -119,7 +117,7 @@ FixedPoint ALUGateLogic::SubC(const FixedPoint &a, const FixedPoint &b) {
 
     FixedPoint out(n_digit);
     for (uint8_t i = 0; i < n_digit; i++) {
-        LWECiphertext inv = cc.EvalNOT(b[i]);
+        BinaryDigit inv = cc.EvalNOT(b[i]);
         FullAdder(a[i], inv, carry, out[i], carry);
     }
     return out;
@@ -135,7 +133,7 @@ FixedPoint ALUGateLogic::SubNC(const FixedPoint &a, const FixedPoint &b) {
     FixedPoint out(n_digit);
     HalfSubtractor(a[0], b[0], out[0], carry);
     for (uint8_t i = 1; i < n_digit; i++) {
-        LWECiphertext inv_b = cc.EvalNOT(b[i]);
+        BinaryDigit inv_b = cc.EvalNOT(b[i]);
         if (i < n_digit - 1) {
             FullAdder(a[i], inv_b, carry, out[i], carry);
         } else {
@@ -150,10 +148,10 @@ FixedPoint ALUGateLogic::Neg(const FixedPoint &a) {
     size_t n_digit = a.size();
 
     FixedPoint out(n_digit);
-    out[0] = COPY_CT(a[0]);
-    LWECiphertext c = cc.EvalNOT(a[0]);
+    out[0] = a[0];
+    BinaryDigit c = cc.EvalNOT(a[0]);
     for (uint8_t i = 1; i < n_digit; i++) {
-        LWECiphertext inv = cc.EvalNOT(a[i]);
+        BinaryDigit inv = cc.EvalNOT(a[i]);
         if (i < n_digit - 1) {
             HalfAdder(inv, c, out[i], c);
         } else {
@@ -163,97 +161,95 @@ FixedPoint ALUGateLogic::Neg(const FixedPoint &a) {
     return out;
 }
 
-LWECiphertext ALUGateLogic::CmpNotEq(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUGateLogic::CmpNotEq(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    LWECiphertext out = cc.EvalBinGate(XOR, a[0], b[0]);
+    BinaryDigit out = cc.EvalBinGate(XOR, a[0], b[0]);
     for (uint8_t i = 1; i < n_digit; i++) {
-        LWECiphertext eq = cc.EvalBinGate(XOR, a[i], b[i]);
+        BinaryDigit eq = cc.EvalBinGate(XOR, a[i], b[i]);
         out = cc.EvalBinGate(OR, out, eq);
     }
     return out;
 }
 
-LWECiphertext ALUGateLogic::CmpEq(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUGateLogic::CmpEq(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    LWECiphertext out = cc.EvalBinGate(XNOR, a[0], b[0]);
+    BinaryDigit out = cc.EvalBinGate(XNOR, a[0], b[0]);
     for (uint8_t i = 1; i < n_digit; i++) {
-        LWECiphertext eq = cc.EvalBinGate(XNOR, a[i], b[i]);
+        BinaryDigit eq = cc.EvalBinGate(XNOR, a[i], b[i]);
         out = cc.EvalBinGate(AND, out, eq);
     }
     return out;
 }
 
-LWECiphertext ALUGateLogic::CmpLTEq_U(const FixedPoint &a,
-                                      const FixedPoint &b) {
+BinaryDigit ALUGateLogic::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    LWECiphertext inv_a = cc.EvalNOT(a[0]);
-    LWECiphertext out = cc.EvalBinGate(OR, inv_a, b[0]);
+    BinaryDigit inv_a = cc.EvalNOT(a[0]);
+    BinaryDigit out = cc.EvalBinGate(OR, inv_a, b[0]);
     for (uint8_t i = 1; i < n_digit; i++) {
         inv_a = cc.EvalNOT(a[i]);
-        LWECiphertext t1 = cc.EvalBinGate(AND, inv_a, b[i]);
-        LWECiphertext t2 = cc.EvalBinGate(OR, inv_a, b[i]);
+        BinaryDigit t1 = cc.EvalBinGate(AND, inv_a, b[i]);
+        BinaryDigit t2 = cc.EvalBinGate(OR, inv_a, b[i]);
         out = cc.EvalBinGate(AND, t2, out);
         out = cc.EvalBinGate(OR, t1, out);
     }
     return out;
 }
 
-LWECiphertext ALUGateLogic::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUGateLogic::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    LWECiphertext inv_b = cc.EvalNOT(b[0]);
-    LWECiphertext out = cc.EvalBinGate(AND, a[0], inv_b);
+    BinaryDigit inv_b = cc.EvalNOT(b[0]);
+    BinaryDigit out = cc.EvalBinGate(AND, a[0], inv_b);
     for (uint8_t i = 1; i < n_digit; i++) {
         inv_b = cc.EvalNOT(b[i]);
-        LWECiphertext t1 = cc.EvalBinGate(AND, a[i], inv_b);
-        LWECiphertext t2 = cc.EvalBinGate(OR, a[i], inv_b);
+        BinaryDigit t1 = cc.EvalBinGate(AND, a[i], inv_b);
+        BinaryDigit t2 = cc.EvalBinGate(OR, a[i], inv_b);
         out = cc.EvalBinGate(AND, t2, out);
         out = cc.EvalBinGate(OR, t1, out);
     }
     return out;
 }
 
-LWECiphertext ALUGateLogic::CmpGTEq_U(const FixedPoint &a,
-                                      const FixedPoint &b) {
+BinaryDigit ALUGateLogic::CmpGTEq_U(const FixedPoint &a, const FixedPoint &b) {
     return CmpLTEq_U(b, a);
 }
 
-LWECiphertext ALUGateLogic::CmpLT_U(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUGateLogic::CmpLT_U(const FixedPoint &a, const FixedPoint &b) {
     return CmpGT_U(b, a);
 }
 
-LWECiphertext ALUGateLogic::CmpLTEq(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUGateLogic::CmpLTEq(const FixedPoint &a, const FixedPoint &b) {
     return CmpLTEq_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-LWECiphertext ALUGateLogic::CmpGT(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUGateLogic::CmpGT(const FixedPoint &a, const FixedPoint &b) {
     return CmpGT_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-LWECiphertext ALUGateLogic::CmpGTEq(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUGateLogic::CmpGTEq(const FixedPoint &a, const FixedPoint &b) {
     return CmpGTEq_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-LWECiphertext ALUGateLogic::CmpLT(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUGateLogic::CmpLT(const FixedPoint &a, const FixedPoint &b) {
     return CmpLT_U(ToggleMSB(a), ToggleMSB(b));
 }
 
@@ -270,7 +266,7 @@ FixedPoint ALUGateLogic::FullMul(const FixedPoint &a, const FixedPoint &b) {
     }
     for (uint8_t j = 1; j < n_digit; j++) {
         for (uint8_t i = 0; i < n_digit; i++) {
-            LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
+            BinaryDigit p = cc.EvalBinGate(AND, a[i], b[j]);
             if (i == 0) {
                 HalfAdder(out[i + j], p, out[i + j], carry);
             } else if (i < n_digit - 1) {
@@ -298,7 +294,7 @@ FixedPoint ALUGateLogic::Mul(const FixedPoint &a, const FixedPoint &b) {
     }
     for (uint8_t j = 1; j < n_digit; j++) {
         for (uint8_t i = 0; i < n_digit - j; i++) {
-            LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
+            BinaryDigit p = cc.EvalBinGate(AND, a[i], b[j]);
             if (i == 0 && j < n_digit - 1) {
                 HalfAdder(out[i + j], p, out[i + j], carry);
             } else if (i < n_digit - j - 1) {
@@ -314,7 +310,7 @@ FixedPoint ALUGateLogic::Mul(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-LWECiphertext ALUGateLogic::Mux(LWECiphertext s, LWECiphertext a,
-                                LWECiphertext b) {
-    return cfhe_base->GetBinFHEContext().EvalBinGate(CMUX, vector({a, b, s}));
+BinaryDigit ALUGateLogic::Mux(BinaryDigit s, BinaryDigit a, BinaryDigit b) {
+    return cfhe_base->GetBinFHEContext().EvalBinGate(
+        CMUX, vector({(LWECiphertext)a, (LWECiphertext)b, (LWECiphertext)s}));
 }

@@ -19,11 +19,11 @@ namespace computefhe {
     class ConditionManager {
       private:
         int state;
-        LWECiphertext cond;
+        BinaryDigit cond;
         unordered_map<void *, ConditionalVar> registry;
 
       public:
-        ConditionManager(ConstLWECiphertext &condition);
+        ConditionManager(const BinaryDigit &condition);
         ~ConditionManager();
         static void register_variable(void *var_instance, FixedPoint *data);
         static void unregister_variable(void *var_instance);

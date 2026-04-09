@@ -38,8 +38,8 @@ void CFHE_FixedPoint::promote(const CFHE_FixedPoint &a,
     a_out.resize(n_digits_out);
     b_out.resize(n_digits_out);
 
-    LWECiphertext last_a = a.data.back();
-    LWECiphertext last_b = b.data.back();
+    BinaryDigit last_a = a.data.back();
+    BinaryDigit last_b = b.data.back();
 
     for (size_t i = 0; i < n_digits_out; i++) {
         int ai = i - a_f_sh;
@@ -73,7 +73,7 @@ FixedPoint CFHE_FixedPoint::promote(const CFHE_FixedPoint &a, size_t n_digits,
 
     int a_f_sh = (int)n_frac - (int)a.frac_size;
     FixedPoint out(n_digits);
-    LWECiphertext last_a = a.data.back();
+    BinaryDigit last_a = a.data.back();
 
     for (size_t i = 0; i < n_digits; i++) {
         int ai = i - a_f_sh;
@@ -369,9 +369,7 @@ const CFHE_FixedPoint CFHE_FixedPoint::operator>>=(int i) {
 CFHE_FixedPoint &CFHE_FixedPoint::operator=(const CFHE_FixedPoint &other) {
     _sync_var();
     FixedPoint o = promote(other, size, frac_size);
-    for (size_t i = 0; i < data.size(); i++) {
-        data[i] = COPY_CT(o[i]);
-    }
+    data = o;
     _sync_var();
     return *this;
 }

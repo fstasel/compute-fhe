@@ -9,8 +9,8 @@ namespace computefhe {
     static stack<ConditionManager *> conditional_stack;
 } // namespace computefhe
 
-ConditionManager::ConditionManager(ConstLWECiphertext &condition) : state(0) {
-    cond = COPY_CT(condition);
+ConditionManager::ConditionManager(const BinaryDigit &condition)
+    : state(0), cond(condition) {
     conditional_stack.push(this);
 }
 
@@ -37,9 +37,9 @@ void ConditionManager::register_variable(void *var_instance, FixedPoint *data) {
     if (it == manager->registry.end()) {
         FixedPoint prev_value(sz), if_value(sz), else_value(sz);
         for (size_t i = 0; i < sz; i++) {
-            prev_value[i] = COPY_CT((*data)[i]);
-            if_value[i] = COPY_CT((*data)[i]);
-            else_value[i] = COPY_CT((*data)[i]);
+            prev_value[i] = (BinaryDigit &)(*data)[i];
+            if_value[i] = (BinaryDigit &)(*data)[i];
+            else_value[i] = (BinaryDigit &)(*data)[i];
         }
         manager->registry.insert(
             {var_instance, {prev_value, if_value, else_value, data}});
@@ -47,9 +47,9 @@ void ConditionManager::register_variable(void *var_instance, FixedPoint *data) {
         it->second.data = data;
         for (size_t i = 0; i < sz; i++) {
             if (state == 0) {
-                it->second.if_value[i] = COPY_CT((*data)[i]);
+                it->second.if_value[i] = (BinaryDigit &)(*data)[i];
             } else {
-                it->second.else_value[i] = COPY_CT((*data)[i]);
+                it->second.else_value[i] = (BinaryDigit &)(*data)[i];
             }
         }
     }

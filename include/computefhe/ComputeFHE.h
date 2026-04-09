@@ -4,15 +4,12 @@
 #include <vector>
 
 #include <computefhe/CFHETypes.h>
-
-#define COPY_CT(x) std::make_shared<LWECiphertextImpl>(*x)
+#include <computefhe/FixedPoint.h>
 
 using namespace lbcrypto;
 using namespace std;
 
 namespace computefhe {
-
-    using FixedPoint = vector<LWECiphertext>;
 
     class BaseALU;
 
@@ -44,8 +41,8 @@ namespace computefhe {
         FixedPoint EncryptInt(uint64_t pt, size_t n_digits = 8,
                               bool fresh = true);
         uint64_t DecryptInt(const FixedPoint &ct, size_t n_digits = 0);
-        LWECiphertext EncryptBool(bool pt, bool fresh = true);
-        bool DecryptBool(ConstLWECiphertext &ct);
+        BinaryDigit EncryptBool(bool pt, bool fresh = true);
+        bool DecryptBool(const BinaryDigit &ct);
         FixedPoint GetConstantInt(uint64_t pt, size_t n_digits = 8);
 
         double extractNoise(ConstLWECiphertext &ct);

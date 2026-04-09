@@ -5,57 +5,57 @@ BaseALU::BaseALU(ComputeFHE *cfhe) : cfhe_base(cfhe) { ResetCarry(); }
 
 BaseALU::~BaseALU() {}
 
-LWECiphertext BaseALU::GetCarry() { return carry; }
+BinaryDigit BaseALU::GetCarry() { return carry; }
 
-void BaseALU::SetCarry(LWECiphertext value) { carry = COPY_CT(value); }
+void BaseALU::SetCarry(BinaryDigit value) { carry = value; }
 
 void BaseALU::SetCarry() { carry = GetConstantTrue(); }
 
 void BaseALU::ResetCarry() { carry = GetConstantFalse(); }
 
-LWECiphertext BaseALU::GetConstantFalse() {
-    LWECiphertext constant_false =
+BinaryDigit BaseALU::GetConstantFalse() {
+    BinaryDigit constant_false =
         cfhe_base->GetBinFHEContext().EvalConstant(false);
-    return COPY_CT(constant_false);
+    return constant_false;
 }
 
-LWECiphertext BaseALU::GetConstantTrue() {
-    LWECiphertext constant_true =
+BinaryDigit BaseALU::GetConstantTrue() {
+    BinaryDigit constant_true =
         cfhe_base->GetBinFHEContext().EvalConstant(true);
-    return COPY_CT(constant_true);
+    return constant_true;
 }
 
-LWECiphertext computefhe::BaseALU::Gate_AND(ConstLWECiphertext &a,
-                                            ConstLWECiphertext &b) {
+BinaryDigit computefhe::BaseALU::Gate_AND(const BinaryDigit &a,
+                                          const BinaryDigit &b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::AND, a, b);
 }
 
-LWECiphertext computefhe::BaseALU::Gate_NAND(ConstLWECiphertext &a,
-                                             ConstLWECiphertext &b) {
+BinaryDigit computefhe::BaseALU::Gate_NAND(const BinaryDigit &a,
+                                           const BinaryDigit &b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::NAND, a, b);
 }
 
-LWECiphertext computefhe::BaseALU::Gate_OR(ConstLWECiphertext &a,
-                                           ConstLWECiphertext &b) {
+BinaryDigit computefhe::BaseALU::Gate_OR(const BinaryDigit &a,
+                                         const BinaryDigit &b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::OR, a, b);
 }
 
-LWECiphertext computefhe::BaseALU::Gate_NOR(ConstLWECiphertext &a,
-                                            ConstLWECiphertext &b) {
+BinaryDigit computefhe::BaseALU::Gate_NOR(const BinaryDigit &a,
+                                          const BinaryDigit &b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::NOR, a, b);
 }
 
-LWECiphertext computefhe::BaseALU::Gate_XOR(ConstLWECiphertext &a,
-                                            ConstLWECiphertext &b) {
+BinaryDigit computefhe::BaseALU::Gate_XOR(const BinaryDigit &a,
+                                          const BinaryDigit &b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::XOR, a, b);
 }
 
-LWECiphertext computefhe::BaseALU::Gate_XNOR(ConstLWECiphertext &a,
-                                             ConstLWECiphertext &b) {
+BinaryDigit computefhe::BaseALU::Gate_XNOR(const BinaryDigit &a,
+                                           const BinaryDigit &b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::XNOR, a, b);
 }
 
-LWECiphertext computefhe::BaseALU::Gate_NOT(ConstLWECiphertext &a) {
+BinaryDigit computefhe::BaseALU::Gate_NOT(const BinaryDigit &a) {
     return cfhe_base->GetBinFHEContext().EvalNOT(a);
 }
 
@@ -71,7 +71,7 @@ FixedPoint BaseALU::ShiftLeft(const FixedPoint &a, size_t shift) {
     FixedPoint fp(a.size());
     int s = shift > a.size() ? a.size() : shift;
     for (int i = sz - 1; i >= 0; i--) {
-        fp[i] = (i - s < 0) ? GetConstantFalse() : a[i - s];
+        fp[i] = (i - s < 0) ? GetConstantFalse() : (BinaryDigit &)a[i - s];
     }
     return fp;
 }
@@ -82,15 +82,14 @@ FixedPoint BaseALU::ShiftRight(const FixedPoint &a, size_t shift,
     FixedPoint fp(a.size());
     int s = shift > a.size() ? a.size() : shift;
     for (int i = 0; i < sz; i++) {
-        fp[i] = (i + s >= sz)
-                    ? (is_arithmetic ? a[a.size() - 1] : GetConstantFalse())
-                    : a[i + s];
+        fp[i] = (i + s >= sz) ? (is_arithmetic ? (BinaryDigit &)a[a.size() - 1]
+                                               : GetConstantFalse())
+                              : (BinaryDigit &)a[i + s];
     }
     return fp;
 }
 
-FixedPoint BaseALU::Mux(LWECiphertext s, const FixedPoint a,
-                        const FixedPoint b) {
+FixedPoint BaseALU::Mux(BinaryDigit s, const FixedPoint a, const FixedPoint b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }

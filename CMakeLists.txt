@@ -61,6 +61,7 @@ endif()
 
 set(CORE_SOURCES
     src/core/ComputeFHE.cpp
+    src/core/FixedPoint.cpp
     src/core/BaseALU.cpp
     src/core/ALUGateLogic.cpp
     src/core/ALUOptimized.cpp

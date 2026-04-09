@@ -3,54 +3,50 @@ using namespace computefhe;
 
 ALUOptimized::ALUOptimized(ComputeFHE *cfhe) : ALUGateLogic(cfhe) {}
 
-void ALUOptimized::FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                             ConstLWECiphertext &c, LWECiphertext &sum,
-                             LWECiphertext &carry_out) {
-    LWECiphertext _a = COPY_CT(a);
-    LWECiphertext _b = COPY_CT(b);
-    LWECiphertext _c = COPY_CT(c);
+void ALUOptimized::FullAdder(const BinaryDigit &a, const BinaryDigit &b,
+                             const BinaryDigit &c, BinaryDigit &sum,
+                             BinaryDigit &carry_out) {
     auto &cc = cfhe_base->GetBinFHEContext();
-    sum = XOR3(_a, _b, _c);
-    carry_out = cc.EvalBinGate(MAJORITY, {_a, _b, _c});
+    sum = XOR3(a, b, c);
+    carry_out = cc.EvalBinGate(
+        MAJORITY, {(LWECiphertext)a, (LWECiphertext)b, (LWECiphertext)c});
 }
 
-LWECiphertext ALUOptimized::XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                                 ConstLWECiphertext &c) {
+BinaryDigit ALUOptimized::XOR3(const BinaryDigit &a, const BinaryDigit &b,
+                               const BinaryDigit &c) {
     auto &cc = cfhe_base->GetBinFHEContext();
     auto &lwe = cc.GetLWEScheme();
-    LWECiphertext sum = COPY_CT(a);
+    BinaryDigit sum = a;
     lwe->EvalAddEq(sum, b);
     sum = cc.EvalBinGate(XOR, sum, c);
     return sum;
 }
 
-LWECiphertext ALUOptimized::MulAdd(ConstLWECiphertext &m, ConstLWECiphertext &a,
-                                   ConstLWECiphertext &b,
-                                   LWECiphertext *carry_out) {
+BinaryDigit ALUOptimized::MulAdd(const BinaryDigit &m, const BinaryDigit &a,
+                                 const BinaryDigit &b, BinaryDigit *carry_out) {
     auto &cc = cfhe_base->GetBinFHEContext();
     auto &lwe = cc.GetLWEScheme();
-    LWECiphertext a_2b = COPY_CT(b);
+    BinaryDigit a_2b = b;
     lwe->EvalAddEq(a_2b, a_2b);
     lwe->EvalAddEq(a_2b, a);
-    LWECiphertext ma_2b = cc.EvalBinGate(AND, m, a_2b);
+    BinaryDigit ma_2b = cc.EvalBinGate(AND, m, a_2b);
     if (carry_out) {
-        LWECiphertext neg_b = COPY_CT(b);
+        BinaryDigit neg_b = b;
         lwe->EvalMultConstEq(neg_b, -1);
         *carry_out = cc.EvalBinGate(AND, ma_2b, neg_b);
     }
     return ma_2b;
 }
 
-LWECiphertext ALUOptimized::CmpLTEq_U(const FixedPoint &a,
-                                      const FixedPoint &b) {
+BinaryDigit ALUOptimized::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    LWECiphertext inv_a = cc.EvalNOT(a[0]);
-    LWECiphertext c = cc.EvalBinGate(OR, inv_a, b[0]);
+    BinaryDigit inv_a = cc.EvalNOT(a[0]);
+    BinaryDigit c = cc.EvalBinGate(OR, inv_a, b[0]);
     for (uint8_t i = 1; i < n_digit; i++) {
         inv_a = cc.EvalNOT(a[i]);
         c = cc.EvalBinGate(MAJORITY, {inv_a, b[i], c});
@@ -58,15 +54,15 @@ LWECiphertext ALUOptimized::CmpLTEq_U(const FixedPoint &a,
     return c;
 }
 
-LWECiphertext ALUOptimized::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUOptimized::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
     auto &cc = cfhe_base->GetBinFHEContext();
     size_t n_digit = a.size();
 
-    LWECiphertext inv_b = cc.EvalNOT(b[0]);
-    LWECiphertext c = cc.EvalBinGate(AND, a[0], inv_b);
+    BinaryDigit inv_b = cc.EvalNOT(b[0]);
+    BinaryDigit c = cc.EvalBinGate(AND, a[0], inv_b);
     for (uint8_t i = 1; i < n_digit; i++) {
         inv_b = cc.EvalNOT(b[i]);
         c = cc.EvalBinGate(MAJORITY, {a[i], inv_b, c});
@@ -90,12 +86,13 @@ FixedPoint ALUOptimized::FullMul(const FixedPoint &a, const FixedPoint &b) {
             if (i == 0) {
                 out[i + j] = MulAdd(a[i], b[j], out[i + j], &carry);
             } else if (i < n_digit - 1) {
-                LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
+                BinaryDigit p = cc.EvalBinGate(AND, a[i], b[j]);
                 FullAdder(out[i + j], p, carry, out[i + j], carry);
             } else if (j == 1) {
-                out[i + j] = MulAdd(a[i], b[j], carry, &out[i + j + 1]);
+                out[i + j] =
+                    MulAdd(a[i], b[j], carry, &(BinaryDigit &)out[i + j + 1]);
             } else {
-                LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
+                BinaryDigit p = cc.EvalBinGate(AND, a[i], b[j]);
                 FullAdder(out[i + j], p, carry, out[i + j], out[i + j + 1]);
             }
         }
@@ -119,10 +116,10 @@ FixedPoint ALUOptimized::Mul(const FixedPoint &a, const FixedPoint &b) {
             if (i == 0 && j < n_digit - 1) {
                 out[i + j] = MulAdd(a[i], b[j], out[i + j], &carry);
             } else if (i < n_digit - j - 1) {
-                LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
+                BinaryDigit p = cc.EvalBinGate(AND, a[i], b[j]);
                 FullAdder(out[i + j], p, carry, out[i + j], carry);
             } else if (j < n_digit - 1) {
-                LWECiphertext p = cc.EvalBinGate(AND, a[i], b[j]);
+                BinaryDigit p = cc.EvalBinGate(AND, a[i], b[j]);
                 out[i + j] = XOR3(out[i + j], carry, p);
             } else {
                 out[i + j] = MulAdd(a[i], b[j], out[i + j]);
@@ -132,11 +129,10 @@ FixedPoint ALUOptimized::Mul(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-LWECiphertext ALUOptimized::Mux(LWECiphertext s, LWECiphertext a,
-                                LWECiphertext b) {
+BinaryDigit ALUOptimized::Mux(BinaryDigit s, BinaryDigit a, BinaryDigit b) {
     auto &cc = cfhe_base->GetBinFHEContext();
     auto &lwe = cc.GetLWEScheme();
-    LWECiphertext t = cc.EvalBinGate(OR, s, a);
+    BinaryDigit t = cc.EvalBinGate(OR, s, a);
     lwe->EvalAddEq(t, t);
     lwe->EvalSubEq(t, b);
     return cc.EvalBinGate(OR, s, t);

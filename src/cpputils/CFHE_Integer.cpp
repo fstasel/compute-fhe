@@ -54,8 +54,8 @@ bool CFHE_Integer::promote(const CFHE_Integer &a, const CFHE_Integer &b,
     a_out.resize(n);
     b_out.resize(n);
 
-    LWECiphertext last_a = a.data.back();
-    LWECiphertext last_b = b.data.back();
+    BinaryDigit last_a = a.data.back();
+    BinaryDigit last_b = b.data.back();
 
     for (size_t i = 0; i < n; i++) {
         if (i < a.size)
@@ -80,7 +80,7 @@ FixedPoint CFHE_Integer::promote(const CFHE_Integer &a, size_t s) {
         return FixedPoint(a.data);
     }
     FixedPoint out(s);
-    LWECiphertext last = a.data.back();
+    BinaryDigit last = a.data.back();
     for (size_t i = 0; i < s; i++) {
         if (i < a.size)
             out[i] = a.data[i];
@@ -135,9 +135,7 @@ CFHE_Integer::CFHE_Integer(const CFHE_Integer &other) {
     if (cfhe_base == nullptr)
         Init();
     data.resize(other.size);
-    for (size_t i = 0; i < data.size(); i++) {
-        data[i] = COPY_CT(other.data[i]);
-    }
+    data = other.data;
     size = other.size;
     sign = other.sign;
 }
@@ -153,98 +151,104 @@ bool CFHE_Integer::isSigned() const { return sign; }
 const CFHE_Integer CFHE_Integer::operator==(const CFHE_Integer &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    FixedPoint fp({cfhe_base->GetALU()->CmpEq(a, b)});
+    FixedPoint fp((vector<BinaryDigit>){cfhe_base->GetALU()->CmpEq(a, b)});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator!=(const CFHE_Integer &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    FixedPoint fp({cfhe_base->GetALU()->CmpNotEq(a, b)});
+    FixedPoint fp((vector<BinaryDigit>){cfhe_base->GetALU()->CmpNotEq(a, b)});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator>(const CFHE_Integer &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    FixedPoint fp({(sign && other.sign) ? cfhe_base->GetALU()->CmpGT(a, b)
-                                        : cfhe_base->GetALU()->CmpGT_U(a, b)});
+    FixedPoint fp((vector<BinaryDigit>){
+        (sign && other.sign) ? cfhe_base->GetALU()->CmpGT(a, b)
+                             : cfhe_base->GetALU()->CmpGT_U(a, b)});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator>=(const CFHE_Integer &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    FixedPoint fp({(sign && other.sign)
-                       ? cfhe_base->GetALU()->CmpGTEq(a, b)
-                       : cfhe_base->GetALU()->CmpGTEq_U(a, b)});
+    FixedPoint fp((vector<BinaryDigit>){
+        (sign && other.sign) ? cfhe_base->GetALU()->CmpGTEq(a, b)
+                             : cfhe_base->GetALU()->CmpGTEq_U(a, b)});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator<(const CFHE_Integer &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    FixedPoint fp({(sign && other.sign) ? cfhe_base->GetALU()->CmpLT(a, b)
-                                        : cfhe_base->GetALU()->CmpLT_U(a, b)});
+    FixedPoint fp((vector<BinaryDigit>){
+        (sign && other.sign) ? cfhe_base->GetALU()->CmpLT(a, b)
+                             : cfhe_base->GetALU()->CmpLT_U(a, b)});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator<=(const CFHE_Integer &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    FixedPoint fp({(sign && other.sign)
-                       ? cfhe_base->GetALU()->CmpLTEq(a, b)
-                       : cfhe_base->GetALU()->CmpLTEq_U(a, b)});
+    FixedPoint fp((vector<BinaryDigit>){
+        (sign && other.sign) ? cfhe_base->GetALU()->CmpLTEq(a, b)
+                             : cfhe_base->GetALU()->CmpLTEq_U(a, b)});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator==(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
-    FixedPoint fp({cfhe_base->GetALU()->CmpEq(
+    FixedPoint fp((vector<BinaryDigit>){cfhe_base->GetALU()->CmpEq(
         data, cfhe_base->GetConstantInt(other, size))});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator!=(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
-    FixedPoint fp({cfhe_base->GetALU()->CmpNotEq(
+    FixedPoint fp((vector<BinaryDigit>){cfhe_base->GetALU()->CmpNotEq(
         data, cfhe_base->GetConstantInt(other, size))});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator>(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
-    FixedPoint fp({sign ? cfhe_base->GetALU()->CmpGT(
-                              data, cfhe_base->GetConstantInt(other, size))
-                        : cfhe_base->GetALU()->CmpGT_U(
-                              data, cfhe_base->GetConstantInt(other, size))});
+    FixedPoint fp((vector<BinaryDigit>){
+        sign ? cfhe_base->GetALU()->CmpGT(
+                   data, cfhe_base->GetConstantInt(other, size))
+             : cfhe_base->GetALU()->CmpGT_U(
+                   data, cfhe_base->GetConstantInt(other, size))});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator>=(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
-    FixedPoint fp({sign ? cfhe_base->GetALU()->CmpGTEq(
-                              data, cfhe_base->GetConstantInt(other, size))
-                        : cfhe_base->GetALU()->CmpGTEq_U(
-                              data, cfhe_base->GetConstantInt(other, size))});
+    FixedPoint fp((vector<BinaryDigit>){
+        sign ? cfhe_base->GetALU()->CmpGTEq(
+                   data, cfhe_base->GetConstantInt(other, size))
+             : cfhe_base->GetALU()->CmpGTEq_U(
+                   data, cfhe_base->GetConstantInt(other, size))});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator<(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
-    FixedPoint fp({sign ? cfhe_base->GetALU()->CmpLT(
-                              data, cfhe_base->GetConstantInt(other, size))
-                        : cfhe_base->GetALU()->CmpLT_U(
-                              data, cfhe_base->GetConstantInt(other, size))});
+    FixedPoint fp((vector<BinaryDigit>){
+        sign ? cfhe_base->GetALU()->CmpLT(
+                   data, cfhe_base->GetConstantInt(other, size))
+             : cfhe_base->GetALU()->CmpLT_U(
+                   data, cfhe_base->GetConstantInt(other, size))});
     return CFHE_Integer(fp, false);
 }
 
 const CFHE_Integer CFHE_Integer::operator<=(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
-    FixedPoint fp({sign ? cfhe_base->GetALU()->CmpLTEq(
-                              data, cfhe_base->GetConstantInt(other, size))
-                        : cfhe_base->GetALU()->CmpLTEq_U(
-                              data, cfhe_base->GetConstantInt(other, size))});
+    FixedPoint fp((vector<BinaryDigit>){
+        sign ? cfhe_base->GetALU()->CmpLTEq(
+                   data, cfhe_base->GetConstantInt(other, size))
+             : cfhe_base->GetALU()->CmpLTEq_U(
+                   data, cfhe_base->GetConstantInt(other, size))});
     return CFHE_Integer(fp, false);
 }
 
@@ -351,7 +355,7 @@ const CFHE_Integer CFHE_Integer::operator&(uint64_t other) const {
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
         if (bit)
-            r.data[i] = COPY_CT(data[i]);
+            r.data[i] = data[i];
         else
             r.data[i] = cfhe_base->GetALU()->GetConstantFalse();
     }
@@ -395,7 +399,7 @@ const CFHE_Integer CFHE_Integer::operator|(uint64_t other) const {
         if (bit)
             r.data[i] = cfhe_base->GetALU()->GetConstantTrue();
         else
-            r.data[i] = COPY_CT(data[i]);
+            r.data[i] = data[i];
     }
     return r;
 }
@@ -437,7 +441,7 @@ const CFHE_Integer CFHE_Integer::operator^(uint64_t other) const {
         if (bit)
             r.data[i] = cfhe_base->GetALU()->Gate_NOT(data[i]);
         else
-            r.data[i] = COPY_CT(data[i]);
+            r.data[i] = data[i];
     }
     return r;
 }
@@ -454,11 +458,11 @@ const CFHE_Integer CFHE_Integer::operator^=(uint64_t other) {
 }
 
 const CFHE_Integer CFHE_Integer::operator!() const {
-    LWECiphertext r = data[0];
+    BinaryDigit r = data[0];
     for (size_t i = 1; i < size; i++) {
         r = cfhe_base->GetALU()->Gate_OR(r, data[i]);
     }
-    return CFHE_Integer({cfhe_base->GetALU()->Gate_NOT(r)}, false);
+    return CFHE_Integer(FixedPoint({cfhe_base->GetALU()->Gate_NOT(r)}), false);
 }
 
 const CFHE_Integer CFHE_Integer::operator~() const {
@@ -466,47 +470,51 @@ const CFHE_Integer CFHE_Integer::operator~() const {
 }
 
 const CFHE_Integer CFHE_Integer::operator&&(const CFHE_Integer &other) const {
-    LWECiphertext r1 = data[0];
+    BinaryDigit r1 = data[0];
     for (size_t i = 1; i < size; i++) {
         r1 = cfhe_base->GetALU()->Gate_OR(r1, data[i]);
     }
-    LWECiphertext r2 = other.data[0];
+    BinaryDigit r2 = other.data[0];
     for (size_t i = 1; i < other.size; i++) {
         r2 = cfhe_base->GetALU()->Gate_OR(r2, other.data[i]);
     }
-    return CFHE_Integer({cfhe_base->GetALU()->Gate_AND(r1, r2)}, false);
+    return CFHE_Integer(FixedPoint({cfhe_base->GetALU()->Gate_AND(r1, r2)}),
+                        false);
 }
 
 const CFHE_Integer CFHE_Integer::operator&&(uint64_t other) const {
     if (!other)
-        return CFHE_Integer({cfhe_base->GetALU()->GetConstantFalse()}, false);
-    LWECiphertext r = data[0];
+        return CFHE_Integer(
+            FixedPoint({cfhe_base->GetALU()->GetConstantFalse()}), false);
+    BinaryDigit r = data[0];
     for (size_t i = 1; i < size; i++) {
         r = cfhe_base->GetALU()->Gate_OR(r, data[i]);
     }
-    return CFHE_Integer({r}, false);
+    return CFHE_Integer(FixedPoint({r}), false);
 }
 
 const CFHE_Integer CFHE_Integer::operator||(const CFHE_Integer &other) const {
-    LWECiphertext r1 = data[0];
+    BinaryDigit r1 = data[0];
     for (size_t i = 1; i < size; i++) {
         r1 = cfhe_base->GetALU()->Gate_OR(r1, data[i]);
     }
-    LWECiphertext r2 = other.data[0];
+    BinaryDigit r2 = other.data[0];
     for (size_t i = 1; i < other.size; i++) {
         r2 = cfhe_base->GetALU()->Gate_OR(r2, other.data[i]);
     }
-    return CFHE_Integer({cfhe_base->GetALU()->Gate_OR(r1, r2)}, false);
+    return CFHE_Integer(FixedPoint({cfhe_base->GetALU()->Gate_OR(r1, r2)}),
+                        false);
 }
 
 const CFHE_Integer CFHE_Integer::operator||(uint64_t other) const {
     if (other)
-        return CFHE_Integer({cfhe_base->GetALU()->GetConstantTrue()}, false);
-    LWECiphertext r = data[0];
+        return CFHE_Integer(
+            FixedPoint({cfhe_base->GetALU()->GetConstantTrue()}), false);
+    BinaryDigit r = data[0];
     for (size_t i = 1; i < size; i++) {
         r = cfhe_base->GetALU()->Gate_OR(r, data[i]);
     }
-    return CFHE_Integer({r}, false);
+    return CFHE_Integer(FixedPoint({r}), false);
 }
 
 const CFHE_Integer CFHE_Integer::operator++() {
@@ -556,9 +564,7 @@ const CFHE_Integer CFHE_Integer::operator>>=(int s) {
 CFHE_Integer &CFHE_Integer::operator=(const CFHE_Integer &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
-    for (size_t i = 0; i < data.size(); i++) {
-        data[i] = COPY_CT(o[i]);
-    }
+    data = o;
     _sync_var();
     return *this;
 }

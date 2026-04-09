@@ -154,15 +154,15 @@ uint64_t ComputeFHE::DecryptInt(const FixedPoint &ct, size_t n_digits) {
     return out;
 }
 
-LWECiphertext ComputeFHE::EncryptBool(bool pt, bool fresh) {
+BinaryDigit ComputeFHE::EncryptBool(bool pt, bool fresh) {
     LWECiphertext out = cc.Encrypt(sk, pt == 0 ? 0 : 1, FRESH);
     if (!fresh) {
         out = cc.Bootstrap(out);
     }
-    return out;
+    return BinaryDigit(out);
 }
 
-bool ComputeFHE::DecryptBool(ConstLWECiphertext &ct) {
+bool ComputeFHE::DecryptBool(const BinaryDigit &ct) {
     LWEPlaintext result;
     cc.Decrypt(sk, ct, &result);
     return (bool)result;

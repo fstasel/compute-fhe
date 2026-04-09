@@ -359,7 +359,7 @@ void test_vector_custom() {
     vec[1] = 20;
     vec[2] = vec[0] + vec[e];
     vec[d] = vec[e] + vec[0];
-    vec[4] = vec[d] + 5;
+    vec[4] = vec[d] - 1;
     vec[5] = vec[d] | vec[2];
     vec[6] = 60;
     vec[6] += vec[5];
@@ -512,19 +512,19 @@ void test_fp_custom() {
 int main() {
     computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true);
 
-    // test_arithmetic_operators();
-    // test_arithmetic_assignment_operators();
-    // test_comparison_operators();
-    // test_logic_operators();
-    // test_logic_assignment_operators();
-    // test_shift_operators();
-    // test_shift_assign_operators();
-    // test_condition();
-    // test_inc_dec();
-    // test_vector();
-    // test_vector_custom();
-    // test_fp();
-    // test_fp_vector();
+    test_arithmetic_operators();
+    test_arithmetic_assignment_operators();
+    test_comparison_operators();
+    test_logic_operators();
+    test_logic_assignment_operators();
+    test_shift_operators();
+    test_shift_assign_operators();
+    test_condition();
+    test_inc_dec();
+    test_vector();
+    test_vector_custom();
+    test_fp();
+    test_fp_vector();
     test_fp_custom();
 
     computefhe::Finalize();

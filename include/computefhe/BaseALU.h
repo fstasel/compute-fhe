@@ -8,33 +8,32 @@ namespace computefhe {
 
     class BaseALU {
       protected:
-        LWECiphertext carry;
+        BinaryDigit carry;
         ComputeFHE *cfhe_base;
 
       public:
         BaseALU(ComputeFHE *cfhe);
         virtual ~BaseALU();
 
-        LWECiphertext GetCarry();
-        void SetCarry(LWECiphertext value);
+        BinaryDigit GetCarry();
+        void SetCarry(BinaryDigit value);
         void SetCarry();
         void ResetCarry();
-        LWECiphertext GetConstantFalse();
-        LWECiphertext GetConstantTrue();
+        BinaryDigit GetConstantFalse();
+        BinaryDigit GetConstantTrue();
 
-        virtual LWECiphertext Gate_AND(ConstLWECiphertext &a,
-                                       ConstLWECiphertext &b);
-        virtual LWECiphertext Gate_NAND(ConstLWECiphertext &a,
-                                        ConstLWECiphertext &b);
-        virtual LWECiphertext Gate_OR(ConstLWECiphertext &a,
-                                      ConstLWECiphertext &b);
-        virtual LWECiphertext Gate_NOR(ConstLWECiphertext &a,
-                                       ConstLWECiphertext &b);
-        virtual LWECiphertext Gate_XOR(ConstLWECiphertext &a,
-                                       ConstLWECiphertext &b);
-        virtual LWECiphertext Gate_XNOR(ConstLWECiphertext &a,
-                                        ConstLWECiphertext &b);
-        virtual LWECiphertext Gate_NOT(ConstLWECiphertext &a);
+        virtual BinaryDigit Gate_AND(const BinaryDigit &a,
+                                     const BinaryDigit &b);
+        virtual BinaryDigit Gate_NAND(const BinaryDigit &a,
+                                      const BinaryDigit &b);
+        virtual BinaryDigit Gate_OR(const BinaryDigit &a, const BinaryDigit &b);
+        virtual BinaryDigit Gate_NOR(const BinaryDigit &a,
+                                     const BinaryDigit &b);
+        virtual BinaryDigit Gate_XOR(const BinaryDigit &a,
+                                     const BinaryDigit &b);
+        virtual BinaryDigit Gate_XNOR(const BinaryDigit &a,
+                                      const BinaryDigit &b);
+        virtual BinaryDigit Gate_NOT(const BinaryDigit &a);
 
         FixedPoint ToggleMSB(const FixedPoint &a);
 
@@ -42,26 +41,24 @@ namespace computefhe {
         virtual FixedPoint ShiftRight(const FixedPoint &a, size_t shift,
                                       bool is_arithmetic = false);
 
-        virtual FixedPoint Mux(LWECiphertext s, const FixedPoint a,
+        virtual FixedPoint Mux(BinaryDigit s, const FixedPoint a,
                                const FixedPoint b);
-        virtual LWECiphertext Mux(LWECiphertext s, LWECiphertext a,
-                                  LWECiphertext b) = 0;
+        virtual BinaryDigit Mux(BinaryDigit s, BinaryDigit a,
+                                BinaryDigit b) = 0;
 
-        virtual void HalfAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                               LWECiphertext &sum,
-                               LWECiphertext &carry_out) = 0;
-        virtual void HalfSubtractor(ConstLWECiphertext &a,
-                                    ConstLWECiphertext &b, LWECiphertext &sum,
-                                    LWECiphertext &carry_out) = 0;
-        virtual void FullAdder(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                               ConstLWECiphertext &c, LWECiphertext &sum,
-                               LWECiphertext &carry_out) = 0;
-        virtual LWECiphertext XOR3(ConstLWECiphertext &a, ConstLWECiphertext &b,
-                                   ConstLWECiphertext &c) = 0;
-        virtual LWECiphertext MulAdd(ConstLWECiphertext &m,
-                                     ConstLWECiphertext &a,
-                                     ConstLWECiphertext &b,
-                                     LWECiphertext *carry_out = nullptr) = 0;
+        virtual void HalfAdder(const BinaryDigit &a, const BinaryDigit &b,
+                               BinaryDigit &sum, BinaryDigit &carry_out) = 0;
+        virtual void HalfSubtractor(const BinaryDigit &a, const BinaryDigit &b,
+                                    BinaryDigit &sum,
+                                    BinaryDigit &carry_out) = 0;
+        virtual void FullAdder(const BinaryDigit &a, const BinaryDigit &b,
+                               const BinaryDigit &c, BinaryDigit &sum,
+                               BinaryDigit &carry_out) = 0;
+        virtual BinaryDigit XOR3(const BinaryDigit &a, const BinaryDigit &b,
+                                 const BinaryDigit &c) = 0;
+        virtual BinaryDigit MulAdd(const BinaryDigit &m, const BinaryDigit &a,
+                                   const BinaryDigit &b,
+                                   BinaryDigit *carry_out = nullptr) = 0;
         virtual FixedPoint Add(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint AddC(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint AddNC(const FixedPoint &a, const FixedPoint &b) = 0;
@@ -69,26 +66,23 @@ namespace computefhe {
         virtual FixedPoint SubC(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint SubNC(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint Neg(const FixedPoint &a) = 0;
-        virtual LWECiphertext CmpNotEq(const FixedPoint &a,
-                                       const FixedPoint &b) = 0;
-        virtual LWECiphertext CmpEq(const FixedPoint &a,
+        virtual BinaryDigit CmpNotEq(const FixedPoint &a,
+                                     const FixedPoint &b) = 0;
+        virtual BinaryDigit CmpEq(const FixedPoint &a, const FixedPoint &b) = 0;
+        virtual BinaryDigit CmpLTEq_U(const FixedPoint &a,
+                                      const FixedPoint &b) = 0;
+        virtual BinaryDigit CmpGT_U(const FixedPoint &a,
                                     const FixedPoint &b) = 0;
-        virtual LWECiphertext CmpLTEq_U(const FixedPoint &a,
-                                        const FixedPoint &b) = 0;
-        virtual LWECiphertext CmpGT_U(const FixedPoint &a,
+        virtual BinaryDigit CmpGTEq_U(const FixedPoint &a,
                                       const FixedPoint &b) = 0;
-        virtual LWECiphertext CmpGTEq_U(const FixedPoint &a,
-                                        const FixedPoint &b) = 0;
-        virtual LWECiphertext CmpLT_U(const FixedPoint &a,
-                                      const FixedPoint &b) = 0;
-        virtual LWECiphertext CmpLTEq(const FixedPoint &a,
-                                      const FixedPoint &b) = 0;
-        virtual LWECiphertext CmpGT(const FixedPoint &a,
+        virtual BinaryDigit CmpLT_U(const FixedPoint &a,
                                     const FixedPoint &b) = 0;
-        virtual LWECiphertext CmpGTEq(const FixedPoint &a,
-                                      const FixedPoint &b) = 0;
-        virtual LWECiphertext CmpLT(const FixedPoint &a,
+        virtual BinaryDigit CmpLTEq(const FixedPoint &a,
                                     const FixedPoint &b) = 0;
+        virtual BinaryDigit CmpGT(const FixedPoint &a, const FixedPoint &b) = 0;
+        virtual BinaryDigit CmpGTEq(const FixedPoint &a,
+                                    const FixedPoint &b) = 0;
+        virtual BinaryDigit CmpLT(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint FullMul(const FixedPoint &a,
                                    const FixedPoint &b) = 0;
         virtual FixedPoint Mul(const FixedPoint &a, const FixedPoint &b) = 0;

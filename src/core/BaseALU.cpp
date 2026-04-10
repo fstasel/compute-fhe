@@ -103,3 +103,13 @@ FixedPoint BaseALU::Mux(BinaryDigit s, const FixedPoint a, const FixedPoint b) {
     }
     return out;
 }
+void BaseALU::Swap_if(const BinaryDigit cond, FixedPoint &a, FixedPoint &b) {
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = a.size();
+
+    for (size_t i = 0; i < n_digit; i++) {
+        Swap_if(cond, a[i], b[i]);
+    }
+}

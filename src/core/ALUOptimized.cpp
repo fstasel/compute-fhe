@@ -140,3 +140,10 @@ BinaryDigit ALUOptimized::Mux(BinaryDigit s, BinaryDigit a, BinaryDigit b) {
     lwe->EvalSubEq(t, b);
     return cc.EvalBinGate(OR, s, t);
 }
+
+void ALUOptimized::Swap_if(const BinaryDigit cond, BinaryDigit &a,
+                           BinaryDigit &b) {
+    BinaryDigit t = a;
+    a = Mux(cond, t, b);
+    b = XOR3(a, b, t);
+}

@@ -299,3 +299,10 @@ FixedPoint SimGateLogic::Mul(const FixedPoint &a, const FixedPoint &b) {
 BinaryDigit SimGateLogic::Mux(BinaryDigit s, BinaryDigit a, BinaryDigit b) {
     return Gate_NAND(Gate_NAND(Gate_NOT(s), a), Gate_NAND(s, b));
 }
+
+void SimGateLogic::Swap_if(const BinaryDigit cond, BinaryDigit &a,
+                           BinaryDigit &b) {
+    BinaryDigit k = Gate_AND(Gate_XOR(a, b), cond);
+    a = Gate_XOR(a, k);
+    b = Gate_XOR(b, k);
+}

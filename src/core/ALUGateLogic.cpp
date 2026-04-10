@@ -316,3 +316,11 @@ BinaryDigit ALUGateLogic::Mux(BinaryDigit s, BinaryDigit a, BinaryDigit b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(
         CMUX, vector({(LWECiphertext)a, (LWECiphertext)b, (LWECiphertext)s}));
 }
+
+void ALUGateLogic::Swap_if(const BinaryDigit cond, BinaryDigit &a,
+                           BinaryDigit &b) {
+    auto &cc = cfhe_base->GetBinFHEContext();
+    BinaryDigit k = cc.EvalBinGate(AND, cc.EvalBinGate(XOR, a, b), cond);
+    a = cc.EvalBinGate(XOR, a, k);
+    b = cc.EvalBinGate(XOR, b, k);
+}

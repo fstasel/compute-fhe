@@ -18,14 +18,38 @@ void basic_encrypted_sort(Evector<Eint8> &arr) {
     }
 }
 
+void basic_encrypted_sort_intrinsic(Evector<Eint8> &arr) {
+    FixedPoint a, b;
+    for (uint i = 0; i < arr.size() - 1; i++) {
+        for (uint j = i + 1; j < arr.size(); j++) {
+            cfhe_base->GetALU()->Swap_if((arr[i] > arr[j]).getData()[0],
+                                         a = arr[i].getData(),
+                                         b = arr[j].getData());
+            arr[i] = CFHE_Integer(a, true);
+            arr[j] = CFHE_Integer(b, true);
+        }
+    }
+}
+
 int main() {
     computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, SIMULATOR_MODE);
 
     Evector<Eint8> arr = {8, 7, 6, 5, 4, 3, 2, 1};
-    cout << arr << endl;
-
+    cout << "In: " << arr << endl;
+    cout << "Basic Encrypted Sort:" << endl;
     basic_encrypted_sort(arr);
-    cout << arr << endl;
+    cout << "Out: " << arr << endl;
+
+    if (SIMULATOR_MODE) {
+        cfhe_base->GetSimulator()->PrintStats();
+        cfhe_base->GetSimulator()->ResetStats();
+    }
+
+    arr = {8, 7, 6, 5, 4, 3, 2, 1};
+    cout << "In: " << arr << endl;
+    cout << "Basic Encrypted Sort (Intrinsic):" << endl;
+    basic_encrypted_sort_intrinsic(arr);
+    cout << "Out: " << arr << endl;
 
     if (SIMULATOR_MODE) {
         cfhe_base->GetSimulator()->PrintStats();

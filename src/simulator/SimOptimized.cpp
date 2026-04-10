@@ -134,4 +134,11 @@ BinaryDigit SimOptimized::Mux(BinaryDigit s, BinaryDigit a, BinaryDigit b) {
     return BinaryDigit(((LWEPlaintext)s == 0 ? a : b).p);
 }
 
+void SimOptimized::Swap_if(const BinaryDigit cond, BinaryDigit &a,
+                           BinaryDigit &b) {
+    BinaryDigit t = a;
+    a = Mux(cond, t, b);
+    b = XOR3(a, b, t);
+}
+
 #undef GATE_MAJ

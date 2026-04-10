@@ -48,6 +48,11 @@ namespace computefhe {
         virtual BinaryDigit Mux(BinaryDigit s, BinaryDigit a,
                                 BinaryDigit b) = 0;
 
+        virtual void Swap_if(const BinaryDigit cond, FixedPoint &a,
+                             FixedPoint &b);
+        virtual void Swap_if(const BinaryDigit cond, BinaryDigit &a,
+                             BinaryDigit &b) = 0;
+
         virtual void HalfAdder(const BinaryDigit &a, const BinaryDigit &b,
                                BinaryDigit &sum, BinaryDigit &carry_out) = 0;
         virtual void HalfSubtractor(const BinaryDigit &a, const BinaryDigit &b,

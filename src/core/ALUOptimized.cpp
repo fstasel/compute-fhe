@@ -7,9 +7,10 @@ void ALUOptimized::FullAdder(const BinaryDigit &a, const BinaryDigit &b,
                              const BinaryDigit &c, BinaryDigit &sum,
                              BinaryDigit &carry_out) {
     auto &cc = cfhe_base->GetBinFHEContext();
-    sum = XOR3(a, b, c);
+    BinaryDigit s = XOR3(a, b, c);
     carry_out = cc.EvalBinGate(
         MAJORITY, {(LWECiphertext)a, (LWECiphertext)b, (LWECiphertext)c});
+    sum = s;
 }
 
 BinaryDigit ALUOptimized::XOR3(const BinaryDigit &a, const BinaryDigit &b,

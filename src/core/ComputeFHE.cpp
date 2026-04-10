@@ -2,6 +2,8 @@
 #include <computefhe/ALUGateLogic.h>
 #include <computefhe/ALUOptimized.h>
 #include <computefhe/ComputeFHE.h>
+#include <computefhe/SimGateLogic.h>
+#include <computefhe/SimOptimized.h>
 
 #include <iostream>
 using namespace computefhe;
@@ -95,27 +97,37 @@ double ComputeFHE::extractNoise(ConstLWECiphertext &ct) {
 void ComputeFHE::createALU() {
     switch (alu_type) {
     case ALU_OPTIMIZED:
-        alu = new ALUOptimized(this);
+        if (sim_mode) {
+            alu = new SimOptimized(this);
+        } else {
+            alu = new ALUOptimized(this);
+        }
         break;
-
     case ALU_GATELOGIC:
     default:
-        alu = new ALUGateLogic(this);
+        if (sim_mode) {
+            alu = new SimGateLogic(this);
+        } else {
+            alu = new ALUGateLogic(this);
+        }
+        break;
     }
 }
 
-ComputeFHE::ComputeFHE() : ComputeFHE(CCPARAM_STD128, ALU_GATELOGIC) {}
+ComputeFHE::ComputeFHE(bool simulation_mode)
+    : ComputeFHE(CCPARAM_STD128, ALU_GATELOGIC, simulation_mode) {}
 
-ComputeFHE::ComputeFHE(CryptoContextParam param)
-    : ComputeFHE(param, ALU_GATELOGIC) {}
+ComputeFHE::ComputeFHE(CryptoContextParam param, bool simulation_mode)
+    : ComputeFHE(param, ALU_GATELOGIC, simulation_mode) {}
 
-ComputeFHE::ComputeFHE(ALUType alu_type)
-    : ComputeFHE(CCPARAM_STD128, alu_type) {}
+ComputeFHE::ComputeFHE(ALUType alu_type, bool simulation_mode)
+    : ComputeFHE(CCPARAM_STD128, alu_type, simulation_mode) {}
 
 ComputeFHE::~ComputeFHE() { delete alu; }
 
-ComputeFHE::ComputeFHE(CryptoContextParam param, ALUType alu_type)
-    : cc_param(param), alu_type(alu_type) {
+ComputeFHE::ComputeFHE(CryptoContextParam param, ALUType alu_type,
+                       bool simulation_mode)
+    : cc_param(param), alu_type(alu_type), sim_mode(simulation_mode) {
     createCC();
     generateKeys();
     createALU();
@@ -124,6 +136,12 @@ ComputeFHE::ComputeFHE(CryptoContextParam param, ALUType alu_type)
 BinFHEContext &ComputeFHE::GetBinFHEContext() { return cc; }
 
 BaseALU *ComputeFHE::GetALU() { return alu; }
+
+BaseALUSimulator *ComputeFHE::GetSimulator() {
+    if (sim_mode)
+        return (BaseALUSimulator *)alu;
+    return nullptr;
+}
 
 CryptoContextParam ComputeFHE::GetCryptoContextParam() { return cc_param; }
 
@@ -134,9 +152,13 @@ const LWEPrivateKey &ComputeFHE::GetLWEPrivateKey() { return sk; }
 FixedPoint ComputeFHE::EncryptInt(uint64_t pt, size_t n_digits, bool fresh) {
     FixedPoint out(n_digits);
     for (size_t i = 0; i < n_digits; i++) {
-        out[i] = cc.Encrypt(sk, pt % 2, FRESH);
+        if (sim_mode) {
+            out[i] = pt % 2;
+        } else {
+            out[i] = cc.Encrypt(sk, pt % 2, FRESH);
+        }
         pt /= 2;
-        if (!fresh) {
+        if (!fresh && !sim_mode) {
             out[i] = cc.Bootstrap(out[i]);
         }
     }
@@ -148,13 +170,20 @@ uint64_t ComputeFHE::DecryptInt(const FixedPoint &ct, size_t n_digits) {
     LWEPlaintext result;
     n_digits = (n_digits == 0) ? ct.size() : n_digits;
     for (size_t i = 0; i < n_digits; i++) {
-        cc.Decrypt(sk, ct[i], &result);
+        if (sim_mode) {
+            result = ct[i];
+        } else {
+            cc.Decrypt(sk, ct[i], &result);
+        }
         out += result * (1UL << i);
     }
     return out;
 }
 
 BinaryDigit ComputeFHE::EncryptBool(bool pt, bool fresh) {
+    if (sim_mode) {
+        return pt;
+    }
     LWECiphertext out = cc.Encrypt(sk, pt == 0 ? 0 : 1, FRESH);
     if (!fresh) {
         out = cc.Bootstrap(out);
@@ -163,6 +192,9 @@ BinaryDigit ComputeFHE::EncryptBool(bool pt, bool fresh) {
 }
 
 bool ComputeFHE::DecryptBool(const BinaryDigit &ct) {
+    if (sim_mode) {
+        return ct;
+    }
     LWEPlaintext result;
     cc.Decrypt(sk, ct, &result);
     return (bool)result;

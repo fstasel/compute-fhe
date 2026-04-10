@@ -9,10 +9,10 @@ namespace computefhe {
 } // namespace computefhe
 
 void computefhe::Init(CryptoContextParam cc_param, ALUType alu_type,
-                      bool client_mode) {
+                      bool client_mode, bool simulation_mode) {
     if (cfhe_base != nullptr)
         delete cfhe_base;
-    cfhe_base = new ComputeFHE(cc_param, alu_type);
+    cfhe_base = new ComputeFHE(cc_param, alu_type, simulation_mode);
     CLIENT_MODE = client_mode;
 }
 

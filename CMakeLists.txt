@@ -74,6 +74,12 @@ set(CPPUTILS_SOURCES
     src/cpputils/CFHE_FixedPoint.cpp
 )
 
+set(SIMULATOR_SOURCES
+    src/simulator/BaseALUSimulator.cpp
+    src/simulator/SimGateLogic.cpp
+    src/simulator/SimOptimized.cpp
+)
+
 set(TEST_SOURCES
     tests/CFHE_Test.cpp
     tests/CFHE_ALU_Test.cpp
@@ -83,6 +89,7 @@ add_executable(computefhe
     app/main.cpp
     ${CORE_SOURCES}
     ${CPPUTILS_SOURCES}
+    ${SIMULATOR_SOURCES}
     ${TEST_SOURCES}
 )
 

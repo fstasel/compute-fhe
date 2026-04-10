@@ -1,3 +1,4 @@
+#include <computefhe/BaseALUSimulator.h>
 #include <computefhe/CFHE_FixedPoint.h>
 #include <computefhe/CFHE_Integer.h>
 #include <computefhe/ComputeFHE.h>
@@ -509,23 +510,57 @@ void test_fp_custom() {
     cout << "++vec[idx]: " << (++vec[idx]) << endl;
 }
 
-int main() {
-    computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true);
+void test_simulation() {
+    BaseALUSimulator *s = cfhe_base->GetSimulator();
+    if (!s) {
+        cout << "Not in simulation mode!" << endl;
+        return;
+    }
+    s->ResetStats();
+    Euint8 a = 10;
+    Euint8 b = 10;
+    cout << "a * b: " << a * b << endl;
+    s->PrintStats();
+    s->ResetStats();
+    Eif(a < b) { a = 20; }
+    else {
+        b = 20;
+    }
+    cout << "a: " << a << ", b: " << b << endl;
+    s->PrintStats();
+    s->ResetStats();
+    Evector<Euint8> vec(4);
+    vec[0] = 10;
+    vec[1] = 20;
+    vec[2] = 30;
+    vec[3] = 40;
+    a = 3;
+    cout << "vec[a]: " << vec[a] << endl;
+    s->PrintStats();
+    s->ResetStats();
+    vec[a] = 100;
+    cout << "vec[3]: " << vec[3] << endl;
+    s->PrintStats();
+}
 
-    test_arithmetic_operators();
-    test_arithmetic_assignment_operators();
-    test_comparison_operators();
-    test_logic_operators();
-    test_logic_assignment_operators();
-    test_shift_operators();
-    test_shift_assign_operators();
-    test_condition();
-    test_inc_dec();
-    test_vector();
-    test_vector_custom();
-    test_fp();
-    test_fp_vector();
-    test_fp_custom();
+int main() {
+    computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, true);
+
+    // test_arithmetic_operators();
+    // test_arithmetic_assignment_operators();
+    // test_comparison_operators();
+    // test_logic_operators();
+    // test_logic_assignment_operators();
+    // test_shift_operators();
+    // test_shift_assign_operators();
+    // test_condition();
+    // test_inc_dec();
+    // test_vector();
+    // test_vector_custom();
+    // test_fp();
+    // test_fp_vector();
+    // test_fp_custom();
+    test_simulation();
 
     computefhe::Finalize();
 

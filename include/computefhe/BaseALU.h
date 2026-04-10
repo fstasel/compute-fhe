@@ -15,12 +15,13 @@ namespace computefhe {
         BaseALU(ComputeFHE *cfhe);
         virtual ~BaseALU();
 
-        BinaryDigit GetCarry();
-        void SetCarry(BinaryDigit value);
-        void SetCarry();
-        void ResetCarry();
-        BinaryDigit GetConstantFalse();
-        BinaryDigit GetConstantTrue();
+        virtual BinaryDigit GetCarry();
+        virtual void SetCarry(BinaryDigit value);
+        virtual void SetCarry();
+        virtual void ResetCarry();
+
+        virtual BinaryDigit GetConstantFalse();
+        virtual BinaryDigit GetConstantTrue();
 
         virtual BinaryDigit Gate_AND(const BinaryDigit &a,
                                      const BinaryDigit &b);
@@ -35,7 +36,7 @@ namespace computefhe {
                                       const BinaryDigit &b);
         virtual BinaryDigit Gate_NOT(const BinaryDigit &a);
 
-        FixedPoint ToggleMSB(const FixedPoint &a);
+        virtual FixedPoint ToggleMSB(const FixedPoint &a);
 
         virtual FixedPoint ShiftLeft(const FixedPoint &a, size_t shift);
         virtual FixedPoint ShiftRight(const FixedPoint &a, size_t shift,

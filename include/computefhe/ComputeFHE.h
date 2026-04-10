@@ -12,6 +12,7 @@ using namespace std;
 namespace computefhe {
 
     class BaseALU;
+    class BaseALUSimulator;
 
     class ComputeFHE {
       private:
@@ -20,19 +21,22 @@ namespace computefhe {
         BinFHEContext cc;
         LWEPrivateKey sk;
         BaseALU *alu;
+        bool sim_mode;
 
         void createCC();
         void createALU();
 
       public:
-        ComputeFHE();
-        ComputeFHE(CryptoContextParam param);
-        ComputeFHE(CryptoContextParam param, ALUType alu_type);
-        ComputeFHE(ALUType alu_type);
+        ComputeFHE(bool simulation_mode = false);
+        ComputeFHE(CryptoContextParam param, bool simulation_mode = false);
+        ComputeFHE(CryptoContextParam param, ALUType alu_type,
+                   bool simulation_mode = false);
+        ComputeFHE(ALUType alu_type, bool simulation_mode = false);
         ~ComputeFHE();
 
         BinFHEContext &GetBinFHEContext();
         BaseALU *GetALU();
+        BaseALUSimulator *GetSimulator();
         CryptoContextParam GetCryptoContextParam();
         ALUType GetALUType();
         const LWEPrivateKey &GetLWEPrivateKey();

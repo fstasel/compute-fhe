@@ -7,42 +7,47 @@ using namespace computefhe;
 BinaryDigit::BinaryDigit() { p = 0; }
 
 BinaryDigit::BinaryDigit(const BinaryDigit &other) {
-    c = COPY_CT(other.c);
+    c = other.c ? COPY_CT(other.c) : nullptr;
     p = other.p;
 }
 
 BinaryDigit::BinaryDigit(ConstLWECiphertext &ct) {
-    c = COPY_CT(ct);
+    c = ct ? COPY_CT(ct) : nullptr;
     p = 0;
 }
 
 BinaryDigit::BinaryDigit(const LWECiphertext &ct) {
-    c = COPY_CT(ct);
+    c = ct ? COPY_CT(ct) : nullptr;
     p = 0;
 }
 
-BinaryDigit::BinaryDigit(LWEPlaintext pt) { p = pt; }
+BinaryDigit::BinaryDigit(LWEPlaintext pt) {
+    p = pt;
+    c = nullptr;
+}
 
 BinaryDigit::BinaryDigit(const ConstLWECiphertext &ct, LWEPlaintext pt) {
-    c = COPY_CT(ct);
+    c = ct ? COPY_CT(ct) : nullptr;
     p = pt;
 }
 
 BinaryDigit &BinaryDigit::operator=(const BinaryDigit &other) {
     if (this != &other) {
-        c = COPY_CT(other.c);
+        c = other.c ? COPY_CT(other.c) : nullptr;
         p = other.p;
     }
     return *this;
 }
 
 BinaryDigit &BinaryDigit::operator=(const LWECiphertext &other) {
-    c = COPY_CT(other);
+    c = other ? COPY_CT(other) : nullptr;
+    p = 0;
     return *this;
 }
 
 BinaryDigit &BinaryDigit::operator=(LWEPlaintext pt) {
     p = pt;
+    c = nullptr;
     return *this;
 }
 

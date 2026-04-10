@@ -1,4 +1,6 @@
 #include <computefhe/ALUGateLogic.h>
+#include <computefhe/ComputeFHE.h>
+
 using namespace computefhe;
 
 ALUGateLogic::ALUGateLogic(ComputeFHE *cfhe) : BaseALU(cfhe) {}

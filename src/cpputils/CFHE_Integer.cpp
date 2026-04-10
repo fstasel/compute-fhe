@@ -1,5 +1,5 @@
 #include <computefhe/CFHE_Integer.h>
-#include <computefhe/ConditionManager.h>
+#include <computefhe/ComputeFHE.h>
 
 using namespace computefhe;
 

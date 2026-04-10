@@ -3,16 +3,23 @@
 #include <openfhe/binfhe/binfhecontext.h>
 #include <vector>
 
+#include <computefhe/ALUGateLogic.h>
+#include <computefhe/ALUOptimized.h>
+#include <computefhe/BaseALU.h>
+#include <computefhe/BaseALUSimulator.h>
 #include <computefhe/CFHETypes.h>
+#include <computefhe/CFHE_FixedPoint.h>
+#include <computefhe/CFHE_Integer.h>
+#include <computefhe/ConditionManager.h>
+#include <computefhe/Evector.h>
 #include <computefhe/FixedPoint.h>
+#include <computefhe/SimGateLogic.h>
+#include <computefhe/SimOptimized.h>
 
 using namespace lbcrypto;
 using namespace std;
 
 namespace computefhe {
-
-    class BaseALU;
-    class BaseALUSimulator;
 
     class ComputeFHE {
       private:

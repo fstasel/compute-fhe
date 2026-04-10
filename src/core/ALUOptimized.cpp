@@ -1,4 +1,6 @@
-#include <computefhe/ALUOptimized.h>
+#include <computefhe/ALUGateLogic.h>
+#include <computefhe/ComputeFHE.h>
+
 using namespace computefhe;
 
 ALUOptimized::ALUOptimized(ComputeFHE *cfhe) : ALUGateLogic(cfhe) {}

@@ -1,11 +1,13 @@
 #pragma once
 
 #include <computefhe/BaseALU.h>
-#include <computefhe/ComputeFHE.h>
+#include <computefhe/FixedPoint.h>
 
 using namespace lbcrypto;
 
 namespace computefhe {
+    class ComputeFHE;
+
     class BaseALUSimulator : public BaseALU {
       protected:
         uint num_bs = 0;

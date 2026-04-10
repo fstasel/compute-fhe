@@ -83,6 +83,7 @@ set(SIMULATOR_SOURCES
 set(TEST_SOURCES
     tests/CFHE_Test.cpp
     tests/CFHE_ALU_Test.cpp
+    tests/test.cpp
 )
 
 add_executable(computefhe
@@ -90,13 +91,40 @@ add_executable(computefhe
     ${CORE_SOURCES}
     ${CPPUTILS_SOURCES}
     ${SIMULATOR_SOURCES}
+)
+
+add_executable(computefhe_test
+    ${CORE_SOURCES}
+    ${CPPUTILS_SOURCES}
+    ${SIMULATOR_SOURCES}
     ${TEST_SOURCES}
+)
+
+add_executable(basic_sort
+    app/basic_sort.cpp
+    ${CORE_SOURCES}
+    ${CPPUTILS_SOURCES}
+    ${SIMULATOR_SOURCES}
 )
 
 target_include_directories(computefhe
     PRIVATE
         ${PROJECT_SOURCE_DIR}/src
+    PUBLIC
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+target_include_directories(computefhe_test
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/src
         ${PROJECT_SOURCE_DIR}/tests/include
+    PUBLIC
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+target_include_directories(basic_sort
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/src
     PUBLIC
         ${PROJECT_SOURCE_DIR}/include
 )
@@ -117,4 +145,6 @@ if(CLANG_FORMAT)
         COMMENT "Formatting sources with clang-format"
     )
     add_dependencies(computefhe format)
+    add_dependencies(computefhe_test format)
+    add_dependencies(basic_sort format)
 endif()

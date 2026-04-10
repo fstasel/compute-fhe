@@ -1,9 +1,4 @@
-
-#include <computefhe/ALUGateLogic.h>
-#include <computefhe/ALUOptimized.h>
 #include <computefhe/ComputeFHE.h>
-#include <computefhe/SimGateLogic.h>
-#include <computefhe/SimOptimized.h>
 
 #include <iostream>
 using namespace computefhe;

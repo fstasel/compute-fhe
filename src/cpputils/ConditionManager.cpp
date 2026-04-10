@@ -1,7 +1,6 @@
-#include <computefhe/BaseALU.h>
+#include <computefhe/ComputeFHE.h>
 #include <computefhe/ConditionManager.h>
-#include <stack>
-#include <unordered_map>
+
 using namespace computefhe;
 
 namespace computefhe {

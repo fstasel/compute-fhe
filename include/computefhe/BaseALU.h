@@ -1,11 +1,12 @@
 #pragma once
 
-#include <computefhe/ComputeFHE.h>
+#include <computefhe/CFHE_Integer.h>
+#include <computefhe/FixedPoint.h>
 
 using namespace lbcrypto;
 
 namespace computefhe {
-
+    class ComputeFHE;
     class BaseALU {
       protected:
         BinaryDigit carry;

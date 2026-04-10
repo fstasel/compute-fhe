@@ -1,12 +1,12 @@
 #pragma once
 
-#include <computefhe/BaseALU.h>
-#include <computefhe/ComputeFHE.h>
-#include <computefhe/ConditionManager.h>
+#include <computefhe/CFHETypes.h>
+#include <computefhe/FixedPoint.h>
 #include <iostream>
 using namespace std;
 
 namespace computefhe {
+    class ComputeFHE;
     void Init(CryptoContextParam = CCPARAM_STD128_3, ALUType = ALU_OPTIMIZED,
               bool = false, bool = false);
     void Finalize();

@@ -1,4 +1,6 @@
 #include <computefhe/BaseALU.h>
+#include <computefhe/ComputeFHE.h>
+
 using namespace computefhe;
 
 BaseALU::BaseALU(ComputeFHE *cfhe) : cfhe_base(cfhe) { ResetCarry(); }

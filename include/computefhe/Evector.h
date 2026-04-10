@@ -1,8 +1,6 @@
 #pragma once
 
 #include <computefhe/CFHE_FixedPoint.h>
-#include <computefhe/CFHE_Integer.h>
-#include <computefhe/ComputeFHE.h>
 #include <vector>
 
 namespace computefhe {

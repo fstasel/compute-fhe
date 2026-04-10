@@ -1,4 +1,5 @@
 #include <cmath>
+#include <computefhe/ComputeFHE.h>
 #include <computefhe/Evector.h>
 
 using namespace computefhe;

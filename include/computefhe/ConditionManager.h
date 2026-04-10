@@ -1,5 +1,7 @@
 #pragma once
-#include <computefhe/ComputeFHE.h>
+#include <computefhe/FixedPoint.h>
+#include <stack>
+#include <unordered_map>
 
 using namespace std;
 

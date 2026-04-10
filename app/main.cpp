@@ -1,8 +1,4 @@
-#include <computefhe/BaseALUSimulator.h>
-#include <computefhe/CFHE_FixedPoint.h>
-#include <computefhe/CFHE_Integer.h>
 #include <computefhe/ComputeFHE.h>
-#include <computefhe/Evector.h>
 
 using namespace computefhe;
 using namespace std;

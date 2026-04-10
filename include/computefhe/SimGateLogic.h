@@ -1,5 +1,4 @@
 #pragma once
-#include <computefhe/ALUGateLogic.h>
 #include <computefhe/BaseALUSimulator.h>
 
 namespace computefhe {

@@ -1,4 +1,5 @@
 #include <computefhe/CFHE_FixedPoint.h>
+#include <computefhe/ComputeFHE.h>
 
 using namespace computefhe;
 

@@ -9,10 +9,10 @@ using namespace std;
 void basic_encrypted_sort(Evector<Eint8> &arr) {
     for (uint i = 0; i < arr.size() - 1; i++) {
         for (uint j = i + 1; j < arr.size(); j++) {
-            Eif(arr[(int)i] > arr[(int)j]) {
-                Eint8 tmp = arr[(int)i];
-                arr[(int)i] = arr[(int)j];
-                arr[(int)j] = tmp;
+            Eif(arr[i] > arr[j]) {
+                Eint8 tmp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = tmp;
             }
         }
     }

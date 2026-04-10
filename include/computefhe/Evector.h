@@ -1,6 +1,7 @@
 #pragma once
 
 #include <computefhe/CFHE_FixedPoint.h>
+#include <type_traits>
 #include <vector>
 
 namespace computefhe {
@@ -92,7 +93,11 @@ namespace computefhe {
                 (size_t)index);
         }
 
-        CFHE_Integer &operator[](const int idx) { return this->at(idx); }
+        template <typename Integral,
+                  typename = std::enable_if_t<std::is_integral_v<Integral>>>
+        T &operator[](Integral idx) {
+            return this->at(static_cast<size_t>(idx));
+        }
     };
 
     template <> class Evector<CFHE_Integer> : public std::vector<CFHE_Integer> {
@@ -106,7 +111,11 @@ namespace computefhe {
             return Eitem<CFHE_Integer, uint64_t>(*this, (size_t)index);
         }
 
-        CFHE_Integer &operator[](const int idx) { return this->at(idx); }
+        template <typename Integral,
+                  typename = std::enable_if_t<std::is_integral_v<Integral>>>
+        CFHE_Integer &operator[](Integral idx) {
+            return this->at(static_cast<size_t>(idx));
+        }
     };
 
     template <>
@@ -121,7 +130,11 @@ namespace computefhe {
             return Eitem<CFHE_FixedPoint, double>(*this, (size_t)index);
         }
 
-        CFHE_FixedPoint &operator[](const int idx) { return this->at(idx); }
+        template <typename Integral,
+                  typename = std::enable_if_t<std::is_integral_v<Integral>>>
+        CFHE_FixedPoint &operator[](Integral idx) {
+            return this->at(static_cast<size_t>(idx));
+        }
     };
 
     template <size_t N, size_t F, bool S>
@@ -139,6 +152,10 @@ namespace computefhe {
                 (size_t)index);
         }
 
-        EFix<N, F, S> &operator[](const int idx) { return this->at(idx); }
+        template <typename Integral,
+                  typename = std::enable_if_t<std::is_integral_v<Integral>>>
+        EFix<N, F, S> &operator[](Integral idx) {
+            return this->at(static_cast<size_t>(idx));
+        }
     };
 } // namespace computefhe

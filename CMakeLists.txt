@@ -68,10 +68,10 @@ set(CORE_SOURCES
 )
 
 set(CPPUTILS_SOURCES
-    src/cpputils/CFHE_Integer.cpp
+    src/cpputils/Einteger.cpp
     src/cpputils/ConditionManager.cpp
     src/cpputils/Evector.cpp
-    src/cpputils/CFHE_FixedPoint.cpp
+    src/cpputils/Efixedpoint.cpp
 )
 
 set(SIMULATOR_SOURCES

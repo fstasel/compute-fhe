@@ -377,9 +377,9 @@ void test_vector_custom() {
 }
 
 void test_fp() {
-    CFHE_FixedPoint a(-7.9, 8, 4, true);
-    CFHE_FixedPoint b(1.5, 8, 4, true);
-    CFHE_FixedPoint c(1.25, 4, 2, true);
+    Efixedpoint a(-7.9, 8, 4, true);
+    Efixedpoint b(1.5, 8, 4, true);
+    Efixedpoint c(1.25, 4, 2, true);
     cout << "a: " << a << endl;
     cout << "b: " << b << endl;
     cout << "c: " << c << endl;
@@ -434,11 +434,11 @@ void test_fp() {
     cout << "-a: " << -a << endl;
     a <<= 1;
     cout << "a <<= 1: " << a << endl;
-    CFHE_FixedPoint p = a * b;
+    Efixedpoint p = a * b;
     cout << "p = a * b: " << p << endl;
-    CFHE_FixedPoint q = a * c;
+    Efixedpoint q = a * c;
     cout << "q = a * c: " << q << endl;
-    CFHE_FixedPoint t = a;
+    Efixedpoint t = a;
     a *= b;
     cout << "a *= b: " << a << endl;
     a = t;
@@ -455,9 +455,9 @@ void test_fp() {
 }
 
 void test_fp_vector() {
-    Evector<CFHE_FixedPoint> vec(4);
-    vec[0] = CFHE_FixedPoint(1.5, 4, 2, true);
-    vec[1] = CFHE_FixedPoint(-2.25, 8, 4, true);
+    Evector<Efixedpoint> vec(4);
+    vec[0] = Efixedpoint(1.5, 4, 2, true);
+    vec[1] = Efixedpoint(-2.25, 8, 4, true);
     vec[2] = vec[0] + vec[1];
     vec[3] = vec[0] * vec[1];
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <computefhe/CFHE_Integer.h>
+#include <computefhe/Einteger.h>
 #include <computefhe/FixedPoint.h>
 
 using namespace lbcrypto;

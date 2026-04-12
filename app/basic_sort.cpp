@@ -25,8 +25,8 @@ void basic_encrypted_sort_intrinsic(Evector<Eint8> &arr) {
             cfhe_base->GetALU()->Swap_if((arr[i] > arr[j]).getData()[0],
                                          a = arr[i].getData(),
                                          b = arr[j].getData());
-            arr[i] = CFHE_Integer(a, true);
-            arr[j] = CFHE_Integer(b, true);
+            arr[i] = Einteger(a, true);
+            arr[j] = Einteger(b, true);
         }
     }
 }

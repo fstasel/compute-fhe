@@ -1,6 +1,6 @@
 #pragma once
 
-#include <computefhe/CFHE_FixedPoint.h>
+#include <computefhe/Efixedpoint.h>
 #include <type_traits>
 #include <vector>
 
@@ -16,7 +16,7 @@ namespace computefhe {
         bool encrypted_index;
 
       public:
-        Eitem(Evector<T> &vec, const CFHE_Integer &idx);
+        Eitem(Evector<T> &vec, const Einteger &idx);
         Eitem(Evector<T> &vec, const size_t idx);
         operator T() const;
         const T &operator=(const T &value);
@@ -34,18 +34,18 @@ namespace computefhe {
         T operator^(const T &b) const;
         T operator^(U b) const;
 
-        CFHE_Integer operator==(const T &b) const;
-        CFHE_Integer operator==(U b) const;
-        CFHE_Integer operator!=(const T &b) const;
-        CFHE_Integer operator!=(U b) const;
-        CFHE_Integer operator>(const T &b) const;
-        CFHE_Integer operator>(U b) const;
-        CFHE_Integer operator>=(const T &b) const;
-        CFHE_Integer operator>=(U b) const;
-        CFHE_Integer operator<(const T &b) const;
-        CFHE_Integer operator<(U b) const;
-        CFHE_Integer operator<=(const T &b) const;
-        CFHE_Integer operator<=(U b) const;
+        Einteger operator==(const T &b) const;
+        Einteger operator==(U b) const;
+        Einteger operator!=(const T &b) const;
+        Einteger operator!=(U b) const;
+        Einteger operator>(const T &b) const;
+        Einteger operator>(U b) const;
+        Einteger operator>=(const T &b) const;
+        Einteger operator>=(U b) const;
+        Einteger operator<(const T &b) const;
+        Einteger operator<(U b) const;
+        Einteger operator<=(const T &b) const;
+        Einteger operator<=(U b) const;
 
         T operator&&(const T &b) const;
         T operator&&(U b) const;
@@ -84,13 +84,12 @@ namespace computefhe {
         using std::vector<T>::vector;
         using std::vector<T>::operator[];
 
-        Eitem<CFHE_Integer, uint64_t> operator[](const CFHE_Integer &index) {
-            return Eitem<CFHE_Integer, uint64_t>(
-                reinterpret_cast<Evector<CFHE_Integer> &>(*this), index);
+        Eitem<Einteger, uint64_t> operator[](const Einteger &index) {
+            return Eitem<Einteger, uint64_t>(
+                reinterpret_cast<Evector<Einteger> &>(*this), index);
             // TODO: Use below in client-mode only
-            return Eitem<CFHE_Integer, uint64_t>(
-                reinterpret_cast<Evector<CFHE_Integer> &>(*this),
-                (size_t)index);
+            return Eitem<Einteger, uint64_t>(
+                reinterpret_cast<Evector<Einteger> &>(*this), (size_t)index);
         }
 
         template <typename Integral,
@@ -100,39 +99,38 @@ namespace computefhe {
         }
     };
 
-    template <> class Evector<CFHE_Integer> : public std::vector<CFHE_Integer> {
+    template <> class Evector<Einteger> : public std::vector<Einteger> {
       public:
-        using std::vector<CFHE_Integer>::vector;
-        using std::vector<CFHE_Integer>::operator[];
+        using std::vector<Einteger>::vector;
+        using std::vector<Einteger>::operator[];
 
-        Eitem<CFHE_Integer, uint64_t> operator[](const CFHE_Integer &index) {
-            return Eitem<CFHE_Integer, uint64_t>(*this, index);
+        Eitem<Einteger, uint64_t> operator[](const Einteger &index) {
+            return Eitem<Einteger, uint64_t>(*this, index);
             // TODO: Use below in client-mode only
-            return Eitem<CFHE_Integer, uint64_t>(*this, (size_t)index);
+            return Eitem<Einteger, uint64_t>(*this, (size_t)index);
         }
 
         template <typename Integral,
                   typename = std::enable_if_t<std::is_integral_v<Integral>>>
-        CFHE_Integer &operator[](Integral idx) {
+        Einteger &operator[](Integral idx) {
             return this->at(static_cast<size_t>(idx));
         }
     };
 
-    template <>
-    class Evector<CFHE_FixedPoint> : public std::vector<CFHE_FixedPoint> {
+    template <> class Evector<Efixedpoint> : public std::vector<Efixedpoint> {
       public:
-        using std::vector<CFHE_FixedPoint>::vector;
-        using std::vector<CFHE_FixedPoint>::operator[];
+        using std::vector<Efixedpoint>::vector;
+        using std::vector<Efixedpoint>::operator[];
 
-        Eitem<CFHE_FixedPoint, double> operator[](const CFHE_Integer &index) {
-            return Eitem<CFHE_FixedPoint, double>(*this, index);
+        Eitem<Efixedpoint, double> operator[](const Einteger &index) {
+            return Eitem<Efixedpoint, double>(*this, index);
             // TODO: Use below in client-mode only
-            return Eitem<CFHE_FixedPoint, double>(*this, (size_t)index);
+            return Eitem<Efixedpoint, double>(*this, (size_t)index);
         }
 
         template <typename Integral,
                   typename = std::enable_if_t<std::is_integral_v<Integral>>>
-        CFHE_FixedPoint &operator[](Integral idx) {
+        Efixedpoint &operator[](Integral idx) {
             return this->at(static_cast<size_t>(idx));
         }
     };
@@ -143,13 +141,12 @@ namespace computefhe {
         using std::vector<EFix<N, F, S>>::vector;
         using std::vector<EFix<N, F, S>>::operator[];
 
-        Eitem<CFHE_FixedPoint, double> operator[](const CFHE_Integer &index) {
-            return Eitem<CFHE_FixedPoint, double>(
-                reinterpret_cast<Evector<CFHE_FixedPoint> &>(*this), index);
+        Eitem<Efixedpoint, double> operator[](const Einteger &index) {
+            return Eitem<Efixedpoint, double>(
+                reinterpret_cast<Evector<Efixedpoint> &>(*this), index);
             // TODO: Use below in client-mode only
-            return Eitem<CFHE_FixedPoint, double>(
-                reinterpret_cast<Evector<CFHE_FixedPoint> &>(*this),
-                (size_t)index);
+            return Eitem<Efixedpoint, double>(
+                reinterpret_cast<Evector<Efixedpoint> &>(*this), (size_t)index);
         }
 
         template <typename Integral,

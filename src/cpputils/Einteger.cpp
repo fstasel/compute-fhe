@@ -1,5 +1,5 @@
-#include <computefhe/CFHE_Integer.h>
 #include <computefhe/ComputeFHE.h>
+#include <computefhe/Einteger.h>
 
 using namespace computefhe;
 
@@ -22,27 +22,27 @@ void computefhe::Finalize() {
     cfhe_base = nullptr;
 }
 
-int64_t CFHE_Integer::sign_extend(uint64_t d, size_t n_digits) {
+int64_t Einteger::sign_extend(uint64_t d, size_t n_digits) {
     if (n_digits == 0 || n_digits >= 64)
         return (int64_t)d;
     uint64_t mask = 1ULL << (n_digits - 1);
     return (int64_t)((d ^ mask) - mask);
 }
 
-void CFHE_Integer::_sync_var() {
+void Einteger::_sync_var() {
     if (ConditionManager::conditional_mode()) {
         ConditionManager::register_variable((void *)this, &data);
     }
 }
 
-void CFHE_Integer::_desync_var() {
+void Einteger::_desync_var() {
     if (ConditionManager::conditional_mode()) {
         ConditionManager::unregister_variable((void *)this);
     }
 }
 
-bool CFHE_Integer::promote(const CFHE_Integer &a, const CFHE_Integer &b,
-                           FixedPoint &a_out, FixedPoint &b_out) {
+bool Einteger::promote(const Einteger &a, const Einteger &b, FixedPoint &a_out,
+                       FixedPoint &b_out) {
     if (a.size == b.size) {
         a_out = a.data;
         b_out = b.data;
@@ -75,7 +75,7 @@ bool CFHE_Integer::promote(const CFHE_Integer &a, const CFHE_Integer &b,
     return s;
 }
 
-FixedPoint CFHE_Integer::promote(const CFHE_Integer &a, size_t s) {
+FixedPoint Einteger::promote(const Einteger &a, size_t s) {
     if (a.size == s) {
         return FixedPoint(a.data);
     }
@@ -92,11 +92,11 @@ FixedPoint CFHE_Integer::promote(const CFHE_Integer &a, size_t s) {
     return out;
 }
 
-CFHE_Integer::CFHE_Integer() : CFHE_Integer(8, false) {}
+Einteger::Einteger() : Einteger(8, false) {}
 
-CFHE_Integer::CFHE_Integer(int64_t d) : CFHE_Integer(d, 8) {}
+Einteger::Einteger(int64_t d) : Einteger(d, 8) {}
 
-CFHE_Integer::CFHE_Integer(size_t n_digits, bool is_signed) {
+Einteger::Einteger(size_t n_digits, bool is_signed) {
     if (cfhe_base == nullptr)
         Init();
     // TODO: In client-mode, this should be done by encrypting
@@ -105,7 +105,7 @@ CFHE_Integer::CFHE_Integer(size_t n_digits, bool is_signed) {
     sign = is_signed;
 }
 
-CFHE_Integer::CFHE_Integer(int64_t d, size_t n_digits) {
+Einteger::Einteger(int64_t d, size_t n_digits) {
     if (cfhe_base == nullptr)
         Init();
     // TODO: In client-mode, this should be done by encrypting
@@ -114,7 +114,7 @@ CFHE_Integer::CFHE_Integer(int64_t d, size_t n_digits) {
     sign = true;
 }
 
-CFHE_Integer::CFHE_Integer(uint64_t d, size_t n_digits) {
+Einteger::Einteger(uint64_t d, size_t n_digits) {
     if (cfhe_base == nullptr)
         Init();
     // TODO: In client-mode, this should be done by encrypting
@@ -123,7 +123,7 @@ CFHE_Integer::CFHE_Integer(uint64_t d, size_t n_digits) {
     sign = false;
 }
 
-CFHE_Integer::CFHE_Integer(const FixedPoint &fp, bool is_signed) {
+Einteger::Einteger(const FixedPoint &fp, bool is_signed) {
     if (cfhe_base == nullptr)
         Init();
     data = fp;
@@ -131,7 +131,7 @@ CFHE_Integer::CFHE_Integer(const FixedPoint &fp, bool is_signed) {
     sign = is_signed;
 }
 
-CFHE_Integer::CFHE_Integer(const CFHE_Integer &other) {
+Einteger::Einteger(const Einteger &other) {
     if (cfhe_base == nullptr)
         Init();
     data.resize(other.size);
@@ -140,126 +140,126 @@ CFHE_Integer::CFHE_Integer(const CFHE_Integer &other) {
     sign = other.sign;
 }
 
-CFHE_Integer::~CFHE_Integer() { _desync_var(); }
+Einteger::~Einteger() { _desync_var(); }
 
-const FixedPoint &CFHE_Integer::getData() const { return data; }
+const FixedPoint &Einteger::getData() const { return data; }
 
-size_t CFHE_Integer::getSize() const { return size; }
+size_t Einteger::getSize() const { return size; }
 
-bool CFHE_Integer::isSigned() const { return sign; }
+bool Einteger::isSigned() const { return sign; }
 
-const CFHE_Integer CFHE_Integer::operator==(const CFHE_Integer &other) const {
+const Einteger Einteger::operator==(const Einteger &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
     FixedPoint fp((vector<BinaryDigit>){cfhe_base->GetALU()->CmpEq(a, b)});
-    return CFHE_Integer(fp, false);
+    return Einteger(fp, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator!=(const CFHE_Integer &other) const {
+const Einteger Einteger::operator!=(const Einteger &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
     FixedPoint fp((vector<BinaryDigit>){cfhe_base->GetALU()->CmpNotEq(a, b)});
-    return CFHE_Integer(fp, false);
+    return Einteger(fp, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator>(const CFHE_Integer &other) const {
+const Einteger Einteger::operator>(const Einteger &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
     FixedPoint fp((vector<BinaryDigit>){
         (sign && other.sign) ? cfhe_base->GetALU()->CmpGT(a, b)
                              : cfhe_base->GetALU()->CmpGT_U(a, b)});
-    return CFHE_Integer(fp, false);
+    return Einteger(fp, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator>=(const CFHE_Integer &other) const {
+const Einteger Einteger::operator>=(const Einteger &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
     FixedPoint fp((vector<BinaryDigit>){
         (sign && other.sign) ? cfhe_base->GetALU()->CmpGTEq(a, b)
                              : cfhe_base->GetALU()->CmpGTEq_U(a, b)});
-    return CFHE_Integer(fp, false);
+    return Einteger(fp, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator<(const CFHE_Integer &other) const {
+const Einteger Einteger::operator<(const Einteger &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
     FixedPoint fp((vector<BinaryDigit>){
         (sign && other.sign) ? cfhe_base->GetALU()->CmpLT(a, b)
                              : cfhe_base->GetALU()->CmpLT_U(a, b)});
-    return CFHE_Integer(fp, false);
+    return Einteger(fp, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator<=(const CFHE_Integer &other) const {
+const Einteger Einteger::operator<=(const Einteger &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
     FixedPoint fp((vector<BinaryDigit>){
         (sign && other.sign) ? cfhe_base->GetALU()->CmpLTEq(a, b)
                              : cfhe_base->GetALU()->CmpLTEq_U(a, b)});
-    return CFHE_Integer(fp, false);
+    return Einteger(fp, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator==(uint64_t other) const {
+const Einteger Einteger::operator==(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
     FixedPoint fp((vector<BinaryDigit>){cfhe_base->GetALU()->CmpEq(
         data, cfhe_base->GetConstantInt(other, size))});
-    return CFHE_Integer(fp, false);
+    return Einteger(fp, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator!=(uint64_t other) const {
+const Einteger Einteger::operator!=(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
     FixedPoint fp((vector<BinaryDigit>){cfhe_base->GetALU()->CmpNotEq(
         data, cfhe_base->GetConstantInt(other, size))});
-    return CFHE_Integer(fp, false);
+    return Einteger(fp, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator>(uint64_t other) const {
+const Einteger Einteger::operator>(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
     FixedPoint fp((vector<BinaryDigit>){
         sign ? cfhe_base->GetALU()->CmpGT(
                    data, cfhe_base->GetConstantInt(other, size))
              : cfhe_base->GetALU()->CmpGT_U(
                    data, cfhe_base->GetConstantInt(other, size))});
-    return CFHE_Integer(fp, false);
+    return Einteger(fp, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator>=(uint64_t other) const {
+const Einteger Einteger::operator>=(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
     FixedPoint fp((vector<BinaryDigit>){
         sign ? cfhe_base->GetALU()->CmpGTEq(
                    data, cfhe_base->GetConstantInt(other, size))
              : cfhe_base->GetALU()->CmpGTEq_U(
                    data, cfhe_base->GetConstantInt(other, size))});
-    return CFHE_Integer(fp, false);
+    return Einteger(fp, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator<(uint64_t other) const {
+const Einteger Einteger::operator<(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
     FixedPoint fp((vector<BinaryDigit>){
         sign ? cfhe_base->GetALU()->CmpLT(
                    data, cfhe_base->GetConstantInt(other, size))
              : cfhe_base->GetALU()->CmpLT_U(
                    data, cfhe_base->GetConstantInt(other, size))});
-    return CFHE_Integer(fp, false);
+    return Einteger(fp, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator<=(uint64_t other) const {
+const Einteger Einteger::operator<=(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext comparison
     FixedPoint fp((vector<BinaryDigit>){
         sign ? cfhe_base->GetALU()->CmpLTEq(
                    data, cfhe_base->GetConstantInt(other, size))
              : cfhe_base->GetALU()->CmpLTEq_U(
                    data, cfhe_base->GetConstantInt(other, size))});
-    return CFHE_Integer(fp, false);
+    return Einteger(fp, false);
 }
 
-const CFHE_Integer CFHE_Integer::operator+(const CFHE_Integer &other) const {
+const Einteger Einteger::operator+(const Einteger &other) const {
     FixedPoint a, b;
     bool s = promote(*this, other, a, b);
     FixedPoint fp(cfhe_base->GetALU()->AddNC(a, b));
-    return CFHE_Integer(fp, s);
+    return Einteger(fp, s);
 }
 
-const CFHE_Integer CFHE_Integer::operator+=(const CFHE_Integer &other) {
+const Einteger Einteger::operator+=(const Einteger &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
     data = cfhe_base->GetALU()->AddNC(data, o);
@@ -267,14 +267,14 @@ const CFHE_Integer CFHE_Integer::operator+=(const CFHE_Integer &other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator-(const CFHE_Integer &other) const {
+const Einteger Einteger::operator-(const Einteger &other) const {
     FixedPoint a, b;
     bool s = promote(*this, other, a, b);
     FixedPoint fp(cfhe_base->GetALU()->SubNC(a, b));
-    return CFHE_Integer(fp, s);
+    return Einteger(fp, s);
 }
 
-const CFHE_Integer CFHE_Integer::operator-=(const CFHE_Integer &other) {
+const Einteger Einteger::operator-=(const Einteger &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
     data = cfhe_base->GetALU()->SubNC(data, o);
@@ -282,14 +282,14 @@ const CFHE_Integer CFHE_Integer::operator-=(const CFHE_Integer &other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator*(const CFHE_Integer &other) const {
+const Einteger Einteger::operator*(const Einteger &other) const {
     FixedPoint a, b;
     bool s = promote(*this, other, a, b);
     FixedPoint fp(cfhe_base->GetALU()->Mul(a, b));
-    return CFHE_Integer(fp, s);
+    return Einteger(fp, s);
 }
 
-const CFHE_Integer CFHE_Integer::operator*=(const CFHE_Integer &other) {
+const Einteger Einteger::operator*=(const Einteger &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
     data = cfhe_base->GetALU()->Mul(data, o);
@@ -297,50 +297,50 @@ const CFHE_Integer CFHE_Integer::operator*=(const CFHE_Integer &other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator+(uint64_t other) const {
+const Einteger Einteger::operator+(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext arithmetic
-    return *this + CFHE_Integer(cfhe_base->GetConstantInt(other, size), sign);
+    return *this + Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator+=(uint64_t other) {
+const Einteger Einteger::operator+=(uint64_t other) {
     // TODO: optimize this by using ciphertext-plaintext arithmetic
-    return *this += CFHE_Integer(cfhe_base->GetConstantInt(other, size), sign);
+    return *this += Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator-(uint64_t other) const {
+const Einteger Einteger::operator-(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext arithmetic
-    return *this - CFHE_Integer(cfhe_base->GetConstantInt(other, size), sign);
+    return *this - Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator-=(uint64_t other) {
+const Einteger Einteger::operator-=(uint64_t other) {
     // TODO: optimize this by using ciphertext-plaintext arithmetic
-    return *this -= CFHE_Integer(cfhe_base->GetConstantInt(other, size), sign);
+    return *this -= Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator*(uint64_t other) const {
+const Einteger Einteger::operator*(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext arithmetic
-    return *this * CFHE_Integer(cfhe_base->GetConstantInt(other, size), sign);
+    return *this * Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator*=(uint64_t other) {
+const Einteger Einteger::operator*=(uint64_t other) {
     // TODO: optimize this by using ciphertext-plaintext arithmetic
-    return *this *= CFHE_Integer(cfhe_base->GetConstantInt(other, size), sign);
+    return *this *= Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator-() const {
-    return CFHE_Integer(cfhe_base->GetALU()->Neg(data), sign);
+const Einteger Einteger::operator-() const {
+    return Einteger(cfhe_base->GetALU()->Neg(data), sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator&(const CFHE_Integer &other) const {
+const Einteger Einteger::operator&(const Einteger &other) const {
     FixedPoint o = promote(other, size);
     FixedPoint fp(size);
     for (size_t i = 0; i < size; i++) {
         fp[i] = cfhe_base->GetALU()->Gate_AND(data[i], o[i]);
     }
-    return CFHE_Integer(fp, sign);
+    return Einteger(fp, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator&=(const CFHE_Integer &other) {
+const Einteger Einteger::operator&=(const Einteger &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
     for (size_t i = 0; i < size; i++) {
@@ -350,8 +350,8 @@ const CFHE_Integer CFHE_Integer::operator&=(const CFHE_Integer &other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator&(uint64_t other) const {
-    CFHE_Integer r(size, sign);
+const Einteger Einteger::operator&(uint64_t other) const {
+    Einteger r(size, sign);
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
         if (bit)
@@ -362,7 +362,7 @@ const CFHE_Integer CFHE_Integer::operator&(uint64_t other) const {
     return r;
 }
 
-const CFHE_Integer CFHE_Integer::operator&=(uint64_t other) {
+const Einteger Einteger::operator&=(uint64_t other) {
     _sync_var();
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
@@ -373,16 +373,16 @@ const CFHE_Integer CFHE_Integer::operator&=(uint64_t other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator|(const CFHE_Integer &other) const {
+const Einteger Einteger::operator|(const Einteger &other) const {
     FixedPoint o = promote(other, size);
     FixedPoint fp(size);
     for (size_t i = 0; i < size; i++) {
         fp[i] = cfhe_base->GetALU()->Gate_OR(data[i], o[i]);
     }
-    return CFHE_Integer(fp, sign);
+    return Einteger(fp, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator|=(const CFHE_Integer &other) {
+const Einteger Einteger::operator|=(const Einteger &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
     for (size_t i = 0; i < size; i++) {
@@ -392,8 +392,8 @@ const CFHE_Integer CFHE_Integer::operator|=(const CFHE_Integer &other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator|(uint64_t other) const {
-    CFHE_Integer r(size, sign);
+const Einteger Einteger::operator|(uint64_t other) const {
+    Einteger r(size, sign);
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
         if (bit)
@@ -404,7 +404,7 @@ const CFHE_Integer CFHE_Integer::operator|(uint64_t other) const {
     return r;
 }
 
-const CFHE_Integer CFHE_Integer::operator|=(uint64_t other) {
+const Einteger Einteger::operator|=(uint64_t other) {
     _sync_var();
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
@@ -415,16 +415,16 @@ const CFHE_Integer CFHE_Integer::operator|=(uint64_t other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator^(const CFHE_Integer &other) const {
+const Einteger Einteger::operator^(const Einteger &other) const {
     FixedPoint o = promote(other, size);
     FixedPoint fp(size);
     for (size_t i = 0; i < size; i++) {
         fp[i] = cfhe_base->GetALU()->Gate_XOR(data[i], o[i]);
     }
-    return CFHE_Integer(fp, sign);
+    return Einteger(fp, sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator^=(const CFHE_Integer &other) {
+const Einteger Einteger::operator^=(const Einteger &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
     for (size_t i = 0; i < size; i++) {
@@ -434,8 +434,8 @@ const CFHE_Integer CFHE_Integer::operator^=(const CFHE_Integer &other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator^(uint64_t other) const {
-    CFHE_Integer r(size, sign);
+const Einteger Einteger::operator^(uint64_t other) const {
+    Einteger r(size, sign);
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
         if (bit)
@@ -446,7 +446,7 @@ const CFHE_Integer CFHE_Integer::operator^(uint64_t other) const {
     return r;
 }
 
-const CFHE_Integer CFHE_Integer::operator^=(uint64_t other) {
+const Einteger Einteger::operator^=(uint64_t other) {
     _sync_var();
     for (size_t i = 0; i < size; i++) {
         uint8_t bit = (other >> i) & 1;
@@ -457,19 +457,19 @@ const CFHE_Integer CFHE_Integer::operator^=(uint64_t other) {
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator!() const {
+const Einteger Einteger::operator!() const {
     BinaryDigit r = data[0];
     for (size_t i = 1; i < size; i++) {
         r = cfhe_base->GetALU()->Gate_OR(r, data[i]);
     }
-    return CFHE_Integer(FixedPoint({cfhe_base->GetALU()->Gate_NOT(r)}), false);
+    return Einteger(FixedPoint({cfhe_base->GetALU()->Gate_NOT(r)}), false);
 }
 
-const CFHE_Integer CFHE_Integer::operator~() const {
+const Einteger Einteger::operator~() const {
     return *this ^ 0xFFFFFFFFFFFFFFFFUL;
 }
 
-const CFHE_Integer CFHE_Integer::operator&&(const CFHE_Integer &other) const {
+const Einteger Einteger::operator&&(const Einteger &other) const {
     BinaryDigit r1 = data[0];
     for (size_t i = 1; i < size; i++) {
         r1 = cfhe_base->GetALU()->Gate_OR(r1, data[i]);
@@ -478,22 +478,21 @@ const CFHE_Integer CFHE_Integer::operator&&(const CFHE_Integer &other) const {
     for (size_t i = 1; i < other.size; i++) {
         r2 = cfhe_base->GetALU()->Gate_OR(r2, other.data[i]);
     }
-    return CFHE_Integer(FixedPoint({cfhe_base->GetALU()->Gate_AND(r1, r2)}),
-                        false);
+    return Einteger(FixedPoint({cfhe_base->GetALU()->Gate_AND(r1, r2)}), false);
 }
 
-const CFHE_Integer CFHE_Integer::operator&&(uint64_t other) const {
+const Einteger Einteger::operator&&(uint64_t other) const {
     if (!other)
-        return CFHE_Integer(
-            FixedPoint({cfhe_base->GetALU()->GetConstantFalse()}), false);
+        return Einteger(FixedPoint({cfhe_base->GetALU()->GetConstantFalse()}),
+                        false);
     BinaryDigit r = data[0];
     for (size_t i = 1; i < size; i++) {
         r = cfhe_base->GetALU()->Gate_OR(r, data[i]);
     }
-    return CFHE_Integer(FixedPoint({r}), false);
+    return Einteger(FixedPoint({r}), false);
 }
 
-const CFHE_Integer CFHE_Integer::operator||(const CFHE_Integer &other) const {
+const Einteger Einteger::operator||(const Einteger &other) const {
     BinaryDigit r1 = data[0];
     for (size_t i = 1; i < size; i++) {
         r1 = cfhe_base->GetALU()->Gate_OR(r1, data[i]);
@@ -502,66 +501,65 @@ const CFHE_Integer CFHE_Integer::operator||(const CFHE_Integer &other) const {
     for (size_t i = 1; i < other.size; i++) {
         r2 = cfhe_base->GetALU()->Gate_OR(r2, other.data[i]);
     }
-    return CFHE_Integer(FixedPoint({cfhe_base->GetALU()->Gate_OR(r1, r2)}),
-                        false);
+    return Einteger(FixedPoint({cfhe_base->GetALU()->Gate_OR(r1, r2)}), false);
 }
 
-const CFHE_Integer CFHE_Integer::operator||(uint64_t other) const {
+const Einteger Einteger::operator||(uint64_t other) const {
     if (other)
-        return CFHE_Integer(
-            FixedPoint({cfhe_base->GetALU()->GetConstantTrue()}), false);
+        return Einteger(FixedPoint({cfhe_base->GetALU()->GetConstantTrue()}),
+                        false);
     BinaryDigit r = data[0];
     for (size_t i = 1; i < size; i++) {
         r = cfhe_base->GetALU()->Gate_OR(r, data[i]);
     }
-    return CFHE_Integer(FixedPoint({r}), false);
+    return Einteger(FixedPoint({r}), false);
 }
 
-const CFHE_Integer CFHE_Integer::operator++() {
+const Einteger Einteger::operator++() {
     *this += 1;
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator++(int) {
-    CFHE_Integer tmp = *this;
+const Einteger Einteger::operator++(int) {
+    Einteger tmp = *this;
     *this += 1;
     return tmp;
 }
 
-const CFHE_Integer CFHE_Integer::operator--() {
+const Einteger Einteger::operator--() {
     *this -= 1;
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator--(int) {
-    CFHE_Integer tmp = *this;
+const Einteger Einteger::operator--(int) {
+    Einteger tmp = *this;
     *this -= 1;
     return tmp;
 }
 
-const CFHE_Integer CFHE_Integer::operator<<(int s) {
-    return CFHE_Integer(cfhe_base->GetALU()->ShiftLeft(data, s), sign);
+const Einteger Einteger::operator<<(int s) {
+    return Einteger(cfhe_base->GetALU()->ShiftLeft(data, s), sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator<<=(int s) {
+const Einteger Einteger::operator<<=(int s) {
     _sync_var();
     data = cfhe_base->GetALU()->ShiftLeft(data, s);
     _sync_var();
     return *this;
 }
 
-const CFHE_Integer CFHE_Integer::operator>>(int s) {
-    return CFHE_Integer(cfhe_base->GetALU()->ShiftRight(data, s, sign), sign);
+const Einteger Einteger::operator>>(int s) {
+    return Einteger(cfhe_base->GetALU()->ShiftRight(data, s, sign), sign);
 }
 
-const CFHE_Integer CFHE_Integer::operator>>=(int s) {
+const Einteger Einteger::operator>>=(int s) {
     _sync_var();
     data = cfhe_base->GetALU()->ShiftRight(data, s, sign);
     _sync_var();
     return *this;
 }
 
-CFHE_Integer &CFHE_Integer::operator=(const CFHE_Integer &other) {
+Einteger &Einteger::operator=(const Einteger &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
     data = o;
@@ -569,15 +567,15 @@ CFHE_Integer &CFHE_Integer::operator=(const CFHE_Integer &other) {
     return *this;
 }
 
-CFHE_Integer &CFHE_Integer::operator=(uint64_t other) {
+Einteger &Einteger::operator=(uint64_t other) {
     _sync_var();
     // TODO: In client-mode, this should be done by encrypting
-    *this = CFHE_Integer(cfhe_base->GetConstantInt(other, size), sign);
+    *this = Einteger(cfhe_base->GetConstantInt(other, size), sign);
     _sync_var();
     return *this;
 }
 
-CFHE_Integer::operator bool() const {
+Einteger::operator bool() const {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
@@ -585,7 +583,7 @@ CFHE_Integer::operator bool() const {
     return (bool)cfhe_base->DecryptInt(data, size);
 }
 
-CFHE_Integer::operator int8_t() const {
+Einteger::operator int8_t() const {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
@@ -593,7 +591,7 @@ CFHE_Integer::operator int8_t() const {
     return (int8_t)sign_extend(cfhe_base->DecryptInt(data, size), size);
 }
 
-CFHE_Integer::operator uint8_t() const {
+Einteger::operator uint8_t() const {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
@@ -601,7 +599,7 @@ CFHE_Integer::operator uint8_t() const {
     return (uint8_t)cfhe_base->DecryptInt(data, size);
 }
 
-CFHE_Integer::operator int16_t() const {
+Einteger::operator int16_t() const {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
@@ -609,7 +607,7 @@ CFHE_Integer::operator int16_t() const {
     return (int16_t)sign_extend(cfhe_base->DecryptInt(data, size), size);
 }
 
-CFHE_Integer::operator uint16_t() const {
+Einteger::operator uint16_t() const {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
@@ -617,7 +615,7 @@ CFHE_Integer::operator uint16_t() const {
     return (uint16_t)cfhe_base->DecryptInt(data, size);
 }
 
-CFHE_Integer::operator int32_t() const {
+Einteger::operator int32_t() const {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
@@ -625,7 +623,7 @@ CFHE_Integer::operator int32_t() const {
     return (int32_t)sign_extend(cfhe_base->DecryptInt(data, size), size);
 }
 
-CFHE_Integer::operator uint32_t() const {
+Einteger::operator uint32_t() const {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
@@ -633,7 +631,7 @@ CFHE_Integer::operator uint32_t() const {
     return (uint32_t)cfhe_base->DecryptInt(data, size);
 }
 
-CFHE_Integer::operator int64_t() const {
+Einteger::operator int64_t() const {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
@@ -641,7 +639,7 @@ CFHE_Integer::operator int64_t() const {
     return (int64_t)sign_extend(cfhe_base->DecryptInt(data, size), size);
 }
 
-CFHE_Integer::operator uint64_t() const {
+Einteger::operator uint64_t() const {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
@@ -649,7 +647,7 @@ CFHE_Integer::operator uint64_t() const {
     return (uint64_t)cfhe_base->DecryptInt(data, size);
 }
 
-CFHE_Integer::operator double() const {
+Einteger::operator double() const {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
@@ -657,14 +655,14 @@ CFHE_Integer::operator double() const {
     return (double)sign_extend(cfhe_base->DecryptInt(data, size), size);
 }
 
-ostream &computefhe::operator<<(ostream &out, const CFHE_Integer &obj) {
+ostream &computefhe::operator<<(ostream &out, const Einteger &obj) {
     // Client-mode only
     if (!CLIENT_MODE)
         OPENFHE_THROW("Not allowed in server mode.");
 
     if (obj.sign) {
-        out << CFHE_Integer::sign_extend(
-            cfhe_base->DecryptInt(obj.data, obj.size), obj.size);
+        out << Einteger::sign_extend(cfhe_base->DecryptInt(obj.data, obj.size),
+                                     obj.size);
     } else {
         out << (uint64_t)(cfhe_base->DecryptInt(obj.data, obj.size));
     }

@@ -5,7 +5,7 @@
 using namespace computefhe;
 
 template <typename T, typename U>
-Eitem<T, U>::Eitem(Evector<T> &vec, const CFHE_Integer &idx) : data(vec) {
+Eitem<T, U>::Eitem(Evector<T> &vec, const Einteger &idx) : data(vec) {
     size_t n = vec.size();
     size_t bit_size =
         (n > 1) ? static_cast<size_t>(std::ceil(std::log2(n))) : 1;
@@ -48,12 +48,12 @@ template <typename T, typename U> Eitem<T, U>::operator T() const {
                                                         result[d]);
             }
         }
-        return CFHE_Integer(result, data.at(0).isSigned());
+        return Einteger(result, data.at(0).isSigned());
     }
     return data[p_index];
 }
 
-template <> Eitem<CFHE_FixedPoint, double>::operator CFHE_FixedPoint() const {
+template <> Eitem<Efixedpoint, double>::operator Efixedpoint() const {
     if (encrypted_index) {
         // TODO: optimize this by using ciphertext-plaintext comparison
         BinaryDigit c = cfhe_base->GetALU()->CmpEq(
@@ -74,8 +74,8 @@ template <> Eitem<CFHE_FixedPoint, double>::operator CFHE_FixedPoint() const {
                                                         result[d]);
             }
         }
-        return CFHE_FixedPoint(result, data.at(0).getFracSize(),
-                               data.at(0).isSigned());
+        return Efixedpoint(result, data.at(0).getFracSize(),
+                           data.at(0).isSigned());
     }
     return data[p_index];
 }
@@ -150,62 +150,56 @@ template <typename T, typename U> T Eitem<T, U>::operator^(U b) const {
 }
 
 template <typename T, typename U>
-CFHE_Integer Eitem<T, U>::operator==(const T &b) const {
+Einteger Eitem<T, U>::operator==(const T &b) const {
+    return static_cast<T>(*this) == b;
+}
+
+template <typename T, typename U> Einteger Eitem<T, U>::operator==(U b) const {
     return static_cast<T>(*this) == b;
 }
 
 template <typename T, typename U>
-CFHE_Integer Eitem<T, U>::operator==(U b) const {
-    return static_cast<T>(*this) == b;
+Einteger Eitem<T, U>::operator!=(const T &b) const {
+    return static_cast<T>(*this) != b;
 }
 
-template <typename T, typename U>
-CFHE_Integer Eitem<T, U>::operator!=(const T &b) const {
+template <typename T, typename U> Einteger Eitem<T, U>::operator!=(U b) const {
     return static_cast<T>(*this) != b;
 }
 
 template <typename T, typename U>
-CFHE_Integer Eitem<T, U>::operator!=(U b) const {
-    return static_cast<T>(*this) != b;
+Einteger Eitem<T, U>::operator>(const T &b) const {
+    return static_cast<T>(*this) > b;
 }
 
-template <typename T, typename U>
-CFHE_Integer Eitem<T, U>::operator>(const T &b) const {
+template <typename T, typename U> Einteger Eitem<T, U>::operator>(U b) const {
     return static_cast<T>(*this) > b;
 }
 
 template <typename T, typename U>
-CFHE_Integer Eitem<T, U>::operator>(U b) const {
-    return static_cast<T>(*this) > b;
+Einteger Eitem<T, U>::operator>=(const T &b) const {
+    return static_cast<T>(*this) >= b;
 }
 
-template <typename T, typename U>
-CFHE_Integer Eitem<T, U>::operator>=(const T &b) const {
+template <typename T, typename U> Einteger Eitem<T, U>::operator>=(U b) const {
     return static_cast<T>(*this) >= b;
 }
 
 template <typename T, typename U>
-CFHE_Integer Eitem<T, U>::operator>=(U b) const {
-    return static_cast<T>(*this) >= b;
+Einteger Eitem<T, U>::operator<(const T &b) const {
+    return static_cast<T>(*this) < b;
 }
 
-template <typename T, typename U>
-CFHE_Integer Eitem<T, U>::operator<(const T &b) const {
+template <typename T, typename U> Einteger Eitem<T, U>::operator<(U b) const {
     return static_cast<T>(*this) < b;
 }
 
 template <typename T, typename U>
-CFHE_Integer Eitem<T, U>::operator<(U b) const {
-    return static_cast<T>(*this) < b;
-}
-
-template <typename T, typename U>
-CFHE_Integer Eitem<T, U>::operator<=(const T &b) const {
+Einteger Eitem<T, U>::operator<=(const T &b) const {
     return static_cast<T>(*this) <= b;
 }
 
-template <typename T, typename U>
-CFHE_Integer Eitem<T, U>::operator<=(U b) const {
+template <typename T, typename U> Einteger Eitem<T, U>::operator<=(U b) const {
     return static_cast<T>(*this) <= b;
 }
 
@@ -351,7 +345,7 @@ template <typename T, typename U> T Eitem<T, U>::operator--(int) {
     return old;
 }
 
-template class Evector<CFHE_Integer>;
-template class Eitem<CFHE_Integer, uint64_t>;
-template class Evector<CFHE_FixedPoint>;
-template class Eitem<CFHE_FixedPoint, double>;
+template class Evector<Einteger>;
+template class Eitem<Einteger, uint64_t>;
+template class Evector<Efixedpoint>;
+template class Eitem<Efixedpoint, double>;

@@ -99,8 +99,11 @@ Einteger::Einteger(int64_t d) : Einteger(d, 8) {}
 Einteger::Einteger(size_t n_digits, bool is_signed) {
     if (cfhe_base == nullptr)
         Init();
-    // TODO: In client-mode, this should be done by encrypting
-    data = cfhe_base->GetConstantInt(0, n_digits);
+    if (CLIENT_MODE) {
+        data = cfhe_base->EncryptInt(0, n_digits);
+    } else {
+        data = cfhe_base->GetConstantInt(0, n_digits);
+    }
     size = n_digits;
     sign = is_signed;
 }
@@ -108,8 +111,11 @@ Einteger::Einteger(size_t n_digits, bool is_signed) {
 Einteger::Einteger(int64_t d, size_t n_digits) {
     if (cfhe_base == nullptr)
         Init();
-    // TODO: In client-mode, this should be done by encrypting
-    data = cfhe_base->GetConstantInt((uint64_t)d, n_digits);
+    if (CLIENT_MODE) {
+        data = cfhe_base->EncryptInt((uint64_t)d, n_digits);
+    } else {
+        data = cfhe_base->GetConstantInt((uint64_t)d, n_digits);
+    }
     size = n_digits;
     sign = true;
 }
@@ -117,8 +123,11 @@ Einteger::Einteger(int64_t d, size_t n_digits) {
 Einteger::Einteger(uint64_t d, size_t n_digits) {
     if (cfhe_base == nullptr)
         Init();
-    // TODO: In client-mode, this should be done by encrypting
-    data = cfhe_base->GetConstantInt(d, n_digits);
+    if (CLIENT_MODE) {
+        data = cfhe_base->EncryptInt(d, n_digits);
+    } else {
+        data = cfhe_base->GetConstantInt(d, n_digits);
+    }
     size = n_digits;
     sign = false;
 }
@@ -569,8 +578,11 @@ Einteger &Einteger::operator=(const Einteger &other) {
 
 Einteger &Einteger::operator=(uint64_t other) {
     _sync_var();
-    // TODO: In client-mode, this should be done by encrypting
-    *this = Einteger(cfhe_base->GetConstantInt(other, size), sign);
+    if (CLIENT_MODE) {
+        *this = Einteger(cfhe_base->EncryptInt(other, size), sign);
+    } else {
+        *this = Einteger(cfhe_base->GetConstantInt(other, size), sign);
+    }
     _sync_var();
     return *this;
 }

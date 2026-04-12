@@ -1,21 +1,5 @@
 cmake_minimum_required (VERSION 3.5.1)
 
-### To use gcc/g++ on a Macintosh, you must set the Compilers
-### here, not inside the project
-##if(APPLE)
-##       set(CMAKE_C_COMPILER "/usr/local/bin/gcc-7")
-##       set(CMAKE_CXX_COMPILER "/usr/local/bin/g++-7")
-##endif()
-### TODO: for now, we use CLang for Mac
-###
-### In order to create OpenFHE's static libraries you should enable
-### the BUILD_STATIC option. For that, you run "cmake .. -DBUILD_STATIC=ON".
-### After having your link completed you will find static libs
-### with the suffix "_static" in ./build/libs/.
-### Examples: OPENFHEpke_static.a, OPENFHEcore_static.a, etc.
-### After you run "make install" in your build directory, you can build your custom application.
-### If you need your application to be linked statically, then run "cmake .. -DBUILD_STATIC=ON"
-
 project(computefhe CXX)
 set(CMAKE_CXX_STANDARD 17)
 option( BUILD_STATIC "Set to ON to include static versions of the library" OFF)
@@ -40,7 +24,6 @@ include_directories( ${OpenFHE_INCLUDE}/third-party/include )
 include_directories( ${OpenFHE_INCLUDE}/core )
 include_directories( ${OpenFHE_INCLUDE}/pke )
 include_directories( ${OpenFHE_INCLUDE}/binfhe )
-### add directories for other OpenFHE modules as needed for your project
 include_directories( ${PROJECT_SOURCE_DIR}/include )
 
 link_directories( ${OpenFHE_LIBDIR} )
@@ -52,12 +35,6 @@ else()
     set( CMAKE_EXE_LINKER_FLAGS ${OpenFHE_EXE_LINKER_FLAGS} )
     link_libraries( ${OpenFHE_SHARED_LIBRARIES} )
 endif()
-
-### ADD YOUR EXECUTABLE(s) HERE
-### add_executable( EXECUTABLE-NAME SOURCES )
-###
-### EXAMPLE:
-### add_executable( test file.cpp )
 
 set(CORE_SOURCES
     src/core/ComputeFHE.cpp
@@ -86,25 +63,17 @@ set(TEST_SOURCES
     tests/test.cpp
 )
 
-add_executable(computefhe
-    app/main.cpp
+file(GLOB EXAMPLE_SOURCES "examples/*.cpp")
+
+add_library(computefhe SHARED
     ${CORE_SOURCES}
     ${CPPUTILS_SOURCES}
     ${SIMULATOR_SOURCES}
 )
 
-add_executable(computefhe_test
-    ${CORE_SOURCES}
-    ${CPPUTILS_SOURCES}
-    ${SIMULATOR_SOURCES}
-    ${TEST_SOURCES}
-)
-
-add_executable(basic_sort
-    app/basic_sort.cpp
-    ${CORE_SOURCES}
-    ${CPPUTILS_SOURCES}
-    ${SIMULATOR_SOURCES}
+set_target_properties(computefhe PROPERTIES
+    VERSION 1.0.0
+    SOVERSION 1
 )
 
 target_include_directories(computefhe
@@ -114,25 +83,33 @@ target_include_directories(computefhe
         ${PROJECT_SOURCE_DIR}/include
 )
 
-target_include_directories(computefhe_test
-    PRIVATE
-        ${PROJECT_SOURCE_DIR}/src
-        ${PROJECT_SOURCE_DIR}/tests/include
-    PUBLIC
-        ${PROJECT_SOURCE_DIR}/include
+foreach(EXAMPLE_FILE ${EXAMPLE_SOURCES})
+    get_filename_component(EXE_NAME ${EXAMPLE_FILE} NAME_WE)
+
+    set(EXE_TARGET "ex_${EXE_NAME}")
+    add_executable(${EXE_TARGET} ${EXAMPLE_FILE})
+    target_link_libraries(${EXE_TARGET} PRIVATE computefhe)
+
+    set_target_properties(${EXE_TARGET} PROPERTIES
+        OUTPUT_NAME "${EXE_NAME}"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples"
+    )
+endforeach()
+
+add_executable(computefhe_test
+    ${TEST_SOURCES}
 )
 
-target_include_directories(basic_sort
+target_link_libraries(computefhe_test PRIVATE computefhe)
+target_include_directories(computefhe_test
     PRIVATE
-        ${PROJECT_SOURCE_DIR}/src
-    PUBLIC
-        ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/tests/include
 )
 
 find_program(CLANG_FORMAT "clang-format")
 if(CLANG_FORMAT)
     file(GLOB_RECURSE FORMAT_SOURCES
-        ${PROJECT_SOURCE_DIR}/app/*.cpp
+        ${PROJECT_SOURCE_DIR}/examples/*.cpp
         ${PROJECT_SOURCE_DIR}/include/*.h
         ${PROJECT_SOURCE_DIR}/src/*.cpp
         ${PROJECT_SOURCE_DIR}/src/*.h
@@ -144,7 +121,4 @@ if(CLANG_FORMAT)
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         COMMENT "Formatting sources with clang-format"
     )
-    add_dependencies(computefhe format)
-    add_dependencies(computefhe_test format)
-    add_dependencies(basic_sort format)
 endif()

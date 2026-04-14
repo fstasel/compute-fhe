@@ -24,11 +24,19 @@ void CFHE_Test::StartTimer() { t0 = timeNow(); }
 
 double CFHE_Test::ReadTimer() { return (timeNow() - t0).count() / 1e6; }
 
-CFHE_Test::CFHE_Test(CryptoContextParam param, ALUType alu_type) {
+CFHE_Test::CFHE_Test(CryptoContextParam param, ALUType alu_type,
+                     bool simulation_mode) {
     initRandomGenerator(UINT32_MAX);
     cout << "Creating ComputeFHE instance..." << endl;
-    cfhe_base = new ComputeFHE(param, alu_type);
+    cfhe_base = new ComputeFHE(param, alu_type, simulation_mode);
     cout << "done!" << endl;
+}
+
+CFHE_Test::~CFHE_Test() {
+    if (cfhe_base->GetSimulator() != nullptr) {
+        cfhe_base->GetSimulator()->PrintStats();
+    }
+    delete cfhe_base;
 }
 
 uint CFHE_Test::GetNumTest() { return num_test; }
@@ -159,6 +167,10 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
 
         case TT_MUL:
             report = TestMul(n_digits);
+            break;
+
+        case TT_DIVU:
+            report = TestDivU(n_digits);
             break;
 
         default:
@@ -317,6 +329,7 @@ void CFHE_Test::StartTest() {
         Test(TT_CMPLT, d);
         Test(TT_FULLMUL, d);
         Test(TT_MUL, d);
+        Test(TT_DIVU, d);
     }
 }
 

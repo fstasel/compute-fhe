@@ -421,3 +421,29 @@ TestReport CFHE_Test::TestMul(uint n_digits) {
     PrintTestReport(report, n1, n2, result, expected);
     return report;
 }
+
+TestReport CFHE_Test::TestDivU(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber() % (1UL << n_digits);
+    while (n2 == 0) {
+        n2 = CreateRandomNumber() % (1UL << n_digits);
+    }
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    uint expected_q = n1 / n2;
+    uint expected_r = n1 % n2;
+    FixedPoint ct_result_q;
+    FixedPoint ct_result_r;
+    StartTimer();
+    cfhe_base->GetALU()->DivU(ct_n1, ct_n2, ct_result_q, ct_result_r);
+    report.delta_t = ReadTimer();
+    uint result_q = cfhe_base->DecryptInt(ct_result_q);
+    uint result_r = cfhe_base->DecryptInt(ct_result_r);
+    report.test_result = (result_q == expected_q && result_r == expected_r)
+                             ? TR_SUCCESS
+                             : TR_FAIL;
+    PrintTestReport(report, n1, n2, result_q, expected_q);
+    PrintTestReport(report, n1, n2, result_r, expected_r);
+    return report;
+}

@@ -26,7 +26,8 @@ namespace computefhe_test {
         TT_CMPGTEQ,
         TT_CMPLT,
         TT_FULLMUL,
-        TT_MUL
+        TT_MUL,
+        TT_DIVU
     };
 
     inline const char *ToString(TestType v) {
@@ -79,6 +80,8 @@ namespace computefhe_test {
             return "FULLMUL";
         case TT_MUL:
             return "MUL";
+        case TT_DIVU:
+            return "DIVU";
         default:
             return "[Unknown]";
         }

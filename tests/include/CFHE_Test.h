@@ -31,7 +31,9 @@ namespace computefhe_test {
         void regenerateKeys();
 
       public:
-        CFHE_Test(CryptoContextParam param, ALUType alu_type);
+        CFHE_Test(CryptoContextParam param, ALUType alu_type,
+                  bool simulation_mode = false);
+        ~CFHE_Test();
 
         uint CreateRandomNumber();
         void StartTimer();
@@ -79,6 +81,7 @@ namespace computefhe_test {
         TestReport TestCmpLT(uint n_digits);
         TestReport TestFullMul(uint n_digits);
         TestReport TestMul(uint n_digits);
+        TestReport TestDivU(uint n_digits);
 
         void StartNoiseTest();
         void StartTest();

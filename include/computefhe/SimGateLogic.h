@@ -37,6 +37,8 @@ namespace computefhe {
         BinaryDigit CmpLT(const FixedPoint &a, const FixedPoint &b);
         FixedPoint FullMul(const FixedPoint &a, const FixedPoint &b);
         FixedPoint Mul(const FixedPoint &a, const FixedPoint &b);
+        void DivU(const FixedPoint &a, const FixedPoint &b, FixedPoint &q,
+                  FixedPoint &r);
         BinaryDigit Mux(BinaryDigit s, BinaryDigit a, BinaryDigit b);
         void Swap_if(const BinaryDigit cond, BinaryDigit &a, BinaryDigit &b);
     };

@@ -108,6 +108,7 @@ target_include_directories(computefhe_test
 
 find_program(CLANG_FORMAT "clang-format")
 if(CLANG_FORMAT)
+    message(STATUS "Found clang-format: ${CLANG_FORMAT}")
     file(GLOB_RECURSE FORMAT_SOURCES
         ${PROJECT_SOURCE_DIR}/examples/*.cpp
         ${PROJECT_SOURCE_DIR}/include/*.h
@@ -116,9 +117,12 @@ if(CLANG_FORMAT)
         ${PROJECT_SOURCE_DIR}/tests/*.cpp
         ${PROJECT_SOURCE_DIR}/tests/*.h
     )
-    add_custom_target(format
+    add_custom_target(format ALL
         COMMAND ${CLANG_FORMAT} -style=file -i ${FORMAT_SOURCES}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
         COMMENT "Formatting sources with clang-format"
+        VERBATIM
     )
+else()
+    message(WARNING "clang-format not found. The 'format' target will not be available.")
 endif()

@@ -93,5 +93,7 @@ namespace computefhe {
         virtual FixedPoint FullMul(const FixedPoint &a,
                                    const FixedPoint &b) = 0;
         virtual FixedPoint Mul(const FixedPoint &a, const FixedPoint &b) = 0;
+        virtual void DivU(const FixedPoint &a, const FixedPoint &b,
+                          FixedPoint &q, FixedPoint &r) = 0;
     };
 } // namespace computefhe

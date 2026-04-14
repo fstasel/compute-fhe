@@ -312,6 +312,32 @@ FixedPoint ALUGateLogic::Mul(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
+void ALUGateLogic::DivU(const FixedPoint &a, const FixedPoint &b, FixedPoint &q,
+                        FixedPoint &r) {
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    auto &cc = cfhe_base->GetBinFHEContext();
+    size_t n_digit = a.size();
+
+    r = cfhe_base->GetConstantInt(0, n_digit);
+    q = a;
+    BinaryDigit c;
+    FixedPoint t(n_digit);
+    for (uint8_t i = 0; i < n_digit; i++) {
+        c = q.back();
+        q = ShiftLeft(q, 1);
+        r = ShiftLeft(r, 1);
+        r[0] = c;
+        c = CmpLTEq_U(b, r);
+        q[0] = c;
+        for (uint8_t j = 0; j < n_digit; j++) {
+            t[j] = cc.EvalBinGate(AND, c, b[j]);
+        }
+        r = SubNC(r, t);
+    }
+}
+
 BinaryDigit ALUGateLogic::Mux(BinaryDigit s, BinaryDigit a, BinaryDigit b) {
     return cfhe_base->GetBinFHEContext().EvalBinGate(
         CMUX, vector({(LWECiphertext)a, (LWECiphertext)b, (LWECiphertext)s}));

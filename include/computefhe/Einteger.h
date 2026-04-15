@@ -15,10 +15,20 @@ namespace computefhe {
     extern bool CLIENT_MODE;
 
     class Einteger {
+      private:
+        static bool div_cache(const FixedPoint &a, const FixedPoint &b);
+        static bool div_cache(const FixedPoint &a, uint64_t b);
+        static bool div_cache(uint64_t a, const FixedPoint &b);
+
       protected:
         FixedPoint data;
         size_t size;
         bool sign;
+
+        static FixedPoint cached_divident;
+        static FixedPoint cached_divisor;
+        static FixedPoint cached_quotient;
+        static FixedPoint cached_remainder;
 
         static int64_t sign_extend(uint64_t d, size_t n_digits);
         void _sync_var();
@@ -62,12 +72,20 @@ namespace computefhe {
         virtual const Einteger operator-=(const Einteger &);
         virtual const Einteger operator*(const Einteger &) const;
         virtual const Einteger operator*=(const Einteger &);
+        virtual const Einteger operator/(const Einteger &) const;
+        virtual const Einteger operator/=(const Einteger &);
+        virtual const Einteger operator%(const Einteger &) const;
+        virtual const Einteger operator%=(const Einteger &);
         virtual const Einteger operator+(uint64_t) const;
         virtual const Einteger operator+=(uint64_t);
         virtual const Einteger operator-(uint64_t) const;
         virtual const Einteger operator-=(uint64_t);
         virtual const Einteger operator*(uint64_t) const;
         virtual const Einteger operator*=(uint64_t);
+        virtual const Einteger operator/(uint64_t) const;
+        virtual const Einteger operator/=(uint64_t);
+        virtual const Einteger operator%(uint64_t) const;
+        virtual const Einteger operator%=(uint64_t);
         const Einteger operator-() const;
 
         // Logic operators
@@ -120,9 +138,13 @@ namespace computefhe {
 
         // Friend functions
         friend ostream &operator<<(ostream &out, const Einteger &obj);
+        friend const Einteger operator/(uint64_t a, const Einteger &b);
+        friend const Einteger operator%(uint64_t a, const Einteger &b);
     };
 
     ostream &operator<<(ostream &out, const Einteger &obj);
+    const Einteger operator/(uint64_t a, const Einteger &b);
+    const Einteger operator%(uint64_t a, const Einteger &b);
 
     template <typename T, size_t BITS, bool SIGNED>
     class EInt : public Einteger {

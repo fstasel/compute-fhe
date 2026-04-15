@@ -6,6 +6,10 @@ using namespace computefhe;
 namespace computefhe {
     ComputeFHE *cfhe_base = nullptr;
     bool CLIENT_MODE = false;
+    FixedPoint Einteger::cached_divident;
+    FixedPoint Einteger::cached_divisor;
+    FixedPoint Einteger::cached_quotient;
+    FixedPoint Einteger::cached_remainder;
 } // namespace computefhe
 
 void computefhe::Init(CryptoContextParam cc_param, ALUType alu_type,
@@ -306,6 +310,105 @@ const Einteger Einteger::operator*=(const Einteger &other) {
     return *this;
 }
 
+bool Einteger::div_cache(const FixedPoint &a, const FixedPoint &b) {
+    if (cached_divident.size() != a.size() || cached_divisor.size() != b.size())
+        return false;
+
+    for (size_t i = 0; i < a.size(); i++) {
+        if (cached_divident[i] != a[i])
+            return false;
+    }
+    for (size_t i = 0; i < b.size(); i++) {
+        if (cached_divisor[i] != b[i])
+            return false;
+    }
+    return true;
+}
+
+bool Einteger::div_cache(const FixedPoint &a, uint64_t b) {
+    static uint64_t cached_b = 0;
+    if (cached_divident.size() != a.size() || cached_b != b) {
+        cached_b = b;
+        return false;
+    }
+    for (size_t i = 0; i < a.size(); i++) {
+        if (cached_divident[i] != a[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Einteger::div_cache(uint64_t a, const FixedPoint &b) {
+    static uint64_t cached_a = 0;
+    if (cached_a != a || cached_divisor.size() != b.size()) {
+        cached_a = a;
+        return false;
+    }
+    for (size_t i = 0; i < b.size(); i++) {
+        if (cached_divisor[i] != b[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+const Einteger Einteger::operator/(const Einteger &other) const {
+    FixedPoint a, b;
+    bool s = promote(*this, other, a, b);
+    if (div_cache(data, other.data)) {
+        return Einteger(cached_quotient, s);
+    }
+    cached_divident = data;
+    cached_divisor = other.data;
+    cfhe_base->GetALU()->DivU(a, b, cached_quotient, cached_remainder);
+    return Einteger(cached_quotient, s);
+}
+
+const Einteger Einteger::operator/=(const Einteger &other) {
+    _sync_var();
+    FixedPoint o = promote(other, size);
+    if (div_cache(data, other.data)) {
+        data = cached_quotient;
+        _sync_var();
+        return *this;
+    }
+    cached_divident = data;
+    cached_divisor = other.data;
+    cfhe_base->GetALU()->DivU(data, o, cached_quotient, cached_remainder);
+    data = cached_quotient;
+    _sync_var();
+    return *this;
+}
+
+const Einteger Einteger::operator%(const Einteger &other) const {
+    FixedPoint a, b;
+    bool s = promote(*this, other, a, b);
+    if (div_cache(data, other.data)) {
+        return Einteger(cached_remainder, s);
+    }
+    cached_divident = data;
+    cached_divisor = other.data;
+    cfhe_base->GetALU()->DivU(a, b, cached_quotient, cached_remainder);
+    return Einteger(cached_remainder, s);
+}
+
+const Einteger Einteger::operator%=(const Einteger &other) {
+    _sync_var();
+    FixedPoint o = promote(other, size);
+    if (div_cache(data, other.data)) {
+        data = cached_remainder;
+        _sync_var();
+        return *this;
+    }
+    cached_divident = data;
+    cached_divisor = other.data;
+    cfhe_base->GetALU()->DivU(data, o, cached_quotient, cached_remainder);
+    data = cached_remainder;
+    _sync_var();
+    return *this;
+}
+
 const Einteger Einteger::operator+(uint64_t other) const {
     // TODO: optimize this by using ciphertext-plaintext arithmetic
     return *this + Einteger(cfhe_base->GetConstantInt(other, size), sign);
@@ -334,6 +437,90 @@ const Einteger Einteger::operator*(uint64_t other) const {
 const Einteger Einteger::operator*=(uint64_t other) {
     // TODO: optimize this by using ciphertext-plaintext arithmetic
     return *this *= Einteger(cfhe_base->GetConstantInt(other, size), sign);
+}
+
+const Einteger Einteger::operator/(uint64_t other) const {
+    if (div_cache(data, other)) {
+        return Einteger(cached_quotient, sign);
+    }
+    // TODO: optimize this by using ciphertext-plaintext arithmetic
+    FixedPoint o = cfhe_base->GetConstantInt(other, size);
+    cached_divident = data;
+    cached_divisor = o;
+    cfhe_base->GetALU()->DivU(data, o, cached_quotient, cached_remainder);
+    return Einteger(cached_quotient, sign);
+}
+
+const Einteger Einteger::operator/=(uint64_t other) {
+    _sync_var();
+    if (div_cache(data, other)) {
+        data = cached_quotient;
+        _sync_var();
+        return *this;
+    }
+    // TODO: optimize this by using ciphertext-plaintext arithmetic
+    FixedPoint o = cfhe_base->GetConstantInt(other, size);
+    cached_divident = data;
+    cached_divisor = o;
+    cfhe_base->GetALU()->DivU(data, o, cached_quotient, cached_remainder);
+    data = cached_quotient;
+    _sync_var();
+    return *this;
+}
+
+const Einteger Einteger::operator%(uint64_t other) const {
+    if (div_cache(data, other)) {
+        return Einteger(cached_remainder, sign);
+    }
+    // TODO: optimize this by using ciphertext-plaintext arithmetic
+    FixedPoint o = cfhe_base->GetConstantInt(other, size);
+    cached_divident = data;
+    cached_divisor = o;
+    cfhe_base->GetALU()->DivU(data, o, cached_quotient, cached_remainder);
+    return Einteger(cached_remainder, sign);
+}
+
+const Einteger Einteger::operator%=(uint64_t other) {
+    _sync_var();
+    if (div_cache(data, other)) {
+        data = cached_remainder;
+        _sync_var();
+        return *this;
+    }
+    // TODO: optimize this by using ciphertext-plaintext arithmetic
+    FixedPoint o = cfhe_base->GetConstantInt(other, size);
+    cached_divident = data;
+    cached_divisor = o;
+    cfhe_base->GetALU()->DivU(data, o, cached_quotient, cached_remainder);
+    data = cached_remainder;
+    _sync_var();
+    return *this;
+}
+
+const Einteger computefhe::operator/(uint64_t a, const Einteger &b) {
+    if (Einteger::div_cache(a, b.data)) {
+        return Einteger(Einteger::cached_quotient, b.sign);
+    }
+    // TODO: optimize this by using ciphertext-plaintext arithmetic
+    FixedPoint o = cfhe_base->GetConstantInt(a, b.size);
+    Einteger::cached_divident = o;
+    Einteger::cached_divisor = b.data;
+    cfhe_base->GetALU()->DivU(o, b.data, Einteger::cached_quotient,
+                              Einteger::cached_remainder);
+    return Einteger(Einteger::cached_quotient, b.sign);
+}
+
+const Einteger computefhe::operator%(uint64_t a, const Einteger &b) {
+    if (Einteger::div_cache(a, b.data)) {
+        return Einteger(Einteger::cached_remainder, b.sign);
+    }
+    // TODO: optimize this by using ciphertext-plaintext arithmetic
+    FixedPoint o = cfhe_base->GetConstantInt(a, b.size);
+    Einteger::cached_divident = o;
+    Einteger::cached_divisor = b.data;
+    cfhe_base->GetALU()->DivU(o, b.data, Einteger::cached_quotient,
+                              Einteger::cached_remainder);
+    return Einteger(Einteger::cached_remainder, b.sign);
 }
 
 const Einteger Einteger::operator-() const {
@@ -693,5 +880,5 @@ template class EInt<int64_t, 64, true>;
 template class EInt<uint64_t, 64, false>;
 
 // TODO: Ebool operators must behave differently
-// bool op integral_t -> (int)bool op integral_t -> Promoted -> (bool)Promoted
-// (bool)x = 0 if x == 0, else 1
+// bool op integral_t -> (int)bool op integral_t -> Promoted ->
+// (bool)Promoted (bool)x = 0 if x == 0, else 1

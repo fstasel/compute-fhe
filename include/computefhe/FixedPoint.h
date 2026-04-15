@@ -10,6 +10,8 @@ using namespace std;
 namespace computefhe {
 
     struct BinaryDigit {
+        static uint new_id;
+        uint id = 0;
         LWECiphertext c;
         LWEPlaintext p;
         BinaryDigit();
@@ -21,6 +23,8 @@ namespace computefhe {
         BinaryDigit &operator=(const BinaryDigit &other);
         BinaryDigit &operator=(const LWECiphertext &other);
         BinaryDigit &operator=(LWEPlaintext pt);
+        bool operator==(const BinaryDigit &other) const;
+        bool operator!=(const BinaryDigit &other) const;
         operator LWECiphertext &();
         operator const LWECiphertext &() const;
         operator ConstLWECiphertext() const;

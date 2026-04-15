@@ -539,8 +539,19 @@ void test_simulation() {
     s->PrintStats();
 }
 
+void test_div() {
+    Euint8 a = 100;
+    Euint8 b = 40;
+    cout << "a / b: " << a / b << endl;
+    cout << "a %= b: " << (a %= b) << endl;
+    cout << "a / 3: " << a / 3 << endl;
+    cout << "a %= 3: " << (a %= 3) << endl;
+    cout << "50 / b: " << 50 / b << endl;
+    cout << "50 % b: " << 50 % b << endl;
+}
+
 int main() {
-    computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, true);
+    computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, false);
 
     // test_arithmetic_operators();
     // test_arithmetic_assignment_operators();
@@ -556,7 +567,8 @@ int main() {
     // test_fp();
     // test_fp_vector();
     // test_fp_custom();
-    test_simulation();
+    test_div();
+    // test_simulation();
 
     computefhe::Finalize();
 

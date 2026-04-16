@@ -53,18 +53,24 @@ namespace computefhe {
         using Einteger::operator-=;
         using Einteger::operator*;
         using Einteger::operator*=;
+        using Einteger::operator/;
+        using Einteger::operator/=;
         virtual const Efixedpoint operator+(const Efixedpoint &) const;
         virtual const Efixedpoint operator+=(const Efixedpoint &);
         virtual const Efixedpoint operator-(const Efixedpoint &) const;
         virtual const Efixedpoint operator-=(const Efixedpoint &);
         virtual const Efixedpoint operator*(const Efixedpoint &) const;
         virtual const Efixedpoint operator*=(const Efixedpoint &);
+        virtual const Efixedpoint operator/(const Efixedpoint &) const;
+        virtual const Efixedpoint operator/=(const Efixedpoint &);
         virtual const Efixedpoint operator+(double) const;
         virtual const Efixedpoint operator+=(double);
         virtual const Efixedpoint operator-(double) const;
         virtual const Efixedpoint operator-=(double);
         virtual const Efixedpoint operator*(double) const;
         virtual const Efixedpoint operator*=(double);
+        virtual const Efixedpoint operator/(double) const;
+        virtual const Efixedpoint operator/=(double);
         const Efixedpoint operator-() const;
 
         // Increment & Decrement operators
@@ -99,8 +105,10 @@ namespace computefhe {
 
         // Friend functions
         friend ostream &operator<<(ostream &out, const Efixedpoint &obj);
+        friend const Efixedpoint operator/(double a, const Efixedpoint &b);
     };
     ostream &operator<<(ostream &out, const Efixedpoint &obj);
+    const Efixedpoint operator/(double a, const Efixedpoint &b);
 
     template <size_t TOTAL_BITS, size_t FRAC_BITS, bool SIGNED>
     class EFix : public Efixedpoint {

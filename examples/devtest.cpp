@@ -548,10 +548,18 @@ void test_div() {
     cout << "a %= 3: " << (a %= 3) << endl;
     cout << "50 / b: " << 50 / b << endl;
     cout << "50 % b: " << 50 % b << endl;
+
+    using MyEfix = EFix<15, 7, false>;
+    MyEfix c = 10.5;
+    MyEfix d = 4.2;
+    cout << "c / d: " << c / d << endl;
+    cout << "c /= d: " << (c /= d) << endl;
+    cout << "c / 0.5: " << c / 0.5 << endl;
+    cout << "11.25 / c: " << 11.25 / c << endl;
 }
 
 int main() {
-    computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, false);
+    computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, true);
 
     // test_arithmetic_operators();
     // test_arithmetic_assignment_operators();

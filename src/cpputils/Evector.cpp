@@ -125,6 +125,22 @@ template <typename T, typename U> T Eitem<T, U>::operator*(U b) const {
     return static_cast<T>(*this) * b;
 }
 
+template <typename T, typename U> T Eitem<T, U>::operator/(const T &b) const {
+    return static_cast<T>(*this) / b;
+}
+
+template <typename T, typename U> T Eitem<T, U>::operator/(U b) const {
+    return static_cast<T>(*this) / b;
+}
+
+template <typename T, typename U> T Eitem<T, U>::operator%(const T &b) const {
+    return static_cast<T>(*this) % b;
+}
+
+template <typename T, typename U> T Eitem<T, U>::operator%(U b) const {
+    return static_cast<T>(*this) % b;
+}
+
 template <typename T, typename U> T Eitem<T, U>::operator&(const T &b) const {
     return static_cast<T>(*this) & b;
 }
@@ -257,6 +273,28 @@ Eitem<T, U> &Eitem<T, U>::operator*=(const T &b) {
 
 template <typename T, typename U> Eitem<T, U> &Eitem<T, U>::operator*=(U b) {
     *this = static_cast<T>(*this) * b;
+    return *this;
+}
+
+template <typename T, typename U>
+Eitem<T, U> &Eitem<T, U>::operator/=(const T &b) {
+    *this = static_cast<T>(*this) / b;
+    return *this;
+}
+
+template <typename T, typename U> Eitem<T, U> &Eitem<T, U>::operator/=(U b) {
+    *this = static_cast<T>(*this) / b;
+    return *this;
+}
+
+template <typename T, typename U>
+Eitem<T, U> &Eitem<T, U>::operator%=(const T &b) {
+    *this = static_cast<T>(*this) % b;
+    return *this;
+}
+
+template <typename T, typename U> Eitem<T, U> &Eitem<T, U>::operator%=(U b) {
+    *this = static_cast<T>(*this) % b;
     return *this;
 }
 

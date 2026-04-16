@@ -27,6 +27,10 @@ namespace computefhe {
         T operator-(U b) const;
         T operator*(const T &b) const;
         T operator*(U b) const;
+        T operator/(const T &b) const;
+        T operator/(U b) const;
+        T operator%(const T &b) const;
+        T operator%(U b) const;
         T operator&(const T &b) const;
         T operator&(U b) const;
         T operator|(const T &b) const;
@@ -61,6 +65,10 @@ namespace computefhe {
         Eitem<T, U> &operator-=(U b);
         Eitem<T, U> &operator*=(const T &b);
         Eitem<T, U> &operator*=(U b);
+        Eitem<T, U> &operator/=(const T &b);
+        Eitem<T, U> &operator/=(U b);
+        Eitem<T, U> &operator%=(const T &b);
+        Eitem<T, U> &operator%=(U b);
         Eitem<T, U> &operator&=(const T &b);
         Eitem<T, U> &operator&=(U b);
         Eitem<T, U> &operator|=(const T &b);

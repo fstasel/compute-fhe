@@ -556,27 +556,42 @@ void test_div() {
     cout << "c /= d: " << (c /= d) << endl;
     cout << "c / 0.5: " << c / 0.5 << endl;
     cout << "11.25 / c: " << 11.25 / c << endl;
+
+    Evector<Euint8> vec(4);
+    Euint8 idx = 0;
+    vec[0] = 100;
+    vec[1] = 40;
+    vec[2] = vec[idx] / vec[1];
+    cout << "vec[2]: " << vec[2] << endl;
+    vec[3] = vec[idx] % vec[1];
+    cout << "vec[3]: " << vec[3] << endl;
+    cout << "vec[3] / 3: " << vec[3] / 3 << endl;
+    cout << "vec[3] % 3: " << vec[3] % 3 << endl;
+    vec[idx] %= vec[1];
+    cout << "vec[idx] %= vec[1]: " << vec[idx] << endl;
+    vec[idx] /= 5;
+    cout << "vec[idx] /= 5: " << vec[idx] << endl;
 }
 
 int main() {
     computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, true);
 
-    // test_arithmetic_operators();
-    // test_arithmetic_assignment_operators();
-    // test_comparison_operators();
-    // test_logic_operators();
-    // test_logic_assignment_operators();
-    // test_shift_operators();
-    // test_shift_assign_operators();
-    // test_condition();
-    // test_inc_dec();
-    // test_vector();
-    // test_vector_custom();
-    // test_fp();
-    // test_fp_vector();
-    // test_fp_custom();
+    test_arithmetic_operators();
+    test_arithmetic_assignment_operators();
+    test_comparison_operators();
+    test_logic_operators();
+    test_logic_assignment_operators();
+    test_shift_operators();
+    test_shift_assign_operators();
+    test_condition();
+    test_inc_dec();
+    test_vector();
+    test_vector_custom();
+    test_fp();
+    test_fp_vector();
+    test_fp_custom();
     test_div();
-    // test_simulation();
+    test_simulation();
 
     computefhe::Finalize();
 

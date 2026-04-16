@@ -115,9 +115,9 @@ namespace computefhe {
         const Einteger operator--(int);
 
         // Shift operators
-        const Einteger operator<<(int);
+        const Einteger operator<<(int) const;
         const Einteger operator<<=(int);
-        const Einteger operator>>(int);
+        const Einteger operator>>(int) const;
         const Einteger operator>>=(int);
 
         // Assignment operators

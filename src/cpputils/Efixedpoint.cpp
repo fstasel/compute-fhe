@@ -368,7 +368,7 @@ const Efixedpoint Efixedpoint::operator--(int) {
     return tmp;
 }
 
-const Efixedpoint Efixedpoint::operator<<(int i) {
+const Efixedpoint Efixedpoint::operator<<(int i) const {
     Einteger res = this->Einteger::operator<<(i);
     return Efixedpoint(res.getData(), frac_size, sign);
 }
@@ -378,7 +378,7 @@ const Efixedpoint Efixedpoint::operator<<=(int i) {
     return *this;
 }
 
-const Efixedpoint Efixedpoint::operator>>(int i) {
+const Efixedpoint Efixedpoint::operator>>(int i) const {
     Einteger res = this->Einteger::operator>>(i);
     return Efixedpoint(res.getData(), frac_size, sign);
 }

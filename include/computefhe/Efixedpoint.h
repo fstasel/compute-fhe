@@ -80,9 +80,9 @@ namespace computefhe {
         const Efixedpoint operator--(int);
 
         // Shift operators
-        const Efixedpoint operator<<(int);
+        const Efixedpoint operator<<(int) const;
         const Efixedpoint operator<<=(int);
-        const Efixedpoint operator>>(int);
+        const Efixedpoint operator>>(int) const;
         const Efixedpoint operator>>=(int);
 
         // Assignment operators

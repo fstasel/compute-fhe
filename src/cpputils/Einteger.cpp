@@ -733,7 +733,7 @@ const Einteger Einteger::operator--(int) {
     return tmp;
 }
 
-const Einteger Einteger::operator<<(int s) {
+const Einteger Einteger::operator<<(int s) const {
     return Einteger(cfhe_base->GetALU()->ShiftLeft(data, s), sign);
 }
 
@@ -744,7 +744,7 @@ const Einteger Einteger::operator<<=(int s) {
     return *this;
 }
 
-const Einteger Einteger::operator>>(int s) {
+const Einteger Einteger::operator>>(int s) const {
     return Einteger(cfhe_base->GetALU()->ShiftRight(data, s, sign), sign);
 }
 

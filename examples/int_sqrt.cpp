@@ -8,12 +8,13 @@ using namespace std;
 
 // Binary restoring square root algorithm
 template <typename T> T isqrt(T N) {
-    T x = 0;
-    T s = 0, sn;
-    int msb = (N.getSize() >> 1) - 1;
+    size_t out_sz = N.getSize() >> 1;
+    Einteger x(out_sz, false);
+    T s = 0, sn, diff;
+    int msb = out_sz - 1;
     for (int k = msb; k >= 0; --k) {
         uint64_t delta = (1ULL << k);
-        T diff = (x << (k + 1)) + (1ULL << (2 * k));
+        diff = ((T)x << (k + 1)) + (1ULL << (2 * k));
         Ebool c = ((sn = s + diff) <= N);
         BinaryDigit c0 = c.getData()[0];
         T mask = Einteger(vector<BinaryDigit>(N.getSize(), c0), false);

@@ -14,11 +14,11 @@ template <typename T> T isqrt(T N) {
     int msb = out_sz - 1;
     for (int k = msb; k >= 0; --k) {
         uint64_t delta = (1ULL << k);
-        diff = ((T)x << (k + 1)) + (1ULL << (2 * k));
+        diff = ((T)x << (k + 1)) | (1ULL << (2 * k));
         Ebool c = ((sn = s + diff) <= N);
         BinaryDigit c0 = c.getData()[0];
-        T mask = Einteger(vector<BinaryDigit>(N.getSize(), c0), false);
-        x += mask & delta;
+        T mask = Einteger(vector<BinaryDigit>(out_sz, c0), false);
+        x |= mask & delta;
         Eif(c) s = sn;
     }
     return x;

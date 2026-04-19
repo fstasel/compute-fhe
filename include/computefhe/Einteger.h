@@ -6,14 +6,6 @@
 using namespace std;
 
 namespace computefhe {
-    class ComputeFHE;
-    void Init(CryptoContextParam = CCPARAM_STD128_3, ALUType = ALU_OPTIMIZED,
-              bool = false, bool = false);
-    void Finalize();
-
-    extern ComputeFHE *cfhe_base;
-    extern bool CLIENT_MODE;
-
     class Einteger {
       private:
         static bool div_cache(const FixedPoint &a, const FixedPoint &b);

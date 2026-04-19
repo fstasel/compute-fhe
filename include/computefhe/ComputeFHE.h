@@ -20,6 +20,12 @@ using namespace lbcrypto;
 using namespace std;
 
 namespace computefhe {
+    extern ComputeFHE *cfhe_base;
+    extern bool CLIENT_MODE;
+
+    void Init(CryptoContextParam = CCPARAM_STD128_3, ALUType = ALU_OPTIMIZED,
+              bool = false, bool = false);
+    void Finalize();
 
     class ComputeFHE {
       private:

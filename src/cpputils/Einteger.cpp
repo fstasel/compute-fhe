@@ -4,27 +4,11 @@
 using namespace computefhe;
 
 namespace computefhe {
-    ComputeFHE *cfhe_base = nullptr;
-    bool CLIENT_MODE = false;
     FixedPoint Einteger::cached_divident;
     FixedPoint Einteger::cached_divisor;
     FixedPoint Einteger::cached_quotient;
     FixedPoint Einteger::cached_remainder;
 } // namespace computefhe
-
-void computefhe::Init(CryptoContextParam cc_param, ALUType alu_type,
-                      bool client_mode, bool simulation_mode) {
-    if (cfhe_base != nullptr)
-        delete cfhe_base;
-    cfhe_base = new ComputeFHE(cc_param, alu_type, simulation_mode);
-    CLIENT_MODE = client_mode;
-}
-
-void computefhe::Finalize() {
-    if (cfhe_base != nullptr)
-        delete cfhe_base;
-    cfhe_base = nullptr;
-}
 
 int64_t Einteger::sign_extend(uint64_t d, size_t n_digits) {
     if (n_digits == 0 || n_digits >= 64)

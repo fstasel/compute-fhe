@@ -8,7 +8,7 @@ using namespace lbcrypto;
 namespace computefhe {
     class ComputeFHE;
 
-    class BaseALUSimulator : public BaseALU {
+    class BaseALUSimulator : virtual public BaseALU {
       protected:
         uint num_bs = 0;
         uint num_not = 0;
@@ -24,27 +24,23 @@ namespace computefhe {
       public:
         BaseALUSimulator(ComputeFHE *cfhe);
 
-        void PrintStats();
-        void ResetStats();
+        virtual void PrintStats();
+        virtual void ResetStats();
 
-        uint GetNumBS();
+        virtual uint GetNumBS();
 
-        virtual BinaryDigit GetConstantFalse();
-        virtual BinaryDigit GetConstantTrue();
-
-        virtual BinaryDigit Gate_AND(const BinaryDigit &a,
+        virtual BinaryDigit FHE_False();
+        virtual BinaryDigit FHE_True();
+        virtual BinaryDigit FHE_AND(const BinaryDigit &a, const BinaryDigit &b);
+        virtual BinaryDigit FHE_NAND(const BinaryDigit &a,
                                      const BinaryDigit &b);
-        virtual BinaryDigit Gate_NAND(const BinaryDigit &a,
-                                      const BinaryDigit &b);
-        virtual BinaryDigit Gate_OR(const BinaryDigit &a, const BinaryDigit &b);
-        virtual BinaryDigit Gate_NOR(const BinaryDigit &a,
+        virtual BinaryDigit FHE_OR(const BinaryDigit &a, const BinaryDigit &b);
+        virtual BinaryDigit FHE_NOR(const BinaryDigit &a, const BinaryDigit &b);
+        virtual BinaryDigit FHE_XOR(const BinaryDigit &a, const BinaryDigit &b);
+        virtual BinaryDigit FHE_XNOR(const BinaryDigit &a,
                                      const BinaryDigit &b);
-        virtual BinaryDigit Gate_XOR(const BinaryDigit &a,
-                                     const BinaryDigit &b);
-        virtual BinaryDigit Gate_XNOR(const BinaryDigit &a,
-                                      const BinaryDigit &b);
-        virtual BinaryDigit Gate_NOT(const BinaryDigit &a);
-
-        virtual FixedPoint ToggleMSB(const FixedPoint &a);
+        virtual BinaryDigit FHE_NOT(const BinaryDigit &a);
+        virtual BinaryDigit FHE_MUX(const BinaryDigit &s, const BinaryDigit &a,
+                                    const BinaryDigit &b);
     };
 } // namespace computefhe

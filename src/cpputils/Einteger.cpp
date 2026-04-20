@@ -51,14 +51,14 @@ bool Einteger::promote(const Einteger &a, const Einteger &b, FixedPoint &a_out,
         else if (a.sign)
             a_out[i] = last_a;
         else
-            a_out[i] = cfhe_base->GetALU()->GetConstantFalse();
+            a_out[i] = cfhe_base->GetALU()->Constant0();
 
         if (i < b.size)
             b_out[i] = b.data[i];
         else if (b.sign)
             b_out[i] = last_b;
         else
-            b_out[i] = cfhe_base->GetALU()->GetConstantFalse();
+            b_out[i] = cfhe_base->GetALU()->Constant0();
     }
     return s;
 }
@@ -75,7 +75,7 @@ FixedPoint Einteger::promote(const Einteger &a, size_t s) {
         else if (a.sign)
             out[i] = last;
         else
-            out[i] = cfhe_base->GetALU()->GetConstantFalse();
+            out[i] = cfhe_base->GetALU()->Constant0();
     }
     return out;
 }
@@ -531,26 +531,11 @@ const Einteger Einteger::operator&=(const Einteger &other) {
 }
 
 const Einteger Einteger::operator&(uint64_t other) const {
-    Einteger r(size, sign);
-    for (size_t i = 0; i < size; i++) {
-        uint8_t bit = (other >> i) & 1;
-        if (bit)
-            r.data[i] = data[i];
-        else
-            r.data[i] = cfhe_base->GetALU()->GetConstantFalse();
-    }
-    return r;
+    return *this & Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
 const Einteger Einteger::operator&=(uint64_t other) {
-    _sync_var();
-    for (size_t i = 0; i < size; i++) {
-        uint8_t bit = (other >> i) & 1;
-        if (!bit)
-            data[i] = cfhe_base->GetALU()->GetConstantFalse();
-    }
-    _sync_var();
-    return *this;
+    return *this &= Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
 const Einteger Einteger::operator|(const Einteger &other) const {
@@ -573,26 +558,11 @@ const Einteger Einteger::operator|=(const Einteger &other) {
 }
 
 const Einteger Einteger::operator|(uint64_t other) const {
-    Einteger r(size, sign);
-    for (size_t i = 0; i < size; i++) {
-        uint8_t bit = (other >> i) & 1;
-        if (bit)
-            r.data[i] = cfhe_base->GetALU()->GetConstantTrue();
-        else
-            r.data[i] = data[i];
-    }
-    return r;
+    return *this | Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
 const Einteger Einteger::operator|=(uint64_t other) {
-    _sync_var();
-    for (size_t i = 0; i < size; i++) {
-        uint8_t bit = (other >> i) & 1;
-        if (bit)
-            data[i] = cfhe_base->GetALU()->GetConstantTrue();
-    }
-    _sync_var();
-    return *this;
+    return *this |= Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
 const Einteger Einteger::operator^(const Einteger &other) const {
@@ -615,26 +585,11 @@ const Einteger Einteger::operator^=(const Einteger &other) {
 }
 
 const Einteger Einteger::operator^(uint64_t other) const {
-    Einteger r(size, sign);
-    for (size_t i = 0; i < size; i++) {
-        uint8_t bit = (other >> i) & 1;
-        if (bit)
-            r.data[i] = cfhe_base->GetALU()->Gate_NOT(data[i]);
-        else
-            r.data[i] = data[i];
-    }
-    return r;
+    return *this ^ Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
 const Einteger Einteger::operator^=(uint64_t other) {
-    _sync_var();
-    for (size_t i = 0; i < size; i++) {
-        uint8_t bit = (other >> i) & 1;
-        if (bit)
-            data[i] = cfhe_base->GetALU()->Gate_NOT(data[i]);
-    }
-    _sync_var();
-    return *this;
+    return *this ^= Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
 const Einteger Einteger::operator!() const {
@@ -663,8 +618,7 @@ const Einteger Einteger::operator&&(const Einteger &other) const {
 
 const Einteger Einteger::operator&&(uint64_t other) const {
     if (!other)
-        return Einteger(FixedPoint({cfhe_base->GetALU()->GetConstantFalse()}),
-                        false);
+        return Einteger(FixedPoint({cfhe_base->GetALU()->Constant0()}), false);
     BinaryDigit r = data[0];
     for (size_t i = 1; i < size; i++) {
         r = cfhe_base->GetALU()->Gate_OR(r, data[i]);
@@ -686,8 +640,7 @@ const Einteger Einteger::operator||(const Einteger &other) const {
 
 const Einteger Einteger::operator||(uint64_t other) const {
     if (other)
-        return Einteger(FixedPoint({cfhe_base->GetALU()->GetConstantTrue()}),
-                        false);
+        return Einteger(FixedPoint({cfhe_base->GetALU()->Constant1()}), false);
     BinaryDigit r = data[0];
     for (size_t i = 1; i < size; i++) {
         r = cfhe_base->GetALU()->Gate_OR(r, data[i]);

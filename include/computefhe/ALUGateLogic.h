@@ -3,44 +3,62 @@
 
 namespace computefhe {
 
-    class ALUGateLogic : public BaseALU {
+    class ALUGateLogic : virtual public BaseALU {
       public:
         ALUGateLogic(ComputeFHE *cfhe);
 
-        void HalfAdder(const BinaryDigit &a, const BinaryDigit &b,
-                       BinaryDigit &sum, BinaryDigit &carry_out);
-        void HalfSubtractor(const BinaryDigit &a, const BinaryDigit &b,
-                            BinaryDigit &sum, BinaryDigit &carry_out);
-        void FullAdder(const BinaryDigit &a, const BinaryDigit &b,
-                       const BinaryDigit &c, BinaryDigit &sum,
-                       BinaryDigit &carry_out);
-        BinaryDigit XOR3(const BinaryDigit &a, const BinaryDigit &b,
-                         const BinaryDigit &c);
-        BinaryDigit MulAdd(const BinaryDigit &m, const BinaryDigit &a,
-                           const BinaryDigit &b,
-                           BinaryDigit *carry_out = nullptr);
-        FixedPoint Add(const FixedPoint &a, const FixedPoint &b);
-        FixedPoint AddC(const FixedPoint &a, const FixedPoint &b);
-        FixedPoint AddNC(const FixedPoint &a, const FixedPoint &b);
-        FixedPoint Sub(const FixedPoint &a, const FixedPoint &b);
-        FixedPoint SubC(const FixedPoint &a, const FixedPoint &b);
-        FixedPoint SubNC(const FixedPoint &a, const FixedPoint &b);
-        FixedPoint Neg(const FixedPoint &a);
-        BinaryDigit CmpNotEq(const FixedPoint &a, const FixedPoint &b);
-        BinaryDigit CmpEq(const FixedPoint &a, const FixedPoint &b);
-        BinaryDigit CmpLTEq_U(const FixedPoint &a, const FixedPoint &b);
-        BinaryDigit CmpGT_U(const FixedPoint &a, const FixedPoint &b);
-        BinaryDigit CmpGTEq_U(const FixedPoint &a, const FixedPoint &b);
-        BinaryDigit CmpLT_U(const FixedPoint &a, const FixedPoint &b);
-        BinaryDigit CmpLTEq(const FixedPoint &a, const FixedPoint &b);
-        BinaryDigit CmpGT(const FixedPoint &a, const FixedPoint &b);
-        BinaryDigit CmpGTEq(const FixedPoint &a, const FixedPoint &b);
-        BinaryDigit CmpLT(const FixedPoint &a, const FixedPoint &b);
-        FixedPoint FullMul(const FixedPoint &a, const FixedPoint &b);
-        FixedPoint Mul(const FixedPoint &a, const FixedPoint &b);
-        void DivU(const FixedPoint &a, const FixedPoint &b, FixedPoint &q,
-                  FixedPoint &r);
-        BinaryDigit Mux(BinaryDigit s, BinaryDigit a, BinaryDigit b);
-        void Swap_if(const BinaryDigit cond, BinaryDigit &a, BinaryDigit &b);
+        // Logic Gates
+        virtual BinaryDigit Gate_MAJ(const BinaryDigit &a, const BinaryDigit &b,
+                                     const BinaryDigit &c);
+        virtual BinaryDigit Gate_XOR3(const BinaryDigit &a,
+                                      const BinaryDigit &b,
+                                      const BinaryDigit &c);
+        virtual BinaryDigit Gate_MulAdd(const BinaryDigit &m,
+                                        const BinaryDigit &a,
+                                        const BinaryDigit &b,
+                                        BinaryDigit *carry_out = nullptr);
+
+        // Interface
+        virtual FixedPoint Mux(const BinaryDigit &s, const FixedPoint &a,
+                               const FixedPoint &b);
+        virtual FixedPoint ToggleMSB(const FixedPoint &a);
+
+        virtual FixedPoint ShiftLeft(const FixedPoint &a, size_t shift);
+        virtual FixedPoint ShiftRight(const FixedPoint &a, size_t shift,
+                                      bool is_arithmetic = false);
+
+        virtual void Swap_if(const BinaryDigit &cond, BinaryDigit &a,
+                             BinaryDigit &b);
+        virtual void Swap_if(const BinaryDigit &cond, FixedPoint &a,
+                             FixedPoint &b);
+
+        virtual void HalfAdder(const BinaryDigit &a, const BinaryDigit &b,
+                               BinaryDigit &sum, BinaryDigit &carry_out);
+        virtual void HalfSubtractor(const BinaryDigit &a, const BinaryDigit &b,
+                                    BinaryDigit &sum, BinaryDigit &carry_out);
+        virtual void FullAdder(const BinaryDigit &a, const BinaryDigit &b,
+                               const BinaryDigit &c, BinaryDigit &sum,
+                               BinaryDigit &carry_out);
+        virtual FixedPoint Add(const FixedPoint &a, const FixedPoint &b);
+        virtual FixedPoint AddC(const FixedPoint &a, const FixedPoint &b);
+        virtual FixedPoint AddNC(const FixedPoint &a, const FixedPoint &b);
+        virtual FixedPoint Sub(const FixedPoint &a, const FixedPoint &b);
+        virtual FixedPoint SubC(const FixedPoint &a, const FixedPoint &b);
+        virtual FixedPoint SubNC(const FixedPoint &a, const FixedPoint &b);
+        virtual FixedPoint Neg(const FixedPoint &a);
+        virtual BinaryDigit CmpNotEq(const FixedPoint &a, const FixedPoint &b);
+        virtual BinaryDigit CmpEq(const FixedPoint &a, const FixedPoint &b);
+        virtual BinaryDigit CmpLTEq_U(const FixedPoint &a, const FixedPoint &b);
+        virtual BinaryDigit CmpGT_U(const FixedPoint &a, const FixedPoint &b);
+        virtual BinaryDigit CmpGTEq_U(const FixedPoint &a, const FixedPoint &b);
+        virtual BinaryDigit CmpLT_U(const FixedPoint &a, const FixedPoint &b);
+        virtual BinaryDigit CmpLTEq(const FixedPoint &a, const FixedPoint &b);
+        virtual BinaryDigit CmpGT(const FixedPoint &a, const FixedPoint &b);
+        virtual BinaryDigit CmpGTEq(const FixedPoint &a, const FixedPoint &b);
+        virtual BinaryDigit CmpLT(const FixedPoint &a, const FixedPoint &b);
+        virtual FixedPoint FullMul(const FixedPoint &a, const FixedPoint &b);
+        virtual FixedPoint Mul(const FixedPoint &a, const FixedPoint &b);
+        virtual void DivU(const FixedPoint &a, const FixedPoint &b,
+                          FixedPoint &q, FixedPoint &r);
     };
 } // namespace computefhe

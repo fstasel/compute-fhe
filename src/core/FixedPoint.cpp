@@ -6,35 +6,45 @@ using namespace computefhe;
 
 uint BinaryDigit::new_id = 0;
 
-BinaryDigit::BinaryDigit() { p = 0; }
+BinaryDigit::BinaryDigit() {
+    p = 0;
+    is_ct = false;
+    id = new_id++;
+}
 
 BinaryDigit::BinaryDigit(const BinaryDigit &other) {
     c = other.c ? COPY_CT(other.c) : nullptr;
     p = other.p;
+    is_ct = other.is_ct;
     id = other.id;
 }
 
 BinaryDigit::BinaryDigit(ConstLWECiphertext &ct) {
     c = ct ? COPY_CT(ct) : nullptr;
     p = 0;
+    is_ct = true;
     id = new_id++;
 }
 
 BinaryDigit::BinaryDigit(const LWECiphertext &ct) {
     c = ct ? COPY_CT(ct) : nullptr;
     p = 0;
+    is_ct = true;
     id = new_id++;
 }
 
 BinaryDigit::BinaryDigit(LWEPlaintext pt) {
     p = pt;
     c = nullptr;
+    is_ct = false;
     id = new_id++;
 }
 
-BinaryDigit::BinaryDigit(const ConstLWECiphertext &ct, LWEPlaintext pt) {
+BinaryDigit::BinaryDigit(const ConstLWECiphertext &ct, LWEPlaintext pt,
+                         bool is_ct) {
     c = ct ? COPY_CT(ct) : nullptr;
     p = pt;
+    this->is_ct = is_ct;
     id = new_id++;
 }
 
@@ -42,6 +52,7 @@ BinaryDigit &BinaryDigit::operator=(const BinaryDigit &other) {
     if (this != &other) {
         c = other.c ? COPY_CT(other.c) : nullptr;
         p = other.p;
+        is_ct = other.is_ct;
         id = other.id;
     }
     return *this;
@@ -50,6 +61,7 @@ BinaryDigit &BinaryDigit::operator=(const BinaryDigit &other) {
 BinaryDigit &BinaryDigit::operator=(const LWECiphertext &other) {
     c = other ? COPY_CT(other) : nullptr;
     p = 0;
+    is_ct = true;
     id = new_id++;
     return *this;
 }
@@ -57,6 +69,7 @@ BinaryDigit &BinaryDigit::operator=(const LWECiphertext &other) {
 BinaryDigit &BinaryDigit::operator=(LWEPlaintext pt) {
     p = pt;
     c = nullptr;
+    is_ct = false;
     id = new_id++;
     return *this;
 }

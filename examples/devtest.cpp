@@ -573,8 +573,32 @@ void test_div() {
     cout << "vec[idx] /= 5: " << vec[idx] << endl;
 }
 
+void test_plaintext() {
+    BaseALUSimulator *s = cfhe_base->GetSimulator();
+    if (s) {
+        s->ResetStats();
+    }
+
+    Eint32 a = 1000;
+    Eint32 b = -1;
+    cout << "a: " << a << ", b: " << b << endl;
+    cout << "a + b: " << a + b << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+
+    cout << "a + -1: " << a + -1 << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+}
+
 int main() {
-    computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, true);
+    computefhe::Init(CCPARAM_TOY, ALU_GATELOGIC, true, true);
 
     test_arithmetic_operators();
     test_arithmetic_assignment_operators();
@@ -592,6 +616,7 @@ int main() {
     test_fp_custom();
     test_div();
     test_simulation();
+    test_plaintext();
 
     computefhe::Finalize();
 

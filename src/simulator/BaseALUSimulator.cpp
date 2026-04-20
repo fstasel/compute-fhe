@@ -38,59 +38,77 @@ void BaseALUSimulator::ResetStats() {
 
 uint BaseALUSimulator::GetNumBS() { return num_bs; }
 
-BinaryDigit BaseALUSimulator::GetConstantFalse() { return BinaryDigit(0); }
+BinaryDigit BaseALUSimulator::FHE_False() { return BinaryDigit(0); }
 
-BinaryDigit BaseALUSimulator::GetConstantTrue() { return BinaryDigit(1); }
+BinaryDigit BaseALUSimulator::FHE_True() { return BinaryDigit(1); }
 
-BinaryDigit BaseALUSimulator::Gate_AND(const BinaryDigit &a,
-                                       const BinaryDigit &b) {
-    num_bs++;
-    num_andor++;
-    return BinaryDigit(a.p & b.p);
-}
-
-BinaryDigit BaseALUSimulator::Gate_NAND(const BinaryDigit &a,
-                                        const BinaryDigit &b) {
-    num_bs++;
-    num_andor++;
-    return BinaryDigit(!(a.p & b.p));
-}
-
-BinaryDigit BaseALUSimulator::Gate_OR(const BinaryDigit &a,
+BinaryDigit BaseALUSimulator::FHE_AND(const BinaryDigit &a,
                                       const BinaryDigit &b) {
+    BinaryDigit out(a.p & b.p);
+    out.is_ct = true;
     num_bs++;
     num_andor++;
-    return BinaryDigit(a.p | b.p);
+    return out;
 }
 
-BinaryDigit BaseALUSimulator::Gate_NOR(const BinaryDigit &a,
+BinaryDigit BaseALUSimulator::FHE_NAND(const BinaryDigit &a,
                                        const BinaryDigit &b) {
+    BinaryDigit out(!(a.p & b.p));
+    out.is_ct = true;
     num_bs++;
     num_andor++;
-    return BinaryDigit(!(a.p | b.p));
+    return out;
 }
 
-BinaryDigit BaseALUSimulator::Gate_XOR(const BinaryDigit &a,
+BinaryDigit BaseALUSimulator::FHE_OR(const BinaryDigit &a,
+                                     const BinaryDigit &b) {
+    BinaryDigit out(a.p | b.p);
+    out.is_ct = true;
+    num_bs++;
+    num_andor++;
+    return out;
+}
+
+BinaryDigit BaseALUSimulator::FHE_NOR(const BinaryDigit &a,
+                                      const BinaryDigit &b) {
+    BinaryDigit out(!(a.p | b.p));
+    out.is_ct = true;
+    num_bs++;
+    num_andor++;
+    return out;
+}
+
+BinaryDigit BaseALUSimulator::FHE_XOR(const BinaryDigit &a,
+                                      const BinaryDigit &b) {
+    BinaryDigit out(a.p ^ b.p);
+    out.is_ct = true;
+    num_bs++;
+    num_xorxnor++;
+    return out;
+}
+
+BinaryDigit BaseALUSimulator::FHE_XNOR(const BinaryDigit &a,
                                        const BinaryDigit &b) {
+    BinaryDigit out(!(a.p ^ b.p));
+    out.is_ct = true;
     num_bs++;
     num_xorxnor++;
-    return BinaryDigit(a.p ^ b.p);
+    return out;
 }
 
-BinaryDigit BaseALUSimulator::Gate_XNOR(const BinaryDigit &a,
-                                        const BinaryDigit &b) {
-    num_bs++;
-    num_xorxnor++;
-    return BinaryDigit(!(a.p ^ b.p));
+BinaryDigit BaseALUSimulator::FHE_NOT(const BinaryDigit &a) {
+    BinaryDigit out(!a.p);
+    out.is_ct = true;
+    num_not++;
+    return out;
 }
 
-BinaryDigit BaseALUSimulator::Gate_NOT(const BinaryDigit &a) {
-    num_not++;
-    return BinaryDigit(!a.p);
-}
-FixedPoint BaseALUSimulator::ToggleMSB(const FixedPoint &a) {
-    num_not++;
-    FixedPoint t = a;
-    t.back() = BinaryDigit(!t.back().p);
-    return t;
+BinaryDigit BaseALUSimulator::FHE_MUX(const BinaryDigit &s,
+                                      const BinaryDigit &a,
+                                      const BinaryDigit &b) {
+    BinaryDigit out(s.p ? b.p : a.p);
+    out.is_ct = true;
+    num_bs += 3;
+    num_andor += 3;
+    return out;
 }

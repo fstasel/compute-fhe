@@ -11,105 +11,137 @@ BinaryDigit BaseALU::GetCarry() { return carry; }
 
 void BaseALU::SetCarry(BinaryDigit value) { carry = value; }
 
-void BaseALU::SetCarry() { carry = GetConstantTrue(); }
+void BaseALU::SetCarry() { carry = Constant1(); }
 
-void BaseALU::ResetCarry() { carry = GetConstantFalse(); }
+void BaseALU::ResetCarry() { carry = Constant0(); }
 
-BinaryDigit BaseALU::GetConstantFalse() {
-    BinaryDigit constant_false =
-        cfhe_base->GetBinFHEContext().EvalConstant(false);
-    return constant_false;
+BinaryDigit BaseALU::FHE_False() {
+    return BinaryDigit(cfhe_base->GetBinFHEContext().EvalConstant(false));
 }
 
-BinaryDigit BaseALU::GetConstantTrue() {
-    BinaryDigit constant_true =
-        cfhe_base->GetBinFHEContext().EvalConstant(true);
-    return constant_true;
+BinaryDigit BaseALU::FHE_True() {
+    return BinaryDigit(cfhe_base->GetBinFHEContext().EvalConstant(true));
 }
 
-BinaryDigit computefhe::BaseALU::Gate_AND(const BinaryDigit &a,
-                                          const BinaryDigit &b) {
-    return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::AND, a, b);
+BinaryDigit BaseALU::FHE_AND(const BinaryDigit &a, const BinaryDigit &b) {
+    return BinaryDigit(
+        cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::AND, a.c, b.c));
 }
 
-BinaryDigit computefhe::BaseALU::Gate_NAND(const BinaryDigit &a,
-                                           const BinaryDigit &b) {
-    return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::NAND, a, b);
+BinaryDigit BaseALU::FHE_NAND(const BinaryDigit &a, const BinaryDigit &b) {
+    return BinaryDigit(
+        cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::NAND, a.c, b.c));
 }
 
-BinaryDigit computefhe::BaseALU::Gate_OR(const BinaryDigit &a,
-                                         const BinaryDigit &b) {
-    return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::OR, a, b);
+BinaryDigit BaseALU::FHE_OR(const BinaryDigit &a, const BinaryDigit &b) {
+    return BinaryDigit(
+        cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::OR, a.c, b.c));
 }
 
-BinaryDigit computefhe::BaseALU::Gate_NOR(const BinaryDigit &a,
-                                          const BinaryDigit &b) {
-    return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::NOR, a, b);
+BinaryDigit BaseALU::FHE_NOR(const BinaryDigit &a, const BinaryDigit &b) {
+    return BinaryDigit(
+        cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::NOR, a.c, b.c));
 }
 
-BinaryDigit computefhe::BaseALU::Gate_XOR(const BinaryDigit &a,
-                                          const BinaryDigit &b) {
-    return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::XOR, a, b);
+BinaryDigit BaseALU::FHE_XOR(const BinaryDigit &a, const BinaryDigit &b) {
+    return BinaryDigit(
+        cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::XOR, a.c, b.c));
 }
 
-BinaryDigit computefhe::BaseALU::Gate_XNOR(const BinaryDigit &a,
-                                           const BinaryDigit &b) {
-    return cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::XNOR, a, b);
+BinaryDigit BaseALU::FHE_XNOR(const BinaryDigit &a, const BinaryDigit &b) {
+    return BinaryDigit(
+        cfhe_base->GetBinFHEContext().EvalBinGate(BINGATE::XNOR, a.c, b.c));
 }
 
-BinaryDigit computefhe::BaseALU::Gate_NOT(const BinaryDigit &a) {
-    return cfhe_base->GetBinFHEContext().EvalNOT(a);
+BinaryDigit BaseALU::FHE_NOT(const BinaryDigit &a) {
+    return BinaryDigit(cfhe_base->GetBinFHEContext().EvalNOT(a.c));
 }
 
-FixedPoint BaseALU::ToggleMSB(const FixedPoint &a) {
-    auto &cc = cfhe_base->GetBinFHEContext();
-    FixedPoint t = FixedPoint(a);
-    t.back() = cc.EvalNOT(t.back());
-    return t;
+BinaryDigit BaseALU::FHE_MUX(const BinaryDigit &s, const BinaryDigit &a,
+                             const BinaryDigit &b) {
+    return BinaryDigit(cfhe_base->GetBinFHEContext().EvalBinGate(
+        CMUX, vector({a.c, b.c, s.c})));
 }
 
-FixedPoint BaseALU::ShiftLeft(const FixedPoint &a, size_t shift) {
-    int sz = (int)a.size();
-    FixedPoint fp(a.size());
-    int s = shift > a.size() ? a.size() : shift;
-    for (int i = sz - 1; i >= 0; i--) {
-        fp[i] = (i - s < 0) ? GetConstantFalse() : (BinaryDigit &)a[i - s];
+BinaryDigit BaseALU::Constant0() {
+    return BinaryDigit(FHE_False().c, 0, false);
+}
+
+BinaryDigit BaseALU::Constant1() { return BinaryDigit(FHE_True().c, 1, false); }
+
+BinaryDigit BaseALU::Gate_AND(const BinaryDigit &a, const BinaryDigit &b) {
+    if (a.is_ct && b.is_ct)
+        return FHE_AND(a, b);
+    if (a.is_ct && !b.is_ct)
+        return b ? a : Constant0();
+    if (!a.is_ct && b.is_ct)
+        return a ? b : Constant0();
+    return a & b;
+}
+
+BinaryDigit BaseALU::Gate_NAND(const BinaryDigit &a, const BinaryDigit &b) {
+    if (a.is_ct && b.is_ct)
+        return FHE_NAND(a, b);
+    if (a.is_ct && !b.is_ct)
+        return b ? Gate_NOT(a) : Constant1();
+    if (!a.is_ct && b.is_ct)
+        return a ? Gate_NOT(b) : Constant1();
+    return !(a & b);
+}
+
+BinaryDigit BaseALU::Gate_OR(const BinaryDigit &a, const BinaryDigit &b) {
+    if (a.is_ct && b.is_ct)
+        return FHE_OR(a, b);
+    if (a.is_ct && !b.is_ct)
+        return b ? Constant1() : a;
+    if (!a.is_ct && b.is_ct)
+        return a ? Constant1() : b;
+    return a | b;
+}
+
+BinaryDigit BaseALU::Gate_NOR(const BinaryDigit &a, const BinaryDigit &b) {
+    if (a.is_ct && b.is_ct)
+        return FHE_NOR(a, b);
+    if (a.is_ct && !b.is_ct)
+        return b ? Constant0() : Gate_NOT(a);
+    if (!a.is_ct && b.is_ct)
+        return a ? Constant0() : Gate_NOT(b);
+    return !(a | b);
+}
+
+BinaryDigit BaseALU::Gate_XOR(const BinaryDigit &a, const BinaryDigit &b) {
+    if (a.is_ct && b.is_ct)
+        return FHE_XOR(a, b);
+    if (a.is_ct && !b.is_ct)
+        return b ? Gate_NOT(a) : a;
+    if (!a.is_ct && b.is_ct)
+        return a ? Gate_NOT(b) : b;
+    return a ^ b;
+}
+
+BinaryDigit BaseALU::Gate_XNOR(const BinaryDigit &a, const BinaryDigit &b) {
+    if (a.is_ct && b.is_ct)
+        return FHE_XNOR(a, b);
+    if (a.is_ct && !b.is_ct)
+        return b ? a : Gate_NOT(a);
+    if (!a.is_ct && b.is_ct)
+        return a ? b : Gate_NOT(b);
+    return !(a ^ b);
+}
+
+BinaryDigit BaseALU::Gate_NOT(const BinaryDigit &a) {
+    if (a.is_ct)
+        return FHE_NOT(a);
+    return !a;
+}
+
+BinaryDigit BaseALU::Gate_MUX(const BinaryDigit &s, const BinaryDigit &a,
+                              const BinaryDigit &b) {
+    if (s.is_ct) {
+        if (a.is_ct && b.is_ct) {
+            return FHE_MUX(s, a, b);
+        }
+        return Gate_OR(Gate_AND(Gate_NOT(s), a), Gate_AND(s, b));
     }
-    return fp;
-}
-
-FixedPoint BaseALU::ShiftRight(const FixedPoint &a, size_t shift,
-                               bool is_arithmetic) {
-    int sz = (int)a.size();
-    FixedPoint fp(a.size());
-    int s = shift > a.size() ? a.size() : shift;
-    for (int i = 0; i < sz; i++) {
-        fp[i] = (i + s >= sz) ? (is_arithmetic ? (BinaryDigit &)a[a.size() - 1]
-                                               : GetConstantFalse())
-                              : (BinaryDigit &)a[i + s];
-    }
-    return fp;
-}
-
-FixedPoint BaseALU::Mux(BinaryDigit s, const FixedPoint a, const FixedPoint b) {
-    if (a.size() != b.size()) {
-        OPENFHE_THROW("Input numbers should be of the same bit length.");
-    }
-    size_t n_digit = a.size();
-
-    FixedPoint out(n_digit);
-    for (size_t i = 0; i < n_digit; i++) {
-        out[i] = Mux(s, a[i], b[i]);
-    }
-    return out;
-}
-void BaseALU::Swap_if(const BinaryDigit cond, FixedPoint &a, FixedPoint &b) {
-    if (a.size() != b.size()) {
-        OPENFHE_THROW("Input numbers should be of the same bit length.");
-    }
-    size_t n_digit = a.size();
-
-    for (size_t i = 0; i < n_digit; i++) {
-        Swap_if(cond, a[i], b[i]);
-    }
+    return s ? b : a;
 }

@@ -14,12 +14,14 @@ namespace computefhe {
         uint id = 0;
         LWECiphertext c;
         LWEPlaintext p;
+        bool is_ct;
         BinaryDigit();
         BinaryDigit(const BinaryDigit &other);
         BinaryDigit(ConstLWECiphertext &ct);
         BinaryDigit(const LWECiphertext &ct);
         BinaryDigit(LWEPlaintext pt);
-        BinaryDigit(const ConstLWECiphertext &ct, LWEPlaintext pt);
+        BinaryDigit(const ConstLWECiphertext &ct, LWEPlaintext pt,
+                    bool is_ct = false);
         BinaryDigit &operator=(const BinaryDigit &other);
         BinaryDigit &operator=(const LWECiphertext &other);
         BinaryDigit &operator=(LWEPlaintext pt);

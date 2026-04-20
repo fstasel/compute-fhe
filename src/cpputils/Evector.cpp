@@ -15,7 +15,7 @@ Eitem<T, U>::Eitem(Evector<T> &vec, const Einteger &idx) : data(vec) {
         if (j < fp.size())
             index[j] = fp[j];
         else
-            index[j] = cfhe_base->GetALU()->GetConstantFalse();
+            index[j] = cfhe_base->GetALU()->Constant0();
     }
     p_index = 0;
     encrypted_index = true;
@@ -44,8 +44,8 @@ template <typename T, typename U> Eitem<T, U>::operator T() const {
             c = cfhe_base->GetALU()->CmpEq(
                 index, cfhe_base->GetConstantInt(i, index.size()));
             for (size_t d = 0; d < n; ++d) {
-                result[d] = cfhe_base->GetALU()->MulAdd(c, data[i].getData()[d],
-                                                        result[d]);
+                result[d] = cfhe_base->GetALU()->Gate_MulAdd(
+                    c, data[i].getData()[d], result[d]);
             }
         }
         return Einteger(result, data.at(0).isSigned());
@@ -70,8 +70,8 @@ template <> Eitem<Efixedpoint, double>::operator Efixedpoint() const {
             c = cfhe_base->GetALU()->CmpEq(
                 index, cfhe_base->GetConstantInt(i, index.size()));
             for (size_t d = 0; d < n; ++d) {
-                result[d] = cfhe_base->GetALU()->MulAdd(c, data[i].getData()[d],
-                                                        result[d]);
+                result[d] = cfhe_base->GetALU()->Gate_MulAdd(
+                    c, data[i].getData()[d], result[d]);
             }
         }
         return Efixedpoint(result, data.at(0).getFracSize(),
@@ -92,7 +92,8 @@ const T &Eitem<T, U>::operator=(const T &value) {
             for (size_t d = 0; d < n; ++d) {
                 BinaryDigit v = const_cast<T &>(value).getData()[d];
                 // TODO: try optimizing below logic
-                target_fp[d] = cfhe_base->GetALU()->Mux(c, target_fp[d], v);
+                target_fp[d] =
+                    cfhe_base->GetALU()->Gate_MUX(c, target_fp[d], v);
             }
         }
     } else {

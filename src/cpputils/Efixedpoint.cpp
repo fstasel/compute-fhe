@@ -48,20 +48,20 @@ void Efixedpoint::promote(const Efixedpoint &a, const Efixedpoint &b,
         if (ai >= 0 && ai < (int)a.size)
             a_out[i] = a.data[ai];
         else if (ai < 0)
-            a_out[i] = cfhe_base->GetALU()->GetConstantFalse();
+            a_out[i] = cfhe_base->GetALU()->Constant0();
         else if (a.sign)
             a_out[i] = last_a;
         else
-            a_out[i] = cfhe_base->GetALU()->GetConstantFalse();
+            a_out[i] = cfhe_base->GetALU()->Constant0();
 
         if (bi >= 0 && bi < (int)b.size)
             b_out[i] = b.data[bi];
         else if (bi < 0)
-            b_out[i] = cfhe_base->GetALU()->GetConstantFalse();
+            b_out[i] = cfhe_base->GetALU()->Constant0();
         else if (b.sign)
             b_out[i] = last_b;
         else
-            b_out[i] = cfhe_base->GetALU()->GetConstantFalse();
+            b_out[i] = cfhe_base->GetALU()->Constant0();
     }
 }
 
@@ -80,11 +80,11 @@ FixedPoint Efixedpoint::promote(const Efixedpoint &a, size_t n_digits,
         if (ai >= 0 && ai < (int)a.size)
             out[i] = a.data[ai];
         else if (ai < 0)
-            out[i] = cfhe_base->GetALU()->GetConstantFalse();
+            out[i] = cfhe_base->GetALU()->Constant0();
         else if (a.sign)
             out[i] = last_a;
         else
-            out[i] = cfhe_base->GetALU()->GetConstantFalse();
+            out[i] = cfhe_base->GetALU()->Constant0();
     }
     return out;
 }
@@ -230,12 +230,12 @@ const Efixedpoint Efixedpoint::operator+=(const Efixedpoint &other) {
 }
 
 const Efixedpoint Efixedpoint::operator+(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext comparison
+    // TODO: optimize this by using ciphertext-plaintext operation
     return *this + Efixedpoint(other, size, frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator+=(double other) {
-    // TODO: optimize this by using ciphertext-plaintext comparison
+    // TODO: optimize this by using ciphertext-plaintext operation
     return *this += Efixedpoint(other, size, frac_size, sign);
 }
 
@@ -257,12 +257,12 @@ const Efixedpoint Efixedpoint::operator-=(const Efixedpoint &other) {
 }
 
 const Efixedpoint Efixedpoint::operator-(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext comparison
+    // TODO: optimize this by using ciphertext-plaintext operation
     return *this - Efixedpoint(other, size, frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator-=(double other) {
-    // TODO: optimize this by using ciphertext-plaintext comparison
+    // TODO: optimize this by using ciphertext-plaintext operation
     return *this -= Efixedpoint(other, size, frac_size, sign);
 }
 
@@ -296,12 +296,12 @@ const Efixedpoint Efixedpoint::operator*=(const Efixedpoint &other) {
 }
 
 const Efixedpoint Efixedpoint::operator*(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext comparison
+    // TODO: optimize this by using ciphertext-plaintext operation
     return *this * Efixedpoint(other, size, frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator*=(double other) {
-    // TODO: optimize this by using ciphertext-plaintext comparison
+    // TODO: optimize this by using ciphertext-plaintext operation
     return *this *= Efixedpoint(other, size, frac_size, sign);
 }
 
@@ -328,17 +328,17 @@ const Efixedpoint Efixedpoint::operator/=(const Efixedpoint &other) {
 }
 
 const Efixedpoint Efixedpoint::operator/(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext comparison
+    // TODO: optimize this by using ciphertext-plaintext operation
     return *this / Efixedpoint(other, size, frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator/=(double other) {
-    // TODO: optimize this by using ciphertext-plaintext comparison
+    // TODO: optimize this by using ciphertext-plaintext operation
     return *this /= Efixedpoint(other, size, frac_size, sign);
 }
 
 const Efixedpoint computefhe::operator/(double a, const Efixedpoint &b) {
-    // TODO: optimize this by using ciphertext-plaintext comparison
+    // TODO: optimize this by using ciphertext-plaintext operation
     return Efixedpoint(a, b.size, b.frac_size, b.sign) / b;
 }
 

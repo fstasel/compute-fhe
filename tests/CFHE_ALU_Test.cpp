@@ -66,7 +66,7 @@ TestReport CFHE_Test::TestXOR3() {
     BinaryDigit ct_n3 = cfhe_base->EncryptBool(n3, GetTestFresh());
     uint expected = n1 ^ n2 ^ n3;
     StartTimer();
-    ct_result = cfhe_base->GetALU()->XOR3(ct_n1, ct_n2, ct_n3);
+    ct_result = cfhe_base->GetALU()->Gate_XOR3(ct_n1, ct_n2, ct_n3);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -87,7 +87,7 @@ TestReport CFHE_Test::TestMulAdd() {
     uint expected_carry = n1 & n2 & n3;
     StartTimer();
     ct_result_sum =
-        cfhe_base->GetALU()->MulAdd(ct_n1, ct_n2, ct_n3, &ct_result_carry);
+        cfhe_base->GetALU()->Gate_MulAdd(ct_n1, ct_n2, ct_n3, &ct_result_carry);
     report.delta_t = ReadTimer();
     uint result_sum = cfhe_base->DecryptBool(ct_result_sum);
     uint result_carry = cfhe_base->DecryptBool(ct_result_carry);

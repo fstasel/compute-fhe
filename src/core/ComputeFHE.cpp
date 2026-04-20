@@ -134,7 +134,7 @@ BaseALU *ComputeFHE::GetALU() { return alu; }
 
 BaseALUSimulator *ComputeFHE::GetSimulator() {
     if (sim_mode)
-        return (BaseALUSimulator *)alu;
+        return dynamic_cast<BaseALUSimulator *>(alu);
     return nullptr;
 }
 
@@ -149,6 +149,7 @@ FixedPoint ComputeFHE::EncryptInt(uint64_t pt, size_t n_digits, bool fresh) {
     for (size_t i = 0; i < n_digits; i++) {
         if (sim_mode) {
             out[i] = pt % 2;
+            out[i].is_ct = true;
         } else {
             out[i] = cc.Encrypt(sk, pt % 2, FRESH);
         }
@@ -168,7 +169,10 @@ uint64_t ComputeFHE::DecryptInt(const FixedPoint &ct, size_t n_digits) {
         if (sim_mode) {
             result = ct[i];
         } else {
-            cc.Decrypt(sk, ct[i], &result);
+            if (ct[i].is_ct)
+                cc.Decrypt(sk, ct[i], &result);
+            else
+                result = ct[i];
         }
         out += result * (1UL << i);
     }
@@ -199,7 +203,7 @@ FixedPoint computefhe::ComputeFHE::GetConstantInt(uint64_t pt,
                                                   size_t n_digits) {
     FixedPoint out(n_digits);
     for (size_t i = 0; i < n_digits; i++) {
-        out[i] = (pt % 2) ? alu->GetConstantTrue() : alu->GetConstantFalse();
+        out[i] = (pt % 2) ? alu->Constant1() : alu->Constant0();
         pt /= 2;
     }
     return out;

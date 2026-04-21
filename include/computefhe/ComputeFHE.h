@@ -23,8 +23,9 @@ namespace computefhe {
     extern ComputeFHE *cfhe_base;
     extern bool CLIENT_MODE;
 
-    void Init(CryptoContextParam = CCPARAM_STD128_3, ALUType = ALU_OPTIMIZED,
-              bool = false, bool = false);
+    void Init(CryptoContextParam cc_param = CCPARAM_STD128_3,
+              ALUType alu_type = ALU_OPTIMIZED, bool client_mode = false,
+              bool simulation_mode = false);
     void Finalize();
 
     class ComputeFHE {

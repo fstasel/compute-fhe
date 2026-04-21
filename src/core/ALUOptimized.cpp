@@ -48,6 +48,18 @@ BinaryDigit ALUOptimized::FHE_MUX(const BinaryDigit &s, const BinaryDigit &a,
     return cc.EvalBinGate(OR, s, t);
 }
 
+BinaryDigit ALUOptimized::FHE_DigitSum(const BinaryDigit &e1,
+                                       const BinaryDigit &e0,
+                                       const BinaryDigit &s0) {
+    auto &cc = cfhe_base->GetBinFHEContext();
+    auto &lwe = cc.GetLWEScheme();
+    BinaryDigit s0_2e1_e0 = e1;
+    lwe->EvalAddEq(s0_2e1_e0, s0_2e1_e0);
+    lwe->EvalSubEq(s0_2e1_e0, e0);
+    s0_2e1_e0 = cc.EvalBinGate(AND, s0_2e1_e0, s0);
+    return s0_2e1_e0;
+}
+
 BinaryDigit ALUOptimized::Gate_MAJ(const BinaryDigit &a, const BinaryDigit &b,
                                    const BinaryDigit &c) {
     if (a.is_ct && b.is_ct && c.is_ct) {
@@ -97,6 +109,17 @@ BinaryDigit ALUOptimized::Gate_MulAdd(const BinaryDigit &m,
         *carry_out = Gate_AND(ma, b);
     }
     return Gate_XOR(ma, b);
+}
+
+BinaryDigit ALUOptimized::Gate_DigitSum(const BinaryDigit &e1,
+                                        const BinaryDigit &e0,
+                                        const BinaryDigit &s0) {
+    if (e0.is_ct && e1.is_ct && s0.is_ct) {
+        return FHE_DigitSum(e1, e0, s0);
+    }
+    BinaryDigit t = Gate_AND(e0, Gate_NOT(s0));
+    BinaryDigit s1 = Gate_XOR(e1, t);
+    return s1;
 }
 
 void ALUOptimized::FullAdder(const BinaryDigit &a, const BinaryDigit &b,
@@ -199,4 +222,35 @@ void ALUOptimized::Swap_if(const BinaryDigit &cond, BinaryDigit &a,
     BinaryDigit t = a;
     a = Gate_MUX(cond, t, b);
     b = Gate_XOR3(a, b, t);
+}
+
+FixedPoint ALUOptimized::PAdd(const FixedPoint &a, const FixedPoint &pb) {
+    // TODO
+    return FixedPoint();
+}
+
+FixedPoint ALUOptimized::PAddC(const FixedPoint &a, const FixedPoint &pb) {
+    // TODO
+    return FixedPoint();
+}
+
+FixedPoint ALUOptimized::PAddNC(const FixedPoint &a, const FixedPoint &pb) {
+    if (a.size() != pb.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = a.size();
+
+    FixedPoint out(n_digit);
+    ALUGateLogic::HalfAdder(a[0], pb[0], out[0], carry);
+    for (uint8_t i = 1; i < n_digit; i++) {
+        if (carry.is_ct) {
+            out[i] = Gate_XOR(Gate_DigitSum(Gate_XOR(a[i], pb[i - 1]),
+                                            Gate_XOR(a[i - 1], pb[i - 1]),
+                                            Gate_XOR(out[i - 1], pb[i - 1])),
+                              pb[i]);
+        } else {
+            ALUGateLogic::FullAdder(a[i], pb[i], carry, out[i], carry);
+        }
+    }
+    return out;
 }

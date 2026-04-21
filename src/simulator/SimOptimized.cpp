@@ -47,3 +47,13 @@ BinaryDigit SimOptimized::FHE_MUX(const BinaryDigit &s, const BinaryDigit &a,
     num_mux++;
     return out;
 }
+
+BinaryDigit SimOptimized::FHE_DigitSum(const BinaryDigit &e1,
+                                       const BinaryDigit &e0,
+                                       const BinaryDigit &s0) {
+    BinaryDigit out = e1 ^ (e0.p & !s0.p);
+    out.is_ct = true;
+    num_bs++;
+    num_ds++;
+    return out;
+}

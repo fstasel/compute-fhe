@@ -117,3 +117,11 @@ FixedPoint::FixedPoint(const vector<LWEPlaintext> &other)
         (*this)[i] = other[i];
     }
 }
+
+bool FixedPoint::is_ct() const {
+    for (size_t i = 0; i < size(); i++) {
+        if (!(*this)[i].is_ct)
+            return false;
+    }
+    return true;
+}

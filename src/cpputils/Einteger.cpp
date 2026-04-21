@@ -87,6 +87,7 @@ Einteger::Einteger(int64_t d) : Einteger(d, 8) {}
 Einteger::Einteger(size_t n_digits, bool is_signed) {
     if (cfhe_base == nullptr)
         Init();
+    // TODO: Adjustable auto-decrypt mode
     if (CLIENT_MODE) {
         data = cfhe_base->EncryptInt(0, n_digits);
     } else {
@@ -99,6 +100,7 @@ Einteger::Einteger(size_t n_digits, bool is_signed) {
 Einteger::Einteger(int64_t d, size_t n_digits) {
     if (cfhe_base == nullptr)
         Init();
+    // TODO: Adjustable auto-decrypt mode
     if (CLIENT_MODE) {
         data = cfhe_base->EncryptInt((uint64_t)d, n_digits);
     } else {
@@ -111,6 +113,7 @@ Einteger::Einteger(int64_t d, size_t n_digits) {
 Einteger::Einteger(uint64_t d, size_t n_digits) {
     if (cfhe_base == nullptr)
         Init();
+    // TODO: Adjustable auto-decrypt mode
     if (CLIENT_MODE) {
         data = cfhe_base->EncryptInt(d, n_digits);
     } else {
@@ -252,14 +255,16 @@ const Einteger Einteger::operator<=(uint64_t other) const {
 const Einteger Einteger::operator+(const Einteger &other) const {
     FixedPoint a, b;
     bool s = promote(*this, other, a, b);
-    FixedPoint fp(cfhe_base->GetALU()->AddNC(a, b));
+    FixedPoint fp(b.is_ct() ? cfhe_base->GetALU()->AddNC(a, b)
+                            : cfhe_base->GetALU()->PAddNC(a, b));
     return Einteger(fp, s);
 }
 
 const Einteger Einteger::operator+=(const Einteger &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
-    data = cfhe_base->GetALU()->AddNC(data, o);
+    data = o.is_ct() ? cfhe_base->GetALU()->AddNC(data, o)
+                     : cfhe_base->GetALU()->PAddNC(data, o);
     _sync_var();
     return *this;
 }
@@ -394,12 +399,10 @@ const Einteger Einteger::operator%=(const Einteger &other) {
 }
 
 const Einteger Einteger::operator+(uint64_t other) const {
-    // TODO: optimize this by using ciphertext-plaintext arithmetic
     return *this + Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
 const Einteger Einteger::operator+=(uint64_t other) {
-    // TODO: optimize this by using ciphertext-plaintext arithmetic
     return *this += Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
@@ -702,6 +705,7 @@ Einteger &Einteger::operator=(const Einteger &other) {
 
 Einteger &Einteger::operator=(uint64_t other) {
     _sync_var();
+    // TODO: Adjustable auto-decrypt mode
     if (CLIENT_MODE) {
         *this = Einteger(cfhe_base->EncryptInt(other, size), sign);
     } else {

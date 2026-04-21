@@ -17,6 +17,9 @@ namespace computefhe {
                                         const BinaryDigit &a,
                                         const BinaryDigit &b,
                                         BinaryDigit *carry_out = nullptr);
+        virtual BinaryDigit Gate_DigitSum(const BinaryDigit &e1,
+                                          const BinaryDigit &e0,
+                                          const BinaryDigit &s0);
 
         // Interface
         virtual FixedPoint Mux(const BinaryDigit &s, const FixedPoint &a,
@@ -39,6 +42,7 @@ namespace computefhe {
         virtual void FullAdder(const BinaryDigit &a, const BinaryDigit &b,
                                const BinaryDigit &c, BinaryDigit &sum,
                                BinaryDigit &carry_out);
+
         virtual FixedPoint Add(const FixedPoint &a, const FixedPoint &b);
         virtual FixedPoint AddC(const FixedPoint &a, const FixedPoint &b);
         virtual FixedPoint AddNC(const FixedPoint &a, const FixedPoint &b);
@@ -60,5 +64,9 @@ namespace computefhe {
         virtual FixedPoint Mul(const FixedPoint &a, const FixedPoint &b);
         virtual void DivU(const FixedPoint &a, const FixedPoint &b,
                           FixedPoint &q, FixedPoint &r);
+
+        virtual FixedPoint PAdd(const FixedPoint &a, const FixedPoint &pb);
+        virtual FixedPoint PAddC(const FixedPoint &a, const FixedPoint &pb);
+        virtual FixedPoint PAddNC(const FixedPoint &a, const FixedPoint &pb);
     };
 } // namespace computefhe

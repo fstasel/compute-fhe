@@ -53,6 +53,14 @@ BinaryDigit ALUGateLogic::Gate_MulAdd(const BinaryDigit &m,
     return sum;
 }
 
+BinaryDigit ALUGateLogic::Gate_DigitSum(const BinaryDigit &e1,
+                                        const BinaryDigit &e0,
+                                        const BinaryDigit &s0) {
+    BinaryDigit t = Gate_AND(e0, Gate_NOT(s0));
+    BinaryDigit s1 = Gate_XOR(e1, t);
+    return s1;
+}
+
 FixedPoint ALUGateLogic::Mux(const BinaryDigit &s, const FixedPoint &a,
                              const FixedPoint &b) {
     if (a.size() != b.size()) {
@@ -130,11 +138,56 @@ void ALUGateLogic::HalfSubtractor(const BinaryDigit &a, const BinaryDigit &b,
 void ALUGateLogic::FullAdder(const BinaryDigit &a, const BinaryDigit &b,
                              const BinaryDigit &c, BinaryDigit &sum,
                              BinaryDigit &carry_out) {
-    BinaryDigit s = Gate_XOR(a, b);
-    BinaryDigit carry1 = Gate_AND(a, b);
-    BinaryDigit carry2 = Gate_AND(s, c);
-    sum = Gate_XOR(s, c);
-    carry_out = Gate_OR(carry1, carry2);
+    if (a.is_ct && b.is_ct && c.is_ct) {
+        // C-C-C
+        BinaryDigit s = Gate_XOR(a, b);
+        BinaryDigit carry1 = Gate_AND(a, b);
+        BinaryDigit carry2 = Gate_AND(s, c);
+        sum = Gate_XOR(s, c);
+        carry_out = Gate_OR(carry1, carry2);
+    } else if (!a.is_ct && !b.is_ct && !c.is_ct) {
+        // P-P-P
+        sum = (a.p + b.p + c.p) % 2 ? Constant1() : Constant0();
+        carry_out = (a.p + b.p + c.p) >= 2 ? Constant1() : Constant0();
+    } else {
+        if (a.is_ct + b.is_ct + c.is_ct == 2) {
+            // C-C-P
+            BinaryDigit p, e1, e2;
+            if (!a.is_ct) {
+                p = a;
+                e1 = b;
+                e2 = c;
+            } else if (!b.is_ct) {
+                p = b;
+                e1 = a;
+                e2 = c;
+            } else {
+                p = c;
+                e1 = a;
+                e2 = b;
+            }
+            sum = Gate_XOR(p, Gate_XOR(e1, e2));
+            carry_out = p.p ? Gate_OR(e1, e2) : Gate_AND(e1, e2);
+        } else { // a.is_ct + b.is_ct + c.is_ct == 1
+            // C-P-P
+            BinaryDigit p1, p2, e;
+            if (a.is_ct) {
+                p1 = b;
+                p2 = c;
+                e = a;
+            } else if (b.is_ct) {
+                p1 = a;
+                p2 = c;
+                e = b;
+            } else {
+                p1 = a;
+                p2 = b;
+                e = c;
+            }
+            sum = (p1.p == p2.p) ? e : Gate_NOT(e);
+            carry_out = (p1.p == p2.p) ? p1 : e;
+        }
+    }
 }
 
 FixedPoint ALUGateLogic::Add(const FixedPoint &a, const FixedPoint &b) {
@@ -413,4 +466,16 @@ void ALUGateLogic::DivU(const FixedPoint &a, const FixedPoint &b, FixedPoint &q,
         }
         r = SubNC(r, t);
     }
+}
+
+FixedPoint ALUGateLogic::PAdd(const FixedPoint &a, const FixedPoint &pb) {
+    return Add(a, pb);
+}
+
+FixedPoint ALUGateLogic::PAddC(const FixedPoint &a, const FixedPoint &pb) {
+    return AddC(a, pb);
+}
+
+FixedPoint ALUGateLogic::PAddNC(const FixedPoint &a, const FixedPoint &pb) {
+    return AddNC(a, pb);
 }

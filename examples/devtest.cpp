@@ -579,8 +579,8 @@ void test_plaintext() {
         s->ResetStats();
     }
 
-    Eint32 a = 1000;
-    Eint32 b = -1;
+    Eint32 a = 1000000;
+    Eint32 b = (1 << 10);
     cout << "a: " << a << ", b: " << b << endl;
     cout << "a + b: " << a + b << endl;
 
@@ -589,7 +589,7 @@ void test_plaintext() {
         s->ResetStats();
     }
 
-    cout << "a + -1: " << a + -1 << endl;
+    cout << "a + (1<<10): " << a + (1 << 10) << endl;
 
     if (s) {
         s->PrintStats();
@@ -598,24 +598,24 @@ void test_plaintext() {
 }
 
 int main() {
-    computefhe::Init(CCPARAM_TOY, ALU_GATELOGIC, true, true);
+    computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, true);
 
-    test_arithmetic_operators();
-    test_arithmetic_assignment_operators();
-    test_comparison_operators();
-    test_logic_operators();
-    test_logic_assignment_operators();
-    test_shift_operators();
-    test_shift_assign_operators();
-    test_condition();
-    test_inc_dec();
-    test_vector();
-    test_vector_custom();
-    test_fp();
-    test_fp_vector();
-    test_fp_custom();
-    test_div();
-    test_simulation();
+    // test_arithmetic_operators();
+    // test_arithmetic_assignment_operators();
+    // test_comparison_operators();
+    // test_logic_operators();
+    // test_logic_assignment_operators();
+    // test_shift_operators();
+    // test_shift_assign_operators();
+    // test_condition();
+    // test_inc_dec();
+    // test_vector();
+    // test_vector_custom();
+    // test_fp();
+    // test_fp_vector();
+    // test_fp_custom();
+    // test_div();
+    // test_simulation();
     test_plaintext();
 
     computefhe::Finalize();

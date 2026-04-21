@@ -19,5 +19,8 @@ namespace computefhe {
                                        BinaryDigit *carry_out = nullptr);
         virtual BinaryDigit FHE_MUX(const BinaryDigit &s, const BinaryDigit &a,
                                     const BinaryDigit &b);
+        virtual BinaryDigit FHE_DigitSum(const BinaryDigit &e1,
+                                         const BinaryDigit &e0,
+                                         const BinaryDigit &s0);
     };
 } // namespace computefhe

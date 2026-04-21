@@ -41,5 +41,6 @@ namespace computefhe {
         FixedPoint(const vector<BinaryDigit> &other);
         FixedPoint(const vector<LWECiphertext> &other);
         FixedPoint(const vector<LWEPlaintext> &other);
+        bool is_ct() const;
     };
 } // namespace computefhe

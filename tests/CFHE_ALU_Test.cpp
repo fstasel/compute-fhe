@@ -503,3 +503,58 @@ TestReport CFHE_Test::TestDivU(uint n_digits) {
     PrintTestReport(report, n1, n2, result_r, expected_r);
     return report;
 }
+
+TestReport CFHE_Test::TestMux() {
+    TestReport report;
+    uint n1 = CreateRandomNumber() % 2;
+    uint n2 = CreateRandomNumber() % 2;
+    uint n3 = CreateRandomNumber() % 2;
+    BinaryDigit ct_n1 = cfhe_base->EncryptBool(n1, GetTestFresh());
+    BinaryDigit ct_n2 = cfhe_base->EncryptBool(n2, GetTestFresh());
+    BinaryDigit ct_n3 = cfhe_base->EncryptBool(n3, GetTestFresh());
+    uint expected_result = n1 ? n3 : n2;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->Gate_MUX(ct_n1, ct_n2, ct_n3);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected_result) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected_result);
+    return report;
+}
+
+TestReport CFHE_Test::TestPMux() {
+    TestReport report;
+    uint n1 = CreateRandomNumber() % 2;
+    uint n2 = CreateRandomNumber() % 2;
+    uint n3 = CreateRandomNumber() % 2;
+    BinaryDigit ct_n1 = cfhe_base->EncryptBool(n1, GetTestFresh());
+    BinaryDigit ct_n2 = cfhe_base->EncryptBool(n2, GetTestFresh());
+    BinaryDigit pt_n3 = n3;
+    uint expected_result = n1 ? n3 : n2;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->Gate_MUX(ct_n1, ct_n2, pt_n3);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected_result) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected_result);
+    return report;
+}
+
+TestReport CFHE_Test::TestPPMux() {
+    TestReport report;
+    uint n1 = CreateRandomNumber() % 2;
+    uint n2 = CreateRandomNumber() % 2;
+    uint n3 = CreateRandomNumber() % 2;
+    BinaryDigit ct_n1 = cfhe_base->EncryptBool(n1, GetTestFresh());
+    BinaryDigit pt_n2 = n2;
+    BinaryDigit pt_n3 = n3;
+    uint expected_result = n1 ? n3 : n2;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->Gate_MUX(ct_n1, pt_n2, pt_n3);
+    report.delta_t = ReadTimer();
+    uint result =
+        ct_result.is_ct ? cfhe_base->DecryptBool(ct_result) : ct_result.p;
+    report.test_result = (result == expected_result) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected_result);
+    return report;
+}

@@ -302,15 +302,15 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_MUX:
-            // report = TestMux();
+            report = TestMux();
             break;
 
         case TT_PMUX:
-            // report = TestPMux();
+            report = TestPMux();
             break;
 
         case TT_PPMUX:
-            // report = TestPPMux();
+            report = TestPPMux();
             break;
         default:
             report = TestReport();

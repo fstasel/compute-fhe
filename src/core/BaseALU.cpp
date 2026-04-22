@@ -141,7 +141,13 @@ BinaryDigit BaseALU::Gate_MUX(const BinaryDigit &s, const BinaryDigit &a,
         if (a.is_ct && b.is_ct) {
             return FHE_MUX(s, a, b);
         }
-        return Gate_OR(Gate_AND(Gate_NOT(s), a), Gate_AND(s, b));
+        if (a.is_ct && !b.is_ct) {
+            return b.p ? Gate_OR(s, a) : Gate_AND(Gate_NOT(s), a);
+        }
+        if (!a.is_ct && b.is_ct) {
+            return a.p ? Gate_OR(Gate_NOT(s), b) : Gate_AND(s, b);
+        }
+        return (a.p == b.p) ? a : (b.p ? s : Gate_NOT(s));
     }
     return s ? b : a;
 }

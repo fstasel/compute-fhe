@@ -200,7 +200,9 @@ uint64_t ComputeFHE::DecryptInt(const FixedPoint &ct, size_t n_digits) {
 
 BinaryDigit ComputeFHE::EncryptBool(bool pt, bool fresh) {
     if (sim_mode) {
-        return pt;
+        BinaryDigit out(pt);
+        out.is_ct = true;
+        return out;
     }
     LWECiphertext out = cc.Encrypt(sk, pt == 0 ? 0 : 1, FRESH);
     if (!fresh) {
@@ -211,7 +213,7 @@ BinaryDigit ComputeFHE::EncryptBool(bool pt, bool fresh) {
 
 bool ComputeFHE::DecryptBool(const BinaryDigit &ct) {
     if (sim_mode) {
-        return ct;
+        return ct.p;
     }
     LWEPlaintext result;
     cc.Decrypt(sk, ct, &result);

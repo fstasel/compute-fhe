@@ -4,29 +4,65 @@ namespace computefhe_test {
 
     enum TestType {
         TT_ENCRYPT_DECRYPT,
+        TT_PFIXP_ENCRYPT_DECRYPT,
         TT_HA,
+        TT_HA_CP,
         TT_FA,
+        TT_FA_CPP,
+        TT_FA_CCP,
         TT_XOR3,
         TT_MULADD,
         TT_ADD,
+        TT_PADD,
         TT_ADDC,
+        TT_PADDC,
         TT_ADD_NC,
+        TT_PADD_NC,
+        TT_ADDC_NC,
+        TT_PADDC_NC,
         TT_SUB,
+        TT_CPSUB,
+        TT_PSUB,
         TT_SUBC,
+        TT_CPSUBC,
+        TT_PSUBC,
         TT_SUB_NC,
+        TT_CPSUB_NC,
+        TT_PSUB_NC,
+        TT_SUBC_NC,
+        TT_CPSUBC_NC,
+        TT_PSUBC_NC,
         TT_NEG,
         TT_CMPNOTEQ,
+        TT_PCMPNOTEQ,
         TT_CMPEQ,
+        TT_PCMPEQ,
         TT_CMPLTEQ_U,
+        TT_PCMPLTEQ_U,
         TT_CMPGT_U,
+        TT_PCMPGT_U,
         TT_CMPGTEQ_U,
+        TT_PCMPGTEQ_U,
         TT_CMPLT_U,
+        TT_PCMPLT_U,
         TT_CMPLTEQ,
+        TT_PCMPLTEQ,
         TT_CMPGT,
+        TT_PCMPGT,
         TT_CMPGTEQ,
+        TT_PCMPGTEQ,
         TT_CMPLT,
+        TT_PCMPLT,
         TT_FULLMUL,
+        TT_PFULLMUL,
+        TT_PFULLMUL_FAST,
+        TT_BOOTHSMUL,
         TT_MUL,
+        TT_PMUL,
+        TT_PMUL_FAST,
+        TT_MUX,
+        TT_PMUX,
+        TT_PPMUX,
         TT_DIVU
     };
 
@@ -34,52 +70,124 @@ namespace computefhe_test {
         switch (v) {
         case TT_ENCRYPT_DECRYPT:
             return "ENCRYPT_DECRYPT";
+        case TT_PFIXP_ENCRYPT_DECRYPT:
+            return "PFIXP_ENCRYPT_DECRYPT";
         case TT_HA:
             return "HA";
+        case TT_HA_CP:
+            return "HA_CP";
         case TT_FA:
             return "FA";
+        case TT_FA_CPP:
+            return "FA_CPP";
+        case TT_FA_CCP:
+            return "FA_CCP";
         case TT_XOR3:
             return "XOR3";
         case TT_MULADD:
             return "MULADD";
         case TT_ADD:
             return "ADD";
+        case TT_PADD:
+            return "PADD";
         case TT_ADDC:
             return "ADDC";
+        case TT_PADDC:
+            return "PADDC";
         case TT_ADD_NC:
             return "ADD_NC";
+        case TT_PADD_NC:
+            return "PADD_NC";
+        case TT_ADDC_NC:
+            return "ADDC_NC";
+        case TT_PADDC_NC:
+            return "PADDC_NC";
         case TT_SUB:
             return "SUB";
+        case TT_CPSUB:
+            return "CPSUB";
+        case TT_PSUB:
+            return "PSUB";
         case TT_SUBC:
             return "SUBC";
+        case TT_CPSUBC:
+            return "CPSUBC";
+        case TT_PSUBC:
+            return "PSUBC";
         case TT_SUB_NC:
             return "SUB_NC";
+        case TT_CPSUB_NC:
+            return "CPSUB_NC";
+        case TT_PSUB_NC:
+            return "PSUB_NC";
+        case TT_SUBC_NC:
+            return "SUBC_NC";
+        case TT_CPSUBC_NC:
+            return "CPSUBC_NC";
+        case TT_PSUBC_NC:
+            return "PSUBC_NC";
         case TT_NEG:
             return "NEG";
         case TT_CMPNOTEQ:
             return "CMPNOTEQ";
+        case TT_PCMPNOTEQ:
+            return "PCMPNOTEQ";
         case TT_CMPEQ:
             return "CMPEQ";
+        case TT_PCMPEQ:
+            return "PCMPEQ";
         case TT_CMPLTEQ_U:
             return "CMPLTEQ_U";
+        case TT_PCMPLTEQ_U:
+            return "PCMPLTEQ_U";
         case TT_CMPGT_U:
             return "CMPGT_U";
+        case TT_PCMPGT_U:
+            return "PCMPGT_U";
         case TT_CMPGTEQ_U:
             return "CMPGTEQ_U";
+        case TT_PCMPGTEQ_U:
+            return "PCMPGTEQ_U";
         case TT_CMPLT_U:
             return "CMPLT_U";
+        case TT_PCMPLT_U:
+            return "PCMPLT_U";
         case TT_CMPLTEQ:
             return "CMPLTEQ";
+        case TT_PCMPLTEQ:
+            return "PCMPLTEQ";
         case TT_CMPGT:
             return "CMPGT";
+        case TT_PCMPGT:
+            return "PCMPGT";
         case TT_CMPGTEQ:
             return "CMPGTEQ";
+        case TT_PCMPGTEQ:
+            return "PCMPGTEQ";
         case TT_CMPLT:
             return "CMPLT";
+        case TT_PCMPLT:
+            return "PCMPLT";
         case TT_FULLMUL:
             return "FULLMUL";
+        case TT_PFULLMUL:
+            return "PFULLMUL";
+        case TT_PFULLMUL_FAST:
+            return "PFULLMUL_FAST";
+        case TT_BOOTHSMUL:
+            return "BOOTHSMUL";
         case TT_MUL:
             return "MUL";
+        case TT_PMUL:
+            return "PMUL";
+        case TT_PMUL_FAST:
+            return "PMUL_FAST";
+        case TT_MUX:
+            return "TT_MUX";
+        case TT_PMUX:
+            return "TT_PMUX";
+        case TT_PPMUX:
+            return "TT_PPMUX";
         case TT_DIVU:
             return "DIVU";
         default:

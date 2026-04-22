@@ -49,6 +49,7 @@ namespace computefhe_test {
 
         void Test(TestType tt, size_t n_digits = 8);
         TestReport TestEncryptDecrypt(size_t n_digits);
+        // TestReport TestPFixedPointEncryptDecrypt(size_t n_digits);
 
         void PrintTestReport(TestReport report, int64_t n, int64_t result);
         void PrintTestReport(TestReport report, int64_t n, int64_t result,
@@ -59,28 +60,63 @@ namespace computefhe_test {
                              int64_t n3, int64_t result, int64_t expected);
 
         TestReport TestHalfAdder();
+        TestReport TestHalfAdder_CP();
         TestReport TestFullAdder();
+        TestReport TestFullAdder_CPP();
+        TestReport TestFullAdder_CCP();
         TestReport TestXOR3();
         TestReport TestMulAdd();
         TestReport TestAdd(uint n_digits);
+        TestReport TestPAdd(uint n_digits);
         TestReport TestAddC(uint n_digits);
+        TestReport TestPAddC(uint n_digits);
         TestReport TestAddNC(uint n_digits);
+        TestReport TestPAddNC(uint n_digits);
+        TestReport TestAddCNC(uint n_digits);
+        TestReport TestPAddCNC(uint n_digits);
         TestReport TestSub(uint n_digits);
+        TestReport TestCPSub(uint n_digits);
+        TestReport TestPSub(uint n_digits);
         TestReport TestSubC(uint n_digits);
+        TestReport TestCPSubC(uint n_digits);
+        TestReport TestPSubC(uint n_digits);
         TestReport TestSubNC(uint n_digits);
+        TestReport TestCPSubNC(uint n_digits);
+        TestReport TestPSubNC(uint n_digits);
+        TestReport TestSubCNC(uint n_digits);
+        TestReport TestCPSubCNC(uint n_digits);
+        TestReport TestPSubCNC(uint n_digits);
         TestReport TestNeg(uint n_digits);
         TestReport TestCmpNotEq(uint n_digits);
+        TestReport TestPCmpNotEq(uint n_digits);
         TestReport TestCmpEq(uint n_digits);
+        TestReport TestPCmpEq(uint n_digits);
         TestReport TestCmpLTEq_U(uint n_digits);
+        TestReport TestPCmpLTEq_U(uint n_digits);
         TestReport TestCmpGT_U(uint n_digits);
+        TestReport TestPCmpGT_U(uint n_digits);
         TestReport TestCmpGTEq_U(uint n_digits);
+        TestReport TestPCmpGTEq_U(uint n_digits);
         TestReport TestCmpLT_U(uint n_digits);
+        TestReport TestPCmpLT_U(uint n_digits);
         TestReport TestCmpLTEq(uint n_digits);
+        TestReport TestPCmpLTEq(uint n_digits);
         TestReport TestCmpGT(uint n_digits);
+        TestReport TestPCmpGT(uint n_digits);
         TestReport TestCmpGTEq(uint n_digits);
+        TestReport TestPCmpGTEq(uint n_digits);
         TestReport TestCmpLT(uint n_digits);
+        TestReport TestPCmpLT(uint n_digits);
         TestReport TestFullMul(uint n_digits);
+        TestReport TestPFullMul(uint n_digits);
+        TestReport TestPFullMulFast(uint n_digits);
+        TestReport TestBoothsMul(uint n_digits);
         TestReport TestMul(uint n_digits);
+        TestReport TestPMul(uint n_digits);
+        TestReport TestPMulFast(uint n_digits);
+        TestReport TestMux();
+        TestReport TestPMux();
+        TestReport TestPPMux();
         TestReport TestDivU(uint n_digits);
 
         void StartNoiseTest();

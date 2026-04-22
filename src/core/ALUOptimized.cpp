@@ -225,13 +225,48 @@ void ALUOptimized::Swap_if(const BinaryDigit &cond, BinaryDigit &a,
 }
 
 FixedPoint ALUOptimized::PAdd(const FixedPoint &a, const FixedPoint &pb) {
-    // TODO
-    return FixedPoint();
+    if (a.size() != pb.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = a.size();
+
+    FixedPoint out(n_digit);
+    ALUGateLogic::HalfAdder(a[0], pb[0], out[0], carry);
+    for (uint8_t i = 1; i < n_digit; i++) {
+        if (carry.is_ct) {
+            out[i] = Gate_XOR(Gate_DigitSum(Gate_XOR(a[i], pb[i - 1]),
+                                            Gate_XOR(a[i - 1], pb[i - 1]),
+                                            Gate_XOR(out[i - 1], pb[i - 1])),
+                              pb[i]);
+            if (i == n_digit - 1) {
+                carry = (pb[i].p == 0) ? Gate_AND(a[i], Gate_NOT(out[i]))
+                                       : Gate_OR(a[i], Gate_NOT(out[i]));
+            }
+        } else {
+            ALUGateLogic::FullAdder(a[i], pb[i], carry, out[i], carry);
+        }
+    }
+    return out;
 }
 
 FixedPoint ALUOptimized::PAddC(const FixedPoint &a, const FixedPoint &pb) {
-    // TODO
-    return FixedPoint();
+    if (a.size() != pb.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = a.size();
+
+    FixedPoint out(n_digit);
+    for (uint8_t i = 0; i < n_digit; i++) {
+        if (i > 0 && carry.is_ct) {
+            out[i] = Gate_XOR(Gate_DigitSum(Gate_XOR(a[i], pb[i - 1]),
+                                            Gate_XOR(a[i - 1], pb[i - 1]),
+                                            Gate_XOR(out[i - 1], pb[i - 1])),
+                              pb[i]);
+        } else {
+            ALUGateLogic::FullAdder(a[i], pb[i], carry, out[i], carry);
+        }
+    }
+    return out;
 }
 
 FixedPoint ALUOptimized::PAddNC(const FixedPoint &a, const FixedPoint &pb) {

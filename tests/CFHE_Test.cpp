@@ -77,12 +77,28 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             report = TestEncryptDecrypt(n_digits);
             break;
 
+        case TT_PFIXP_ENCRYPT_DECRYPT:
+            // report = TestPFixedPointEncryptDecrypt(n_digits);
+            break;
+
         case TT_HA:
             report = TestHalfAdder();
             break;
 
+        case TT_HA_CP:
+            // report = TestHalfAdder_CP();
+            break;
+
         case TT_FA:
             report = TestFullAdder();
+            break;
+
+        case TT_FA_CPP:
+            // report = TestFullAdder_CPP();
+            break;
+
+        case TT_FA_CCP:
+            // report = TestFullAdder_CCP();
             break;
 
         case TT_XOR3:
@@ -97,24 +113,80 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             report = TestAdd(n_digits);
             break;
 
+        case TT_PADD:
+            report = TestPAdd(n_digits);
+            break;
+
         case TT_ADDC:
             report = TestAddC(n_digits);
+            break;
+
+        case TT_PADDC:
+            report = TestPAddC(n_digits);
             break;
 
         case TT_ADD_NC:
             report = TestAddNC(n_digits);
             break;
 
+        case TT_PADD_NC:
+            report = TestPAddNC(n_digits);
+            break;
+
+        case TT_ADDC_NC:
+            // report = TestAddCNC(n_digits);
+            break;
+
+        case TT_PADDC_NC:
+            // report = TestPAddCNC(n_digits);
+            break;
+
         case TT_SUB:
             report = TestSub(n_digits);
+            break;
+
+        case TT_CPSUB:
+            // report = TestCPSub(n_digits);
+            break;
+
+        case TT_PSUB:
+            // report = TestPSub(n_digits);
             break;
 
         case TT_SUBC:
             report = TestSubC(n_digits);
             break;
 
+        case TT_CPSUBC:
+            // report = TestCPSubC(n_digits);
+            break;
+
+        case TT_PSUBC:
+            // report = TestPSubC(n_digits);
+            break;
+
         case TT_SUB_NC:
             report = TestSubNC(n_digits);
+            break;
+
+        case TT_CPSUB_NC:
+            // report = TestCPSubNC(n_digits);
+            break;
+
+        case TT_PSUB_NC:
+            // report = TestPSubNC(n_digits);
+            break;
+
+        case TT_SUBC_NC:
+            // report = TestSubCNC(n_digits);
+            break;
+
+        case TT_CPSUBC_NC:
+            // report = TestCPSubCNC(n_digits);
+            break;
+
+        case TT_PSUBC_NC:
+            // report = TestPSubCNC(n_digits);
             break;
 
         case TT_NEG:
@@ -125,54 +197,121 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             report = TestCmpNotEq(n_digits);
             break;
 
+        case TT_PCMPNOTEQ:
+            // report = TestPCmpNotEq(n_digits);
+            break;
+
         case TT_CMPEQ:
             report = TestCmpEq(n_digits);
+            break;
+
+        case TT_PCMPEQ:
+            // report = TestPCmpEq(n_digits);
             break;
 
         case TT_CMPLTEQ_U:
             report = TestCmpLTEq_U(n_digits);
             break;
 
+        case TT_PCMPLTEQ_U:
+            // report = TestPCmpLTEq_U(n_digits);
+            break;
+
         case TT_CMPGT_U:
             report = TestCmpGT_U(n_digits);
+            break;
+
+        case TT_PCMPGT_U:
+            // report = TestPCmpGT_U(n_digits);
             break;
 
         case TT_CMPGTEQ_U:
             report = TestCmpGTEq_U(n_digits);
             break;
 
+        case TT_PCMPGTEQ_U:
+            // report = TestPCmpGTEq_U(n_digits);
+            break;
+
         case TT_CMPLT_U:
             report = TestCmpLT_U(n_digits);
+            break;
+
+        case TT_PCMPLT_U:
+            // report = TestPCmpLT_U(n_digits);
             break;
 
         case TT_CMPLTEQ:
             report = TestCmpLTEq(n_digits);
             break;
 
+        case TT_PCMPLTEQ:
+            // report = TestPCmpLTEq(n_digits);
+            break;
+
         case TT_CMPGT:
             report = TestCmpGT(n_digits);
+            break;
+
+        case TT_PCMPGT:
+            // report = TestPCmpGT(n_digits);
             break;
 
         case TT_CMPGTEQ:
             report = TestCmpGTEq(n_digits);
             break;
 
+        case TT_PCMPGTEQ:
+            // report = TestPCmpGTEq(n_digits);
+            break;
+
         case TT_CMPLT:
             report = TestCmpLT(n_digits);
+            break;
+
+        case TT_PCMPLT:
+            // report = TestPCmpLT(n_digits);
             break;
 
         case TT_FULLMUL:
             report = TestFullMul(n_digits);
             break;
 
+        case TT_PFULLMUL:
+            // report = TestPFullMul(n_digits);
+            break;
+
+        case TT_PFULLMUL_FAST:
+            // report = TestPFullMulFast(n_digits);
+            break;
+
+        case TT_BOOTHSMUL:
+            // report = TestBoothsMul(n_digits);
+            break;
+
         case TT_MUL:
             report = TestMul(n_digits);
             break;
 
-        case TT_DIVU:
-            report = TestDivU(n_digits);
+        case TT_PMUL:
+            // report = TestPMul(n_digits);
             break;
 
+        case TT_PMUL_FAST:
+            // report = TestPMulFast(n_digits);
+            break;
+
+        case TT_MUX:
+            // report = TestMux();
+            break;
+
+        case TT_PMUX:
+            // report = TestPMux();
+            break;
+
+        case TT_PPMUX:
+            // report = TestPPMux();
+            break;
         default:
             report = TestReport();
         }
@@ -304,18 +443,31 @@ void CFHE_Test::StartNoiseTest() {
 }
 
 void CFHE_Test::StartTest() {
-    // StartTest(TT_ENCRYPT_DECRYPT);
+    const int NUM_TEST = 30;
+    const int P_NUM_TEST = 100;
+
+    SetNumTest(NUM_TEST);
+    // Test(TT_ENCRYPT_DECRYPT);
+    // Test(TT_PFIXP_ENCRYPT_DECRYPT);
     Test(TT_HA, 1);
+    Test(TT_HA_CP, 1);
     Test(TT_FA, 1);
+    Test(TT_FA_CPP, 1);
+    Test(TT_FA_CCP, 1);
     Test(TT_XOR3, 1);
     Test(TT_MULADD, 1);
-    for (uint d = 2; d <= 4U; d <<= 1) {
+    Test(TT_MUX, 1);
+    Test(TT_PMUX, 1);
+    Test(TT_PPMUX, 1);
+    for (uint d = 4; d <= 32U; d <<= 1) {
         Test(TT_ADD, d);
         Test(TT_ADDC, d);
         Test(TT_ADD_NC, d);
+        Test(TT_ADDC_NC, d);
         Test(TT_SUB, d);
         Test(TT_SUBC, d);
         Test(TT_SUB_NC, d);
+        Test(TT_SUBC_NC, d);
         Test(TT_NEG, d);
         Test(TT_CMPNOTEQ, d);
         Test(TT_CMPEQ, d);
@@ -329,46 +481,101 @@ void CFHE_Test::StartTest() {
         Test(TT_CMPLT, d);
         Test(TT_FULLMUL, d);
         Test(TT_MUL, d);
+    }
+
+    SetNumTest(P_NUM_TEST);
+    for (uint d = 4; d <= 32U; d <<= 1) {
+        Test(TT_PADD, d);
+        Test(TT_PADDC, d);
+        Test(TT_PADD_NC, d);
+        Test(TT_PADDC_NC, d);
+        Test(TT_CPSUB, d);
+        Test(TT_PSUB, d);
+        Test(TT_CPSUBC, d);
+        Test(TT_PSUBC, d);
+        Test(TT_CPSUB_NC, d);
+        Test(TT_PSUB_NC, d);
+        Test(TT_CPSUBC_NC, d);
+        Test(TT_PSUBC_NC, d);
+        Test(TT_PCMPNOTEQ, d);
+        Test(TT_PCMPEQ, d);
+        Test(TT_PCMPLTEQ_U, d);
+        Test(TT_PCMPGT_U, d);
+        Test(TT_PCMPGTEQ_U, d);
+        Test(TT_PCMPLT_U, d);
+        Test(TT_PCMPLTEQ, d);
+        Test(TT_PCMPGT, d);
+        Test(TT_PCMPGTEQ, d);
+        Test(TT_PCMPLT, d);
+        Test(TT_PFULLMUL, d);
+        Test(TT_PFULLMUL_FAST, d);
+        Test(TT_BOOTHSMUL, d);
+        Test(TT_PMUL, d);
+        Test(TT_PMUL_FAST, d);
         Test(TT_DIVU, d);
+    }
+
+    SetNumTest(P_NUM_TEST);
+    for (uint d = 4; d <= 32U; d <<= 1) {
+        Test(TT_PADD, d);
+        Test(TT_PADDC, d);
+        Test(TT_PADD_NC, d);
+        Test(TT_PADDC_NC, d);
+        Test(TT_CPSUB, d);
+        Test(TT_PSUB, d);
+        Test(TT_CPSUBC, d);
+        Test(TT_PSUBC, d);
+        Test(TT_CPSUB_NC, d);
+        Test(TT_PSUB_NC, d);
+        Test(TT_CPSUBC_NC, d);
+        Test(TT_PSUBC_NC, d);
+        Test(TT_PCMPNOTEQ, d);
+        Test(TT_PCMPEQ, d);
+        Test(TT_PCMPLTEQ_U, d);
+        Test(TT_PCMPGT_U, d);
+        Test(TT_PCMPGTEQ_U, d);
+        Test(TT_PCMPLT_U, d);
+        Test(TT_PCMPLTEQ, d);
+        Test(TT_PCMPGT, d);
+        Test(TT_PCMPGTEQ, d);
+        Test(TT_PCMPLT, d);
+        Test(TT_PFULLMUL, d);
+        Test(TT_PFULLMUL_FAST, d);
+        Test(TT_BOOTHSMUL, d);
+        Test(TT_PMUL, d);
+        Test(TT_PMUL_FAST, d);
     }
 }
 
 void CFHE_Test::TestAll() {
-    const int NUM_TEST = 1;
     const int VERBOSITY = 4;
     CFHE_Test *c;
     c = new CFHE_Test(CCPARAM_STD128, ALU_GATELOGIC);
-    c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
     c = new CFHE_Test(CCPARAM_STD128_3, ALU_OPTIMIZED);
-    c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
     c = new CFHE_Test(CCPARAM_STD192, ALU_GATELOGIC);
-    c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
     c = new CFHE_Test(CCPARAM_STD192_3, ALU_OPTIMIZED);
-    c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
     c = new CFHE_Test(CCPARAM_STD256, ALU_GATELOGIC);
-    c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
     c = new CFHE_Test(CCPARAM_STD256_3, ALU_OPTIMIZED);
-    c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();

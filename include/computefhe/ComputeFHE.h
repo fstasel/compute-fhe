@@ -36,6 +36,7 @@ namespace computefhe {
         LWEPrivateKey sk;
         BaseALU *alu;
         bool sim_mode;
+        bool auto_encrypt_mode;
 
         void createCC();
         void createALU();
@@ -67,5 +68,8 @@ namespace computefhe {
 
         void PrintCryptoContextParams();
         void PrintLWECiphertextParams(ConstLWECiphertext &ct);
+
+        bool isAutoEncryptMode();
+        void setAutoEncryptMode(bool mode = true);
     };
 } // namespace computefhe

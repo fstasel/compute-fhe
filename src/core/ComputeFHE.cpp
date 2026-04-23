@@ -142,6 +142,7 @@ ComputeFHE::~ComputeFHE() { delete alu; }
 ComputeFHE::ComputeFHE(CryptoContextParam param, ALUType alu_type,
                        bool simulation_mode)
     : cc_param(param), alu_type(alu_type), sim_mode(simulation_mode) {
+    setAutoEncryptMode();
     createCC();
     generateKeys();
     createALU();
@@ -247,3 +248,7 @@ void ComputeFHE::PrintLWECiphertextParams(ConstLWECiphertext &ct) {
          << "ct a=" << ct->GetA() << endl
          << "ct b=" << ct->GetB() << endl;
 }
+
+bool ComputeFHE::isAutoEncryptMode() { return auto_encrypt_mode; }
+
+void ComputeFHE::setAutoEncryptMode(bool mode) { auto_encrypt_mode = mode; }

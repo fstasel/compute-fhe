@@ -573,6 +573,39 @@ void test_div() {
     cout << "vec[idx] /= 5: " << vec[idx] << endl;
 }
 
+void test_auto_enc() {
+    BaseALUSimulator *s = cfhe_base->GetSimulator();
+    if (s) {
+        s->ResetStats();
+    }
+
+    Eint32 x = 100;
+    cout << "x*x: " << x * x << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+
+    cfhe_base->setAutoEncryptMode(false);
+
+    Eint32 y = 100;
+
+    cout << "y*y: " << y * y << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+
+    cout << "x*y: " << x * y << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+}
+
 void test_plaintext() {
     BaseALUSimulator *s = cfhe_base->GetSimulator();
     if (s) {
@@ -616,7 +649,8 @@ int main() {
     // test_fp_custom();
     // test_div();
     // test_simulation();
-    test_plaintext();
+    test_auto_enc();
+    // test_plaintext();
 
     computefhe::Finalize();
 

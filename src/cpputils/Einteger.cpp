@@ -601,7 +601,7 @@ const Einteger Einteger::operator!() const {
 }
 
 const Einteger Einteger::operator~() const {
-    return *this ^ 0xFFFFFFFFFFFFFFFFUL;
+    return Einteger(cfhe_base->GetALU()->Not(data), sign);
 }
 
 const Einteger Einteger::operator&&(const Einteger &other) const {

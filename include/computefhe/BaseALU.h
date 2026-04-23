@@ -99,7 +99,9 @@ namespace computefhe {
         virtual FixedPoint Sub(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint SubC(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint SubNC(const FixedPoint &a, const FixedPoint &b) = 0;
+        virtual FixedPoint SubCNC(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint Neg(const FixedPoint &a) = 0;
+        virtual FixedPoint Not(const FixedPoint &a) = 0;
         virtual BinaryDigit CmpNotEq(const FixedPoint &a,
                                      const FixedPoint &b) = 0;
         virtual BinaryDigit CmpEq(const FixedPoint &a, const FixedPoint &b) = 0;
@@ -129,5 +131,18 @@ namespace computefhe {
                                   const FixedPoint &pb) = 0;
         virtual FixedPoint PAddCNC(const FixedPoint &a,
                                    const FixedPoint &pb) = 0;
+        virtual FixedPoint PSub(const FixedPoint &pa, const FixedPoint &b) = 0;
+        virtual FixedPoint PSubC(const FixedPoint &pa, const FixedPoint &b) = 0;
+        virtual FixedPoint PSubNC(const FixedPoint &pa,
+                                  const FixedPoint &b) = 0;
+        virtual FixedPoint PSubCNC(const FixedPoint &pa,
+                                   const FixedPoint &b) = 0;
+        virtual FixedPoint CPSub(const FixedPoint &a, const FixedPoint &pb) = 0;
+        virtual FixedPoint CPSubC(const FixedPoint &a,
+                                  const FixedPoint &pb) = 0;
+        virtual FixedPoint CPSubNC(const FixedPoint &a,
+                                   const FixedPoint &pb) = 0;
+        virtual FixedPoint CPSubCNC(const FixedPoint &a,
+                                    const FixedPoint &pb) = 0;
     };
 } // namespace computefhe

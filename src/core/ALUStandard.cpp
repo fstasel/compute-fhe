@@ -299,6 +299,24 @@ FixedPoint ALUStandard::SubNC(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
+FixedPoint ALUStandard::SubCNC(const FixedPoint &a, const FixedPoint &b) {
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = a.size();
+
+    FixedPoint out(n_digit);
+    for (uint8_t i = 0; i < n_digit; i++) {
+        BinaryDigit inv_b = Gate_NOT(b[i]);
+        if (i < n_digit - 1) {
+            FullAdder(a[i], inv_b, carry, out[i], carry);
+        } else {
+            out[i] = Gate_XOR3(a[i], inv_b, carry);
+        }
+    }
+    return out;
+}
+
 FixedPoint ALUStandard::Neg(const FixedPoint &a) {
     size_t n_digit = a.size();
 
@@ -312,6 +330,16 @@ FixedPoint ALUStandard::Neg(const FixedPoint &a) {
         } else {
             out[i] = Gate_XOR(inv, c);
         }
+    }
+    return out;
+}
+
+FixedPoint ALUStandard::Not(const FixedPoint &a) {
+    size_t n_digit = a.size();
+
+    FixedPoint out(n_digit);
+    for (uint8_t i = 0; i < n_digit; i++) {
+        out[i] = Gate_NOT(a[i]);
     }
     return out;
 }
@@ -498,4 +526,36 @@ FixedPoint ALUStandard::PAddNC(const FixedPoint &a, const FixedPoint &pb) {
 
 FixedPoint ALUStandard::PAddCNC(const FixedPoint &a, const FixedPoint &pb) {
     return AddCNC(a, pb);
+}
+
+FixedPoint ALUStandard::PSub(const FixedPoint &pa, const FixedPoint &b) {
+    return Sub(pa, b);
+}
+
+FixedPoint ALUStandard::PSubC(const FixedPoint &pa, const FixedPoint &b) {
+    return SubC(pa, b);
+}
+
+FixedPoint ALUStandard::PSubNC(const FixedPoint &pa, const FixedPoint &b) {
+    return SubNC(pa, b);
+}
+
+FixedPoint ALUStandard::PSubCNC(const FixedPoint &pa, const FixedPoint &b) {
+    return SubCNC(pa, b);
+}
+
+FixedPoint ALUStandard::CPSub(const FixedPoint &a, const FixedPoint &pb) {
+    return PAdd(a, Neg(pb));
+}
+
+FixedPoint ALUStandard::CPSubC(const FixedPoint &a, const FixedPoint &pb) {
+    return PAddC(a, Not(pb));
+}
+
+FixedPoint ALUStandard::CPSubNC(const FixedPoint &a, const FixedPoint &pb) {
+    return PAddNC(a, Neg(pb));
+}
+
+FixedPoint ALUStandard::CPSubCNC(const FixedPoint &a, const FixedPoint &pb) {
+    return PAddCNC(a, Not(pb));
 }

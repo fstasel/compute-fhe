@@ -287,10 +287,8 @@ FixedPoint ALUOptimized::PAddNC(const FixedPoint &a, const FixedPoint &pb) {
                                             Gate_XOR(a[i - 1], pb[i - 1]),
                                             Gate_XOR(out[i - 1], pb[i - 1])),
                               pb[i]);
-        } else if (i < n_digit - 1) {
-            ALUStandard::FullAdder(a[i], pb[i], carry, out[i], carry);
         } else {
-            out[i] = Gate_XOR3(a[i], pb[i], carry);
+            ALUStandard::FullAdder(a[i], pb[i], carry, out[i], carry);
         }
     }
     return out;
@@ -309,10 +307,98 @@ FixedPoint ALUOptimized::PAddCNC(const FixedPoint &a, const FixedPoint &pb) {
                                             Gate_XOR(a[i - 1], pb[i - 1]),
                                             Gate_XOR(out[i - 1], pb[i - 1])),
                               pb[i]);
-        } else if (i < n_digit - 1) {
-            ALUStandard::FullAdder(a[i], pb[i], carry, out[i], carry);
         } else {
-            out[i] = Gate_XOR3(a[i], pb[i], carry);
+            ALUStandard::FullAdder(a[i], pb[i], carry, out[i], carry);
+        }
+    }
+    return out;
+}
+
+FixedPoint ALUOptimized::PSub(const FixedPoint &pa, const FixedPoint &b) {
+    if (pa.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = b.size();
+
+    FixedPoint out(n_digit);
+    ALUStandard::HalfSubtractor(pa[0], b[0], out[0], carry);
+    for (uint8_t i = 1; i < n_digit; i++) {
+        if (carry.is_ct) {
+            out[i] = Gate_XOR(Gate_DigitSum(Gate_XNOR(b[i], pa[i - 1]),
+                                            Gate_XNOR(b[i - 1], pa[i - 1]),
+                                            Gate_XOR(out[i - 1], pa[i - 1])),
+                              pa[i]);
+            if (i == n_digit - 1) {
+                carry = (pa[i].p == 0) ? Gate_NOR(b[i], out[i])
+                                       : Gate_NAND(b[i], out[i]);
+            }
+        } else {
+            ALUStandard::FullAdder(Gate_NOT(b[i]), pa[i], carry, out[i], carry);
+        }
+    }
+    return out;
+}
+
+FixedPoint ALUOptimized::PSubC(const FixedPoint &pa, const FixedPoint &b) {
+    if (pa.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = b.size();
+
+    FixedPoint out(n_digit);
+    for (uint8_t i = 0; i < n_digit; i++) {
+        if (i > 0 && carry.is_ct) {
+            out[i] = Gate_XOR(Gate_DigitSum(Gate_XNOR(b[i], pa[i - 1]),
+                                            Gate_XNOR(b[i - 1], pa[i - 1]),
+                                            Gate_XOR(out[i - 1], pa[i - 1])),
+                              pa[i]);
+            if (i == n_digit - 1) {
+                carry = (pa[i].p == 0) ? Gate_NOR(b[i], out[i])
+                                       : Gate_NAND(b[i], out[i]);
+            }
+        } else {
+            ALUStandard::FullAdder(Gate_NOT(b[i]), pa[i], carry, out[i], carry);
+        }
+    }
+    return out;
+}
+
+FixedPoint ALUOptimized::PSubNC(const FixedPoint &pa, const FixedPoint &b) {
+    if (pa.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = b.size();
+
+    FixedPoint out(n_digit);
+    ALUStandard::HalfSubtractor(pa[0], b[0], out[0], carry);
+    for (uint8_t i = 1; i < n_digit; i++) {
+        if (carry.is_ct) {
+            out[i] = Gate_XOR(Gate_DigitSum(Gate_XNOR(b[i], pa[i - 1]),
+                                            Gate_XNOR(b[i - 1], pa[i - 1]),
+                                            Gate_XOR(out[i - 1], pa[i - 1])),
+                              pa[i]);
+        } else {
+            ALUStandard::FullAdder(Gate_NOT(b[i]), pa[i], carry, out[i], carry);
+        }
+    }
+    return out;
+}
+
+FixedPoint ALUOptimized::PSubCNC(const FixedPoint &pa, const FixedPoint &b) {
+    if (pa.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = b.size();
+
+    FixedPoint out(n_digit);
+    for (uint8_t i = 0; i < n_digit; i++) {
+        if (i > 0 && carry.is_ct) {
+            out[i] = Gate_XOR(Gate_DigitSum(Gate_XNOR(b[i], pa[i - 1]),
+                                            Gate_XNOR(b[i - 1], pa[i - 1]),
+                                            Gate_XOR(out[i - 1], pa[i - 1])),
+                              pa[i]);
+        } else {
+            ALUStandard::FullAdder(Gate_NOT(b[i]), pa[i], carry, out[i], carry);
         }
     }
     return out;

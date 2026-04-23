@@ -127,5 +127,7 @@ namespace computefhe {
         virtual FixedPoint PAddC(const FixedPoint &a, const FixedPoint &pb) = 0;
         virtual FixedPoint PAddNC(const FixedPoint &a,
                                   const FixedPoint &pb) = 0;
+        virtual FixedPoint PAddCNC(const FixedPoint &a,
+                                   const FixedPoint &pb) = 0;
     };
 } // namespace computefhe

@@ -403,3 +403,7 @@ FixedPoint ALUOptimized::PSubCNC(const FixedPoint &pa, const FixedPoint &b) {
     }
     return out;
 }
+
+FixedPoint ALUOptimized::Neg(const FixedPoint &a) {
+    return PSubNC(a.size(), a);
+}

@@ -56,5 +56,6 @@ namespace computefhe {
         virtual FixedPoint PSubC(const FixedPoint &pa, const FixedPoint &b);
         virtual FixedPoint PSubNC(const FixedPoint &pa, const FixedPoint &b);
         virtual FixedPoint PSubCNC(const FixedPoint &pa, const FixedPoint &b);
+        virtual FixedPoint Neg(const FixedPoint &a);
     };
 } // namespace computefhe

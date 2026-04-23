@@ -186,13 +186,10 @@ uint64_t ComputeFHE::DecryptInt(const FixedPoint &ct, size_t n_digits) {
     LWEPlaintext result;
     n_digits = (n_digits == 0) ? ct.size() : n_digits;
     for (size_t i = 0; i < n_digits; i++) {
-        if (sim_mode) {
+        if (sim_mode || !ct[i].is_ct) {
             result = ct[i];
         } else {
-            if (ct[i].is_ct)
-                cc.Decrypt(sk, ct[i], &result);
-            else
-                result = ct[i];
+            cc.Decrypt(sk, ct[i], &result);
         }
         out += result * (1UL << i);
     }
@@ -213,7 +210,7 @@ BinaryDigit ComputeFHE::EncryptBool(bool pt, bool fresh) {
 }
 
 bool ComputeFHE::DecryptBool(const BinaryDigit &ct) {
-    if (sim_mode) {
+    if (sim_mode || !ct.is_ct) {
         return ct.p;
     }
     LWEPlaintext result;

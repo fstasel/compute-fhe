@@ -10,14 +10,18 @@ int main() {
     t.SetRegenerateKeys(false);
     t.SetNumTest(10);
     t.SetVerbosity(0);
-    t.Test(TestType::TT_ADD);
     t.Test(TestType::TT_PADD);
-    t.Test(TestType::TT_ADDC);
     t.Test(TestType::TT_PADDC);
-    t.Test(TestType::TT_ADD_NC);
     t.Test(TestType::TT_PADD_NC);
-    t.Test(TestType::TT_ADDC_NC);
     t.Test(TestType::TT_PADDC_NC);
+    t.Test(TestType::TT_PSUB);
+    t.Test(TestType::TT_PSUBC);
+    t.Test(TestType::TT_PSUB_NC);
+    t.Test(TestType::TT_PSUBC_NC);
+    t.Test(TestType::TT_CPSUB);
+    t.Test(TestType::TT_CPSUBC);
+    t.Test(TestType::TT_CPSUB_NC);
+    t.Test(TestType::TT_CPSUBC_NC);
 
     return 0;
 }

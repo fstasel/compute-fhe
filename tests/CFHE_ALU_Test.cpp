@@ -124,7 +124,7 @@ TestReport CFHE_Test::TestPAdd(uint n_digits) {
     FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
     uint expected = (n1 + n2) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetALU()->Add(ct_n1, pt_n2);
+    FixedPoint ct_result = cfhe_base->GetALU()->PAdd(ct_n1, pt_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -166,7 +166,7 @@ TestReport CFHE_Test::TestPAddC(uint n_digits) {
         cfhe_base->GetALU()->SetCarry(n3);
     }
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetALU()->AddC(ct_n1, pt_n2);
+    FixedPoint ct_result = cfhe_base->GetALU()->PAddC(ct_n1, pt_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -198,7 +198,7 @@ TestReport CFHE_Test::TestPAddNC(uint n_digits) {
     FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
     uint expected = (n1 + n2) & ((1UL << n_digits) - 1);
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetALU()->AddNC(ct_n1, pt_n2);
+    FixedPoint ct_result = cfhe_base->GetALU()->PAddNC(ct_n1, pt_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -240,7 +240,7 @@ TestReport CFHE_Test::TestPAddCNC(uint n_digits) {
         cfhe_base->GetALU()->SetCarry(n3);
     }
     StartTimer();
-    FixedPoint ct_result = cfhe_base->GetALU()->AddCNC(ct_n1, pt_n2);
+    FixedPoint ct_result = cfhe_base->GetALU()->PAddCNC(ct_n1, pt_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -257,6 +257,38 @@ TestReport CFHE_Test::TestSub(uint n_digits) {
     uint expected = (n1 + (UINT32_MAX - n2 + 1)) & ((1UL << n_digits) - 1);
     StartTimer();
     FixedPoint ct_result = cfhe_base->GetALU()->Sub(ct_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestCPSub(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    uint expected = (n1 + (UINT32_MAX - n2 + 1)) & ((1UL << n_digits) - 1);
+    StartTimer();
+    FixedPoint ct_result = cfhe_base->GetALU()->CPSub(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPSub(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    FixedPoint pt_n1 = cfhe_base->GetConstantInt(n1, n_digits);
+    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    uint expected = (n1 + (UINT32_MAX - n2 + 1)) & ((1UL << n_digits) - 1);
+    StartTimer();
+    FixedPoint ct_result = cfhe_base->GetALU()->PSub(pt_n1, ct_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -282,6 +314,54 @@ TestReport CFHE_Test::TestSubC(uint n_digits) {
     return report;
 }
 
+TestReport CFHE_Test::TestCPSubC(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    uint n3 = CreateRandomNumber() % 2;
+    uint carry_type = CreateRandomNumber() % 2;
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    uint expected = (n1 + (UINT32_MAX - n2 + n3)) & ((1UL << n_digits) - 1);
+    if (carry_type == 0) {
+        cfhe_base->GetALU()->SetCarry(
+            cfhe_base->EncryptBool(n3, GetTestFresh()));
+    } else {
+        cfhe_base->GetALU()->SetCarry(n3);
+    }
+    StartTimer();
+    FixedPoint ct_result = cfhe_base->GetALU()->CPSubC(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPSubC(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    uint n3 = CreateRandomNumber() % 2;
+    uint carry_type = CreateRandomNumber() % 2;
+    FixedPoint pt_n1 = cfhe_base->GetConstantInt(n1, n_digits);
+    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    uint expected = (n1 + (UINT32_MAX - n2 + n3)) & ((1UL << n_digits) - 1);
+    if (carry_type == 0) {
+        cfhe_base->GetALU()->SetCarry(
+            cfhe_base->EncryptBool(n3, GetTestFresh()));
+    } else {
+        cfhe_base->GetALU()->SetCarry(n3);
+    }
+    StartTimer();
+    FixedPoint ct_result = cfhe_base->GetALU()->PSubC(pt_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected);
+    return report;
+}
+
 TestReport CFHE_Test::TestSubNC(uint n_digits) {
     TestReport report;
     uint n1 = CreateRandomNumber();
@@ -295,6 +375,104 @@ TestReport CFHE_Test::TestSubNC(uint n_digits) {
     uint result = cfhe_base->DecryptInt(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
     PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestCPSubNC(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    uint expected = (n1 + (UINT32_MAX - n2 + 1)) & ((1UL << n_digits) - 1);
+    StartTimer();
+    FixedPoint ct_result = cfhe_base->GetALU()->CPSubNC(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPSubNC(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    FixedPoint pt_n1 = cfhe_base->GetConstantInt(n1, n_digits);
+    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    uint expected = (n1 + (UINT32_MAX - n2 + 1)) & ((1UL << n_digits) - 1);
+    StartTimer();
+    FixedPoint ct_result = cfhe_base->GetALU()->PSubNC(pt_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestSubCNC(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    uint n3 = CreateRandomNumber() % 2;
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    uint expected = (n1 + (UINT32_MAX - n2 + n3)) & ((1UL << n_digits) - 1);
+    cfhe_base->GetALU()->SetCarry(cfhe_base->EncryptBool(n3, GetTestFresh()));
+    StartTimer();
+    FixedPoint ct_result = cfhe_base->GetALU()->SubCNC(ct_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestCPSubCNC(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    uint n3 = CreateRandomNumber() % 2;
+    uint carry_type = CreateRandomNumber() % 2;
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    uint expected = (n1 + (UINT32_MAX - n2 + n3)) & ((1UL << n_digits) - 1);
+    if (carry_type == 0) {
+        cfhe_base->GetALU()->SetCarry(
+            cfhe_base->EncryptBool(n3, GetTestFresh()));
+    } else {
+        cfhe_base->GetALU()->SetCarry(n3);
+    }
+    StartTimer();
+    FixedPoint ct_result = cfhe_base->GetALU()->CPSubCNC(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPSubCNC(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    uint n3 = CreateRandomNumber() % 2;
+    uint carry_type = CreateRandomNumber() % 2;
+    FixedPoint pt_n1 = cfhe_base->GetConstantInt(n1, n_digits);
+    FixedPoint ct_n2 = cfhe_base->EncryptInt(n2, n_digits, GetTestFresh());
+    uint expected = (n1 + (UINT32_MAX - n2 + n3)) & ((1UL << n_digits) - 1);
+    if (carry_type == 0) {
+        cfhe_base->GetALU()->SetCarry(
+            cfhe_base->EncryptBool(n3, GetTestFresh()));
+    } else {
+        cfhe_base->GetALU()->SetCarry(n3);
+    }
+    StartTimer();
+    FixedPoint ct_result = cfhe_base->GetALU()->PSubCNC(pt_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptInt(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result, expected);
     return report;
 }
 

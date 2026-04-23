@@ -95,6 +95,7 @@ namespace computefhe {
         virtual FixedPoint Add(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint AddC(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint AddNC(const FixedPoint &a, const FixedPoint &b) = 0;
+        virtual FixedPoint AddCNC(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint Sub(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint SubC(const FixedPoint &a, const FixedPoint &b) = 0;
         virtual FixedPoint SubNC(const FixedPoint &a, const FixedPoint &b) = 0;

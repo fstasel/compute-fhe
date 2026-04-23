@@ -235,6 +235,23 @@ FixedPoint ALUGateLogic::AddNC(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
+FixedPoint ALUGateLogic::AddCNC(const FixedPoint &a, const FixedPoint &b) {
+    if (a.size() != b.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = a.size();
+
+    FixedPoint out(n_digit);
+    for (uint8_t i = 0; i < n_digit; i++) {
+        if (i < n_digit - 1) {
+            FullAdder(a[i], b[i], carry, out[i], carry);
+        } else {
+            out[i] = Gate_XOR3(a[i], b[i], carry);
+        }
+    }
+    return out;
+}
+
 FixedPoint ALUGateLogic::Sub(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");

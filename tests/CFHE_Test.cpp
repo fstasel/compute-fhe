@@ -134,7 +134,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_ADDC_NC:
-            // report = TestAddCNC(n_digits);
+            report = TestAddCNC(n_digits);
             break;
 
         case TT_PADDC_NC:

@@ -2,8 +2,8 @@
 using namespace computefhe;
 
 SimOptimized::SimOptimized(ComputeFHE *cfhe)
-    : BaseALU(cfhe), BaseALUSimulator(cfhe), ALUGateLogic(cfhe),
-      SimGateLogic(cfhe), ALUOptimized(cfhe) {}
+    : BaseALU(cfhe), BaseALUSimulator(cfhe), ALUStandard(cfhe),
+      SimStandard(cfhe), ALUOptimized(cfhe) {}
 
 BinaryDigit SimOptimized::FHE_MAJ(const BinaryDigit &a, const BinaryDigit &b,
                                   const BinaryDigit &c) {

@@ -1,11 +1,11 @@
 #pragma once
 
 #include <computefhe/ALUOptimized.h>
-#include <computefhe/SimGateLogic.h>
+#include <computefhe/SimStandard.h>
 
 namespace computefhe {
 
-    class SimOptimized : public SimGateLogic, public ALUOptimized {
+    class SimOptimized : public SimStandard, public ALUOptimized {
       public:
         SimOptimized(ComputeFHE *cfhe);
 

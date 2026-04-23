@@ -40,7 +40,7 @@ set(CORE_SOURCES
     src/core/ComputeFHE.cpp
     src/core/FixedPoint.cpp
     src/core/BaseALU.cpp
-    src/core/ALUGateLogic.cpp
+    src/core/ALUStandard.cpp
     src/core/ALUOptimized.cpp
 )
 
@@ -53,7 +53,7 @@ set(CPPUTILS_SOURCES
 
 set(SIMULATOR_SOURCES
     src/simulator/BaseALUSimulator.cpp
-    src/simulator/SimGateLogic.cpp
+    src/simulator/SimStandard.cpp
     src/simulator/SimOptimized.cpp
 )
 

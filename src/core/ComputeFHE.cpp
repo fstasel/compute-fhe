@@ -117,22 +117,22 @@ void ComputeFHE::createALU() {
             alu = new ALUOptimized(this);
         }
         break;
-    case ALU_GATELOGIC:
+    case ALU_STANDARD:
     default:
         if (sim_mode) {
-            alu = new SimGateLogic(this);
+            alu = new SimStandard(this);
         } else {
-            alu = new ALUGateLogic(this);
+            alu = new ALUStandard(this);
         }
         break;
     }
 }
 
 ComputeFHE::ComputeFHE(bool simulation_mode)
-    : ComputeFHE(CCPARAM_STD128, ALU_GATELOGIC, simulation_mode) {}
+    : ComputeFHE(CCPARAM_STD128, ALU_STANDARD, simulation_mode) {}
 
 ComputeFHE::ComputeFHE(CryptoContextParam param, bool simulation_mode)
-    : ComputeFHE(param, ALU_GATELOGIC, simulation_mode) {}
+    : ComputeFHE(param, ALU_STANDARD, simulation_mode) {}
 
 ComputeFHE::ComputeFHE(ALUType alu_type, bool simulation_mode)
     : ComputeFHE(CCPARAM_STD128, alu_type, simulation_mode) {}

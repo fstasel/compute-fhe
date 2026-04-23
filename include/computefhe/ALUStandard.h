@@ -3,9 +3,9 @@
 
 namespace computefhe {
 
-    class ALUGateLogic : virtual public BaseALU {
+    class ALUStandard : virtual public BaseALU {
       public:
-        ALUGateLogic(ComputeFHE *cfhe);
+        ALUStandard(ComputeFHE *cfhe);
 
         // Logic Gates
         virtual BinaryDigit Gate_MAJ(const BinaryDigit &a, const BinaryDigit &b,

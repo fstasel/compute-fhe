@@ -496,3 +496,7 @@ FixedPoint ALUGateLogic::PAddC(const FixedPoint &a, const FixedPoint &pb) {
 FixedPoint ALUGateLogic::PAddNC(const FixedPoint &a, const FixedPoint &pb) {
     return AddNC(a, pb);
 }
+
+FixedPoint ALUGateLogic::PAddCNC(const FixedPoint &a, const FixedPoint &pb) {
+    return AddCNC(a, pb);
+}

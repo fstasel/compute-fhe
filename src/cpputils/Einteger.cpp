@@ -87,8 +87,7 @@ Einteger::Einteger(int64_t d) : Einteger(d, 8) {}
 Einteger::Einteger(size_t n_digits, bool is_signed) {
     if (cfhe_base == nullptr)
         Init();
-    // TODO: Adjustable auto-decrypt mode
-    if (CLIENT_MODE) {
+    if (CLIENT_MODE && cfhe_base->isAutoEncryptMode()) {
         data = cfhe_base->EncryptInt(0, n_digits);
     } else {
         data = cfhe_base->GetConstantInt(0, n_digits);
@@ -100,8 +99,7 @@ Einteger::Einteger(size_t n_digits, bool is_signed) {
 Einteger::Einteger(int64_t d, size_t n_digits) {
     if (cfhe_base == nullptr)
         Init();
-    // TODO: Adjustable auto-decrypt mode
-    if (CLIENT_MODE) {
+    if (CLIENT_MODE && cfhe_base->isAutoEncryptMode()) {
         data = cfhe_base->EncryptInt((uint64_t)d, n_digits);
     } else {
         data = cfhe_base->GetConstantInt((uint64_t)d, n_digits);
@@ -113,8 +111,7 @@ Einteger::Einteger(int64_t d, size_t n_digits) {
 Einteger::Einteger(uint64_t d, size_t n_digits) {
     if (cfhe_base == nullptr)
         Init();
-    // TODO: Adjustable auto-decrypt mode
-    if (CLIENT_MODE) {
+    if (CLIENT_MODE && cfhe_base->isAutoEncryptMode()) {
         data = cfhe_base->EncryptInt(d, n_digits);
     } else {
         data = cfhe_base->GetConstantInt(d, n_digits);
@@ -705,8 +702,7 @@ Einteger &Einteger::operator=(const Einteger &other) {
 
 Einteger &Einteger::operator=(uint64_t other) {
     _sync_var();
-    // TODO: Adjustable auto-decrypt mode
-    if (CLIENT_MODE) {
+    if (CLIENT_MODE && cfhe_base->isAutoEncryptMode()) {
         *this = Einteger(cfhe_base->EncryptInt(other, size), sign);
     } else {
         *this = Einteger(cfhe_base->GetConstantInt(other, size), sign);

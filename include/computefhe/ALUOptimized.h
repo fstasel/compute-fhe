@@ -1,10 +1,10 @@
 #pragma once
 
-#include <computefhe/ALUGateLogic.h>
+#include <computefhe/ALUStandard.h>
 
 namespace computefhe {
 
-    class ALUOptimized : virtual public ALUGateLogic {
+    class ALUOptimized : virtual public ALUStandard {
       public:
         ALUOptimized(ComputeFHE *cfhe);
 

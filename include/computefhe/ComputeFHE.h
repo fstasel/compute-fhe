@@ -3,8 +3,8 @@
 #include <openfhe/binfhe/binfhecontext.h>
 #include <vector>
 
-#include <computefhe/ALUGateLogic.h>
 #include <computefhe/ALUOptimized.h>
+#include <computefhe/ALUStandard.h>
 #include <computefhe/BaseALU.h>
 #include <computefhe/BaseALUSimulator.h>
 #include <computefhe/CFHETypes.h>
@@ -13,8 +13,8 @@
 #include <computefhe/Einteger.h>
 #include <computefhe/Evector.h>
 #include <computefhe/FixedPoint.h>
-#include <computefhe/SimGateLogic.h>
 #include <computefhe/SimOptimized.h>
+#include <computefhe/SimStandard.h>
 
 using namespace lbcrypto;
 using namespace std;

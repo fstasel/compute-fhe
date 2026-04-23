@@ -1,10 +1,10 @@
-#include <computefhe/ALUGateLogic.h>
+#include <computefhe/ALUStandard.h>
 #include <computefhe/ComputeFHE.h>
 
 using namespace computefhe;
 
 ALUOptimized::ALUOptimized(ComputeFHE *cfhe)
-    : BaseALU(cfhe), ALUGateLogic(cfhe) {}
+    : BaseALU(cfhe), ALUStandard(cfhe) {}
 
 BinaryDigit ALUOptimized::FHE_MAJ(const BinaryDigit &a, const BinaryDigit &b,
                                   const BinaryDigit &c) {
@@ -231,7 +231,7 @@ FixedPoint ALUOptimized::PAdd(const FixedPoint &a, const FixedPoint &pb) {
     size_t n_digit = a.size();
 
     FixedPoint out(n_digit);
-    ALUGateLogic::HalfAdder(a[0], pb[0], out[0], carry);
+    ALUStandard::HalfAdder(a[0], pb[0], out[0], carry);
     for (uint8_t i = 1; i < n_digit; i++) {
         if (carry.is_ct) {
             out[i] = Gate_XOR(Gate_DigitSum(Gate_XOR(a[i], pb[i - 1]),
@@ -243,7 +243,7 @@ FixedPoint ALUOptimized::PAdd(const FixedPoint &a, const FixedPoint &pb) {
                                        : Gate_OR(a[i], Gate_NOT(out[i]));
             }
         } else {
-            ALUGateLogic::FullAdder(a[i], pb[i], carry, out[i], carry);
+            ALUStandard::FullAdder(a[i], pb[i], carry, out[i], carry);
         }
     }
     return out;
@@ -267,7 +267,7 @@ FixedPoint ALUOptimized::PAddC(const FixedPoint &a, const FixedPoint &pb) {
                                        : Gate_OR(a[i], Gate_NOT(out[i]));
             }
         } else {
-            ALUGateLogic::FullAdder(a[i], pb[i], carry, out[i], carry);
+            ALUStandard::FullAdder(a[i], pb[i], carry, out[i], carry);
         }
     }
     return out;
@@ -280,7 +280,7 @@ FixedPoint ALUOptimized::PAddNC(const FixedPoint &a, const FixedPoint &pb) {
     size_t n_digit = a.size();
 
     FixedPoint out(n_digit);
-    ALUGateLogic::HalfAdder(a[0], pb[0], out[0], carry);
+    ALUStandard::HalfAdder(a[0], pb[0], out[0], carry);
     for (uint8_t i = 1; i < n_digit; i++) {
         if (carry.is_ct) {
             out[i] = Gate_XOR(Gate_DigitSum(Gate_XOR(a[i], pb[i - 1]),
@@ -288,7 +288,7 @@ FixedPoint ALUOptimized::PAddNC(const FixedPoint &a, const FixedPoint &pb) {
                                             Gate_XOR(out[i - 1], pb[i - 1])),
                               pb[i]);
         } else if (i < n_digit - 1) {
-            ALUGateLogic::FullAdder(a[i], pb[i], carry, out[i], carry);
+            ALUStandard::FullAdder(a[i], pb[i], carry, out[i], carry);
         } else {
             out[i] = Gate_XOR3(a[i], pb[i], carry);
         }
@@ -310,7 +310,7 @@ FixedPoint ALUOptimized::PAddCNC(const FixedPoint &a, const FixedPoint &pb) {
                                             Gate_XOR(out[i - 1], pb[i - 1])),
                               pb[i]);
         } else if (i < n_digit - 1) {
-            ALUGateLogic::FullAdder(a[i], pb[i], carry, out[i], carry);
+            ALUStandard::FullAdder(a[i], pb[i], carry, out[i], carry);
         } else {
             out[i] = Gate_XOR3(a[i], pb[i], carry);
         }

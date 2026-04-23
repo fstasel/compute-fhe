@@ -1,12 +1,12 @@
-#include <computefhe/ALUGateLogic.h>
+#include <computefhe/ALUStandard.h>
 #include <computefhe/ComputeFHE.h>
 
 using namespace computefhe;
 
-ALUGateLogic::ALUGateLogic(ComputeFHE *cfhe) : BaseALU(cfhe) {}
+ALUStandard::ALUStandard(ComputeFHE *cfhe) : BaseALU(cfhe) {}
 
-BinaryDigit ALUGateLogic::Gate_MAJ(const BinaryDigit &a, const BinaryDigit &b,
-                                   const BinaryDigit &c) {
+BinaryDigit ALUStandard::Gate_MAJ(const BinaryDigit &a, const BinaryDigit &b,
+                                  const BinaryDigit &c) {
     if (a.is_ct && b.is_ct && c.is_ct) {
         return Gate_OR(Gate_OR(Gate_AND(a, b), Gate_AND(a, c)), Gate_AND(b, c));
     }
@@ -34,17 +34,16 @@ BinaryDigit ALUGateLogic::Gate_MAJ(const BinaryDigit &a, const BinaryDigit &b,
     return Constant0();
 }
 
-BinaryDigit ALUGateLogic::Gate_XOR3(const BinaryDigit &a, const BinaryDigit &b,
-                                    const BinaryDigit &c) {
+BinaryDigit ALUStandard::Gate_XOR3(const BinaryDigit &a, const BinaryDigit &b,
+                                   const BinaryDigit &c) {
     BinaryDigit sum = Gate_XOR(a, b);
     sum = Gate_XOR(sum, c);
     return sum;
 }
 
-BinaryDigit ALUGateLogic::Gate_MulAdd(const BinaryDigit &m,
-                                      const BinaryDigit &a,
-                                      const BinaryDigit &b,
-                                      BinaryDigit *carry_out) {
+BinaryDigit ALUStandard::Gate_MulAdd(const BinaryDigit &m, const BinaryDigit &a,
+                                     const BinaryDigit &b,
+                                     BinaryDigit *carry_out) {
     BinaryDigit ma = Gate_AND(m, a);
     BinaryDigit sum = Gate_XOR(ma, b);
     if (carry_out) {
@@ -53,16 +52,16 @@ BinaryDigit ALUGateLogic::Gate_MulAdd(const BinaryDigit &m,
     return sum;
 }
 
-BinaryDigit ALUGateLogic::Gate_DigitSum(const BinaryDigit &e1,
-                                        const BinaryDigit &e0,
-                                        const BinaryDigit &s0) {
+BinaryDigit ALUStandard::Gate_DigitSum(const BinaryDigit &e1,
+                                       const BinaryDigit &e0,
+                                       const BinaryDigit &s0) {
     BinaryDigit t = Gate_AND(e0, Gate_NOT(s0));
     BinaryDigit s1 = Gate_XOR(e1, t);
     return s1;
 }
 
-FixedPoint ALUGateLogic::Mux(const BinaryDigit &s, const FixedPoint &a,
-                             const FixedPoint &b) {
+FixedPoint ALUStandard::Mux(const BinaryDigit &s, const FixedPoint &a,
+                            const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -75,13 +74,13 @@ FixedPoint ALUGateLogic::Mux(const BinaryDigit &s, const FixedPoint &a,
     return out;
 }
 
-FixedPoint ALUGateLogic::ToggleMSB(const FixedPoint &a) {
+FixedPoint ALUStandard::ToggleMSB(const FixedPoint &a) {
     FixedPoint t = FixedPoint(a);
     t.back() = Gate_NOT(t.back());
     return t;
 }
 
-FixedPoint ALUGateLogic::ShiftLeft(const FixedPoint &a, size_t shift) {
+FixedPoint ALUStandard::ShiftLeft(const FixedPoint &a, size_t shift) {
     int sz = (int)a.size();
     FixedPoint fp(a.size());
     int s = shift > a.size() ? a.size() : shift;
@@ -91,8 +90,8 @@ FixedPoint ALUGateLogic::ShiftLeft(const FixedPoint &a, size_t shift) {
     return fp;
 }
 
-FixedPoint ALUGateLogic::ShiftRight(const FixedPoint &a, size_t shift,
-                                    bool is_arithmetic) {
+FixedPoint ALUStandard::ShiftRight(const FixedPoint &a, size_t shift,
+                                   bool is_arithmetic) {
     int sz = (int)a.size();
     FixedPoint fp(a.size());
     int s = shift > a.size() ? a.size() : shift;
@@ -104,15 +103,15 @@ FixedPoint ALUGateLogic::ShiftRight(const FixedPoint &a, size_t shift,
     return fp;
 }
 
-void ALUGateLogic::Swap_if(const BinaryDigit &cond, BinaryDigit &a,
-                           BinaryDigit &b) {
+void ALUStandard::Swap_if(const BinaryDigit &cond, BinaryDigit &a,
+                          BinaryDigit &b) {
     BinaryDigit k = Gate_AND(Gate_XOR(a, b), cond);
     a = Gate_XOR(a, k);
     b = Gate_XOR(b, k);
 }
 
-void ALUGateLogic::Swap_if(const BinaryDigit &cond, FixedPoint &a,
-                           FixedPoint &b) {
+void ALUStandard::Swap_if(const BinaryDigit &cond, FixedPoint &a,
+                          FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -123,21 +122,21 @@ void ALUGateLogic::Swap_if(const BinaryDigit &cond, FixedPoint &a,
     }
 }
 
-void ALUGateLogic::HalfAdder(const BinaryDigit &a, const BinaryDigit &b,
-                             BinaryDigit &sum, BinaryDigit &carry_out) {
+void ALUStandard::HalfAdder(const BinaryDigit &a, const BinaryDigit &b,
+                            BinaryDigit &sum, BinaryDigit &carry_out) {
     sum = Gate_XOR(a, b);
     carry_out = Gate_AND(a, b);
 }
 
-void ALUGateLogic::HalfSubtractor(const BinaryDigit &a, const BinaryDigit &b,
-                                  BinaryDigit &sum, BinaryDigit &carry_out) {
+void ALUStandard::HalfSubtractor(const BinaryDigit &a, const BinaryDigit &b,
+                                 BinaryDigit &sum, BinaryDigit &carry_out) {
     sum = Gate_XOR(a, b);
     carry_out = Gate_OR(a, Gate_NOT(b));
 }
 
-void ALUGateLogic::FullAdder(const BinaryDigit &a, const BinaryDigit &b,
-                             const BinaryDigit &c, BinaryDigit &sum,
-                             BinaryDigit &carry_out) {
+void ALUStandard::FullAdder(const BinaryDigit &a, const BinaryDigit &b,
+                            const BinaryDigit &c, BinaryDigit &sum,
+                            BinaryDigit &carry_out) {
     if (a.is_ct && b.is_ct && c.is_ct) {
         // C-C-C
         BinaryDigit s = Gate_XOR(a, b);
@@ -190,7 +189,7 @@ void ALUGateLogic::FullAdder(const BinaryDigit &a, const BinaryDigit &b,
     }
 }
 
-FixedPoint ALUGateLogic::Add(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUStandard::Add(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -204,7 +203,7 @@ FixedPoint ALUGateLogic::Add(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint ALUGateLogic::AddC(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUStandard::AddC(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -217,7 +216,7 @@ FixedPoint ALUGateLogic::AddC(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint ALUGateLogic::AddNC(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUStandard::AddNC(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -235,7 +234,7 @@ FixedPoint ALUGateLogic::AddNC(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint ALUGateLogic::AddCNC(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUStandard::AddCNC(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -252,7 +251,7 @@ FixedPoint ALUGateLogic::AddCNC(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint ALUGateLogic::Sub(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUStandard::Sub(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -267,7 +266,7 @@ FixedPoint ALUGateLogic::Sub(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint ALUGateLogic::SubC(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUStandard::SubC(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -281,7 +280,7 @@ FixedPoint ALUGateLogic::SubC(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint ALUGateLogic::SubNC(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUStandard::SubNC(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -300,7 +299,7 @@ FixedPoint ALUGateLogic::SubNC(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint ALUGateLogic::Neg(const FixedPoint &a) {
+FixedPoint ALUStandard::Neg(const FixedPoint &a) {
     size_t n_digit = a.size();
 
     FixedPoint out(n_digit);
@@ -317,7 +316,7 @@ FixedPoint ALUGateLogic::Neg(const FixedPoint &a) {
     return out;
 }
 
-BinaryDigit ALUGateLogic::CmpNotEq(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUStandard::CmpNotEq(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -331,7 +330,7 @@ BinaryDigit ALUGateLogic::CmpNotEq(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-BinaryDigit ALUGateLogic::CmpEq(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUStandard::CmpEq(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -345,7 +344,7 @@ BinaryDigit ALUGateLogic::CmpEq(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-BinaryDigit ALUGateLogic::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUStandard::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -363,7 +362,7 @@ BinaryDigit ALUGateLogic::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-BinaryDigit ALUGateLogic::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUStandard::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -381,31 +380,31 @@ BinaryDigit ALUGateLogic::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-BinaryDigit ALUGateLogic::CmpGTEq_U(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUStandard::CmpGTEq_U(const FixedPoint &a, const FixedPoint &b) {
     return CmpLTEq_U(b, a);
 }
 
-BinaryDigit ALUGateLogic::CmpLT_U(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUStandard::CmpLT_U(const FixedPoint &a, const FixedPoint &b) {
     return CmpGT_U(b, a);
 }
 
-BinaryDigit ALUGateLogic::CmpLTEq(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUStandard::CmpLTEq(const FixedPoint &a, const FixedPoint &b) {
     return CmpLTEq_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-BinaryDigit ALUGateLogic::CmpGT(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUStandard::CmpGT(const FixedPoint &a, const FixedPoint &b) {
     return CmpGT_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-BinaryDigit ALUGateLogic::CmpGTEq(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUStandard::CmpGTEq(const FixedPoint &a, const FixedPoint &b) {
     return CmpGTEq_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-BinaryDigit ALUGateLogic::CmpLT(const FixedPoint &a, const FixedPoint &b) {
+BinaryDigit ALUStandard::CmpLT(const FixedPoint &a, const FixedPoint &b) {
     return CmpLT_U(ToggleMSB(a), ToggleMSB(b));
 }
 
-FixedPoint ALUGateLogic::FullMul(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUStandard::FullMul(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -432,7 +431,7 @@ FixedPoint ALUGateLogic::FullMul(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-FixedPoint ALUGateLogic::Mul(const FixedPoint &a, const FixedPoint &b) {
+FixedPoint ALUStandard::Mul(const FixedPoint &a, const FixedPoint &b) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -460,8 +459,8 @@ FixedPoint ALUGateLogic::Mul(const FixedPoint &a, const FixedPoint &b) {
     return out;
 }
 
-void ALUGateLogic::DivU(const FixedPoint &a, const FixedPoint &b, FixedPoint &q,
-                        FixedPoint &r) {
+void ALUStandard::DivU(const FixedPoint &a, const FixedPoint &b, FixedPoint &q,
+                       FixedPoint &r) {
     if (a.size() != b.size()) {
         OPENFHE_THROW("Input numbers should be of the same bit length.");
     }
@@ -485,18 +484,18 @@ void ALUGateLogic::DivU(const FixedPoint &a, const FixedPoint &b, FixedPoint &q,
     }
 }
 
-FixedPoint ALUGateLogic::PAdd(const FixedPoint &a, const FixedPoint &pb) {
+FixedPoint ALUStandard::PAdd(const FixedPoint &a, const FixedPoint &pb) {
     return Add(a, pb);
 }
 
-FixedPoint ALUGateLogic::PAddC(const FixedPoint &a, const FixedPoint &pb) {
+FixedPoint ALUStandard::PAddC(const FixedPoint &a, const FixedPoint &pb) {
     return AddC(a, pb);
 }
 
-FixedPoint ALUGateLogic::PAddNC(const FixedPoint &a, const FixedPoint &pb) {
+FixedPoint ALUStandard::PAddNC(const FixedPoint &a, const FixedPoint &pb) {
     return AddNC(a, pb);
 }
 
-FixedPoint ALUGateLogic::PAddCNC(const FixedPoint &a, const FixedPoint &pb) {
+FixedPoint ALUStandard::PAddCNC(const FixedPoint &a, const FixedPoint &pb) {
     return AddCNC(a, pb);
 }

@@ -550,7 +550,7 @@ void CFHE_Test::StartTest() {
 void CFHE_Test::TestAll() {
     const int VERBOSITY = 4;
     CFHE_Test *c;
-    c = new CFHE_Test(CCPARAM_STD128, ALU_GATELOGIC);
+    c = new CFHE_Test(CCPARAM_STD128, ALU_STANDARD);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
@@ -560,7 +560,7 @@ void CFHE_Test::TestAll() {
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD192, ALU_GATELOGIC);
+    c = new CFHE_Test(CCPARAM_STD192, ALU_STANDARD);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
@@ -570,7 +570,7 @@ void CFHE_Test::TestAll() {
     c->SetRegenerateKeys(false);
     c->StartTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD256, ALU_GATELOGIC);
+    c = new CFHE_Test(CCPARAM_STD256, ALU_STANDARD);
     c->SetVerbosity(VERBOSITY);
     c->SetRegenerateKeys(false);
     c->StartTest();
@@ -586,7 +586,7 @@ void CFHE_Test::TestAllNoise() {
     const int NUM_TEST = 10;
     const int VERBOSITY = 2;
     CFHE_Test *c;
-    c = new CFHE_Test(CCPARAM_STD128, ALU_GATELOGIC);
+    c = new CFHE_Test(CCPARAM_STD128, ALU_STANDARD);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->StartNoiseTest();
@@ -596,7 +596,7 @@ void CFHE_Test::TestAllNoise() {
     c->SetVerbosity(VERBOSITY);
     c->StartNoiseTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD192, ALU_GATELOGIC);
+    c = new CFHE_Test(CCPARAM_STD192, ALU_STANDARD);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->StartNoiseTest();
@@ -606,7 +606,7 @@ void CFHE_Test::TestAllNoise() {
     c->SetVerbosity(VERBOSITY);
     c->StartNoiseTest();
     delete c;
-    c = new CFHE_Test(CCPARAM_STD256, ALU_GATELOGIC);
+    c = new CFHE_Test(CCPARAM_STD256, ALU_STANDARD);
     c->SetNumTest(NUM_TEST);
     c->SetVerbosity(VERBOSITY);
     c->StartNoiseTest();

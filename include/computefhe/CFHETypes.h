@@ -51,12 +51,12 @@ namespace computefhe {
         }
     }
 
-    enum ALUType { ALU_GATELOGIC, ALU_OPTIMIZED };
+    enum ALUType { ALU_STANDARD, ALU_OPTIMIZED };
 
     inline const char *ToString(ALUType v) {
         switch (v) {
-        case ALU_GATELOGIC:
-            return "GATELOGIC";
+        case ALU_STANDARD:
+            return "STANDARD";
         case ALU_OPTIMIZED:
             return "OPTIMIZED";
         default:

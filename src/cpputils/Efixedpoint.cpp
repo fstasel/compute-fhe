@@ -101,6 +101,13 @@ Efixedpoint::Efixedpoint(double d, size_t n_digits, size_t n_frac,
     : Einteger(n_digits, is_signed) {
     frac_size = n_frac < n_digits ? n_frac : n_digits;
     data = double2fp(d, n_digits, frac_size);
+    if (CLIENT_MODE && cfhe_base->isAutoEncryptMode()) {
+        for (size_t i = 0; i < n_digits; i++) {
+            if (!data[i].is_ct) {
+                data[i] = cfhe_base->EncryptBool(data[i].p, false);
+            }
+        }
+    }
 }
 
 Efixedpoint::Efixedpoint(const FixedPoint &fp, size_t n_frac, bool is_signed)
@@ -127,8 +134,7 @@ const Einteger Efixedpoint::operator==(const Efixedpoint &other) const {
     size_t n_digits, n_frac;
     bool sign;
     promote(*this, other, a, b, n_digits, n_frac, sign);
-    FixedPoint fp({cfhe_base->GetALU()->CmpEq(a, b)});
-    return Einteger(fp, false);
+    return Einteger(a, sign) == Einteger(b, sign);
 }
 
 const Einteger Efixedpoint::operator!=(const Efixedpoint &other) const {
@@ -136,8 +142,7 @@ const Einteger Efixedpoint::operator!=(const Efixedpoint &other) const {
     size_t n_digits, n_frac;
     bool sign;
     promote(*this, other, a, b, n_digits, n_frac, sign);
-    FixedPoint fp({cfhe_base->GetALU()->CmpNotEq(a, b)});
-    return Einteger(fp, false);
+    return Einteger(a, sign) != Einteger(b, sign);
 }
 
 const Einteger Efixedpoint::operator>(const Efixedpoint &other) const {
@@ -145,9 +150,7 @@ const Einteger Efixedpoint::operator>(const Efixedpoint &other) const {
     size_t n_digits, n_frac;
     bool sign;
     promote(*this, other, a, b, n_digits, n_frac, sign);
-    FixedPoint fp({(sign && other.sign) ? cfhe_base->GetALU()->CmpGT(a, b)
-                                        : cfhe_base->GetALU()->CmpGT_U(a, b)});
-    return Einteger(fp, false);
+    return Einteger(a, sign) > Einteger(b, sign);
 }
 
 const Einteger Efixedpoint::operator>=(const Efixedpoint &other) const {
@@ -155,10 +158,7 @@ const Einteger Efixedpoint::operator>=(const Efixedpoint &other) const {
     size_t n_digits, n_frac;
     bool sign;
     promote(*this, other, a, b, n_digits, n_frac, sign);
-    FixedPoint fp({(sign && other.sign)
-                       ? cfhe_base->GetALU()->CmpGTEq(a, b)
-                       : cfhe_base->GetALU()->CmpGTEq_U(a, b)});
-    return Einteger(fp, false);
+    return Einteger(a, sign) >= Einteger(b, sign);
 }
 
 const Einteger Efixedpoint::operator<(const Efixedpoint &other) const {
@@ -166,9 +166,7 @@ const Einteger Efixedpoint::operator<(const Efixedpoint &other) const {
     size_t n_digits, n_frac;
     bool sign;
     promote(*this, other, a, b, n_digits, n_frac, sign);
-    FixedPoint fp({(sign && other.sign) ? cfhe_base->GetALU()->CmpLT(a, b)
-                                        : cfhe_base->GetALU()->CmpLT_U(a, b)});
-    return Einteger(fp, false);
+    return Einteger(a, sign) < Einteger(b, sign);
 }
 
 const Einteger Efixedpoint::operator<=(const Efixedpoint &other) const {
@@ -176,40 +174,37 @@ const Einteger Efixedpoint::operator<=(const Efixedpoint &other) const {
     size_t n_digits, n_frac;
     bool sign;
     promote(*this, other, a, b, n_digits, n_frac, sign);
-    FixedPoint fp({(sign && other.sign)
-                       ? cfhe_base->GetALU()->CmpLTEq(a, b)
-                       : cfhe_base->GetALU()->CmpLTEq_U(a, b)});
-    return Einteger(fp, false);
+    return Einteger(a, sign) <= Einteger(b, sign);
 }
 
 const Einteger Efixedpoint::operator==(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext comparison
-    return *this == Efixedpoint(other, size, frac_size, sign);
+    return *this ==
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Einteger Efixedpoint::operator!=(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext comparison
-    return *this != Efixedpoint(other, size, frac_size, sign);
+    return *this !=
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Einteger Efixedpoint::operator>(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext comparison
-    return *this > Efixedpoint(other, size, frac_size, sign);
+    return *this >
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Einteger Efixedpoint::operator>=(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext comparison
-    return *this >= Efixedpoint(other, size, frac_size, sign);
+    return *this >=
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Einteger Efixedpoint::operator<(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext comparison
-    return *this < Efixedpoint(other, size, frac_size, sign);
+    return *this <
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Einteger Efixedpoint::operator<=(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext comparison
-    return *this <= Efixedpoint(other, size, frac_size, sign);
+    return *this <=
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator+(const Efixedpoint &other) const {
@@ -217,26 +212,24 @@ const Efixedpoint Efixedpoint::operator+(const Efixedpoint &other) const {
     size_t n_digits, n_frac;
     bool sign;
     promote(*this, other, a, b, n_digits, n_frac, sign);
-    FixedPoint fp(cfhe_base->GetALU()->AddNC(a, b));
-    return Efixedpoint(fp, n_frac, sign);
+    return Efixedpoint((Einteger(a, sign) + Einteger(b, sign)).getData(),
+                       n_frac, sign);
 }
 
 const Efixedpoint Efixedpoint::operator+=(const Efixedpoint &other) {
-    _sync_var();
     FixedPoint o = promote(other, size, frac_size);
-    data = cfhe_base->GetALU()->AddNC(data, o);
-    _sync_var();
+    this->Einteger::operator+=(Einteger(o, other.sign));
     return *this;
 }
 
 const Efixedpoint Efixedpoint::operator+(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext operation
-    return *this + Efixedpoint(other, size, frac_size, sign);
+    return *this +
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator+=(double other) {
-    // TODO: optimize this by using ciphertext-plaintext operation
-    return *this += Efixedpoint(other, size, frac_size, sign);
+    return *this +=
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator-(const Efixedpoint &other) const {
@@ -244,26 +237,24 @@ const Efixedpoint Efixedpoint::operator-(const Efixedpoint &other) const {
     size_t n_digits, n_frac;
     bool sign;
     promote(*this, other, a, b, n_digits, n_frac, sign);
-    FixedPoint fp(cfhe_base->GetALU()->SubNC(a, b));
-    return Efixedpoint(fp, n_frac, sign);
+    return Efixedpoint((Einteger(a, sign) - Einteger(b, sign)).getData(),
+                       n_frac, sign);
 }
 
 const Efixedpoint Efixedpoint::operator-=(const Efixedpoint &other) {
-    _sync_var();
     FixedPoint o = promote(other, size, frac_size);
-    data = cfhe_base->GetALU()->SubNC(data, o);
-    _sync_var();
+    this->Einteger::operator-=(Einteger(o, other.sign));
     return *this;
 }
 
 const Efixedpoint Efixedpoint::operator-(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext operation
-    return *this - Efixedpoint(other, size, frac_size, sign);
+    return *this -
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator-=(double other) {
-    // TODO: optimize this by using ciphertext-plaintext operation
-    return *this -= Efixedpoint(other, size, frac_size, sign);
+    return *this -=
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator*(const Efixedpoint &other) const {
@@ -277,8 +268,8 @@ const Efixedpoint Efixedpoint::operator*(const Efixedpoint &other) const {
     b.erase(b.begin(), b.begin() + mul_frac_a);
     a = promote(Efixedpoint(a, mul_frac_a, sign), n_digits, mul_frac_a);
     b = promote(Efixedpoint(b, mul_frac_b, sign), n_digits, mul_frac_b);
-    FixedPoint fp(cfhe_base->GetALU()->Mul(a, b));
-    return Efixedpoint(fp, n_frac, sign);
+    return Efixedpoint((Einteger(a, sign) * Einteger(b, sign)).getData(),
+                       n_frac, sign);
 }
 
 const Efixedpoint Efixedpoint::operator*=(const Efixedpoint &other) {
@@ -290,60 +281,59 @@ const Efixedpoint Efixedpoint::operator*=(const Efixedpoint &other) {
     o.erase(o.begin(), o.begin() + mul_frac_a);
     d = promote(Efixedpoint(d, mul_frac_a, sign), size, mul_frac_a);
     o = promote(Efixedpoint(o, mul_frac_b, sign), size, mul_frac_b);
-    data = cfhe_base->GetALU()->Mul(d, o);
+    data = (Einteger(d, sign) * Einteger(o, sign)).getData();
     _sync_var();
     return *this;
 }
 
 const Efixedpoint Efixedpoint::operator*(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext operation
-    return *this * Efixedpoint(other, size, frac_size, sign);
+    return *this *
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator*=(double other) {
-    // TODO: optimize this by using ciphertext-plaintext operation
-    return *this *= Efixedpoint(other, size, frac_size, sign);
+    return *this *=
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator/(const Efixedpoint &other) const {
-    FixedPoint a, b, q, r;
+    FixedPoint a, b;
     size_t n_digits, n_frac;
     bool sign;
     promote(*this, other, a, b, n_digits, n_frac, sign);
     b = cfhe_base->GetALU()->ShiftRight(b, n_frac >> 1);
-    cfhe_base->GetALU()->DivU(a, b, q, r);
+    FixedPoint q = (Einteger(a, sign) / Einteger(b, sign)).getData();
     q = cfhe_base->GetALU()->ShiftLeft(q, n_frac - (n_frac >> 1));
     return Efixedpoint(q, n_frac, sign);
 }
 
 const Efixedpoint Efixedpoint::operator/=(const Efixedpoint &other) {
-    _sync_var();
-    FixedPoint q, r;
     FixedPoint o = promote(other, size, frac_size);
     o = cfhe_base->GetALU()->ShiftRight(o, frac_size >> 1);
-    cfhe_base->GetALU()->DivU(data, o, q, r);
-    data = cfhe_base->GetALU()->ShiftLeft(q, frac_size - (frac_size >> 1));
+    this->Einteger::operator/=(Einteger(o, other.sign));
+    data = cfhe_base->GetALU()->ShiftLeft(data, frac_size - (frac_size >> 1));
     _sync_var();
     return *this;
 }
 
 const Efixedpoint Efixedpoint::operator/(double other) const {
-    // TODO: optimize this by using ciphertext-plaintext operation
-    return *this / Efixedpoint(other, size, frac_size, sign);
+    return *this /
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator/=(double other) {
-    // TODO: optimize this by using ciphertext-plaintext operation
-    return *this /= Efixedpoint(other, size, frac_size, sign);
+    return *this /=
+           Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
 const Efixedpoint computefhe::operator/(double a, const Efixedpoint &b) {
-    // TODO: optimize this by using ciphertext-plaintext operation
-    return Efixedpoint(a, b.size, b.frac_size, b.sign) / b;
+    return Efixedpoint(Efixedpoint::double2fp(a, b.size, b.frac_size),
+                       b.frac_size, b.sign) /
+           b;
 }
 
 const Efixedpoint Efixedpoint::operator-() const {
-    return Efixedpoint(cfhe_base->GetALU()->Neg(data), frac_size, sign);
+    return Efixedpoint(Einteger::operator-().getData(), frac_size, sign);
 }
 
 const Efixedpoint Efixedpoint::operator++() {
@@ -389,16 +379,14 @@ const Efixedpoint Efixedpoint::operator>>=(int i) {
 }
 
 Efixedpoint &Efixedpoint::operator=(const Efixedpoint &other) {
-    _sync_var();
     FixedPoint o = promote(other, size, frac_size);
-    data = o;
-    _sync_var();
+    this->Einteger::operator=(Einteger(o, other.sign));
     return *this;
 }
 
 Efixedpoint &Efixedpoint::operator=(double other) {
     _sync_var();
-    *this = Efixedpoint(other, size, frac_size, sign);
+    *this = Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
     _sync_var();
     return *this;
 }

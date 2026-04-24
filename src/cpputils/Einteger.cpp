@@ -836,4 +836,5 @@ template class EInt<uint64_t, 64, false>;
 
 // TODO: Ebool operators must behave differently
 // bool op integral_t -> (int)bool op integral_t -> Promoted ->
-// (bool)Promoted (bool)x = 0 if x == 0, else 1
+// (bool)Promoted
+// (*) (bool)x = 0 if x == 0, else 1

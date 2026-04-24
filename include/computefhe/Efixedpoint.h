@@ -106,6 +106,8 @@ namespace computefhe {
         // Friend functions
         friend ostream &operator<<(ostream &out, const Efixedpoint &obj);
         friend const Efixedpoint operator/(double a, const Efixedpoint &b);
+
+        // TODO: Arithmetic friend operators for double type
     };
     ostream &operator<<(ostream &out, const Efixedpoint &obj);
     const Efixedpoint operator/(double a, const Efixedpoint &b);

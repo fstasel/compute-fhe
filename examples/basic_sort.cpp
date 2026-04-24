@@ -34,7 +34,10 @@ void basic_encrypted_sort_intrinsic(Evector<Eint8> &arr) {
 int main() {
     computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, SIMULATOR_MODE);
 
-    Evector<Eint8> arr = {8, 7, 6, 5, 4, 3, 2, 1};
+    cfhe_base->setAutoEncryptMode(true);           // Auto-encrypt data
+    Evector<Eint8> arr = {8, 7, 6, 5, 4, 3, 2, 1}; // Encrypted input
+    cfhe_base->setAutoEncryptMode(false); // Back to server-side behavior
+
     cout << "In: " << arr << endl;
     cout << "Basic Encrypted Sort:" << endl;
     basic_encrypted_sort(arr);
@@ -45,7 +48,10 @@ int main() {
         cfhe_base->GetSimulator()->ResetStats();
     }
 
-    arr = {8, 7, 6, 5, 4, 3, 2, 1};
+    cfhe_base->setAutoEncryptMode(true);  // Auto-encrypt data
+    arr = {8, 7, 6, 5, 4, 3, 2, 1};       // Encrypted input
+    cfhe_base->setAutoEncryptMode(false); // Back to server-side behavior
+
     cout << "In: " << arr << endl;
     cout << "Basic Encrypted Sort (Intrinsic):" << endl;
     basic_encrypted_sort_intrinsic(arr);

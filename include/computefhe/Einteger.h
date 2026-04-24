@@ -134,6 +134,7 @@ namespace computefhe {
         friend const Einteger operator%(uint64_t a, const Einteger &b);
 
         // TODO: Arithmetic friend operators for integral types
+        // TODO: Comparison friend operators for integral types
     };
 
     ostream &operator<<(ostream &out, const Einteger &obj);

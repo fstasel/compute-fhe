@@ -506,6 +506,22 @@ TestReport CFHE_Test::TestCmpNotEq(uint n_digits) {
     return report;
 }
 
+TestReport CFHE_Test::TestPCmpNotEq(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = (CreateRandomNumber() % 2 == 0) ? CreateRandomNumber() : n1;
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    uint expected = (n1 != n2) ? 1 : 0;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->PCmpNotEq(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
 TestReport CFHE_Test::TestCmpEq(uint n_digits) {
     TestReport report;
     uint n1 = CreateRandomNumber();
@@ -515,6 +531,22 @@ TestReport CFHE_Test::TestCmpEq(uint n_digits) {
     uint expected = (n1 == n2) ? 1 : 0;
     StartTimer();
     BinaryDigit ct_result = cfhe_base->GetALU()->CmpEq(ct_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPCmpEq(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = (CreateRandomNumber() % 2 == 0) ? CreateRandomNumber() : n1;
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    uint expected = (n1 == n2) ? 1 : 0;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->PCmpEq(ct_n1, pt_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -538,6 +570,22 @@ TestReport CFHE_Test::TestCmpLTEq_U(uint n_digits) {
     return report;
 }
 
+TestReport CFHE_Test::TestPCmpLTEq_U(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    uint expected = (n1 <= n2) ? 1 : 0;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->PCmpLTEq_U(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
 TestReport CFHE_Test::TestCmpGT_U(uint n_digits) {
     TestReport report;
     uint n1 = CreateRandomNumber();
@@ -547,6 +595,22 @@ TestReport CFHE_Test::TestCmpGT_U(uint n_digits) {
     uint expected = (n1 > n2) ? 1 : 0;
     StartTimer();
     BinaryDigit ct_result = cfhe_base->GetALU()->CmpGT_U(ct_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPCmpGT_U(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    uint expected = (n1 > n2) ? 1 : 0;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->PCmpGT_U(ct_n1, pt_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -570,6 +634,22 @@ TestReport CFHE_Test::TestCmpGTEq_U(uint n_digits) {
     return report;
 }
 
+TestReport CFHE_Test::TestPCmpGTEq_U(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    uint expected = (n1 >= n2) ? 1 : 0;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->PCmpGTEq_U(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
 TestReport CFHE_Test::TestCmpLT_U(uint n_digits) {
     TestReport report;
     uint n1 = CreateRandomNumber();
@@ -579,6 +659,22 @@ TestReport CFHE_Test::TestCmpLT_U(uint n_digits) {
     uint expected = (n1 < n2) ? 1 : 0;
     StartTimer();
     BinaryDigit ct_result = cfhe_base->GetALU()->CmpLT_U(ct_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPCmpLT_U(uint n_digits) {
+    TestReport report;
+    uint n1 = CreateRandomNumber();
+    uint n2 = CreateRandomNumber();
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    uint expected = (n1 < n2) ? 1 : 0;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->PCmpLT_U(ct_n1, pt_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -606,6 +702,26 @@ TestReport CFHE_Test::TestCmpLTEq(uint n_digits) {
     return report;
 }
 
+TestReport CFHE_Test::TestPCmpLTEq(uint n_digits) {
+    TestReport report;
+    int64_t n1 = CreateRandomNumber();
+    int64_t n2 = CreateRandomNumber();
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    int64_t bound = 1UL << n_digits;
+    int64_t max_val = (1UL << (n_digits - 1)) - 1;
+    n1 = (n1 > max_val) ? (n1 - bound) : n1;
+    n2 = (n2 > max_val) ? (n2 - bound) : n2;
+    uint expected = (n1 <= n2) ? 1 : 0;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->PCmpLTEq(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
 TestReport CFHE_Test::TestCmpGT(uint n_digits) {
     TestReport report;
     int64_t n1 = CreateRandomNumber();
@@ -619,6 +735,26 @@ TestReport CFHE_Test::TestCmpGT(uint n_digits) {
     uint expected = (n1 > n2) ? 1 : 0;
     StartTimer();
     BinaryDigit ct_result = cfhe_base->GetALU()->CmpGT(ct_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPCmpGT(uint n_digits) {
+    TestReport report;
+    int64_t n1 = CreateRandomNumber();
+    int64_t n2 = CreateRandomNumber();
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    int64_t bound = 1UL << n_digits;
+    int64_t max_val = (1UL << (n_digits - 1)) - 1;
+    n1 = (n1 > max_val) ? (n1 - bound) : n1;
+    n2 = (n2 > max_val) ? (n2 - bound) : n2;
+    uint expected = (n1 > n2) ? 1 : 0;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->PCmpGT(ct_n1, pt_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
@@ -646,6 +782,26 @@ TestReport CFHE_Test::TestCmpGTEq(uint n_digits) {
     return report;
 }
 
+TestReport CFHE_Test::TestPCmpGTEq(uint n_digits) {
+    TestReport report;
+    int64_t n1 = CreateRandomNumber();
+    int64_t n2 = CreateRandomNumber();
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    int64_t bound = 1UL << n_digits;
+    int64_t max_val = (1UL << (n_digits - 1)) - 1;
+    n1 = (n1 > max_val) ? (n1 - bound) : n1;
+    n2 = (n2 > max_val) ? (n2 - bound) : n2;
+    uint expected = (n1 >= n2) ? 1 : 0;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->PCmpGTEq(ct_n1, pt_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
 TestReport CFHE_Test::TestCmpLT(uint n_digits) {
     TestReport report;
     int64_t n1 = CreateRandomNumber();
@@ -659,6 +815,26 @@ TestReport CFHE_Test::TestCmpLT(uint n_digits) {
     uint expected = (n1 < n2) ? 1 : 0;
     StartTimer();
     BinaryDigit ct_result = cfhe_base->GetALU()->CmpLT(ct_n1, ct_n2);
+    report.delta_t = ReadTimer();
+    uint result = cfhe_base->DecryptBool(ct_result);
+    report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result, expected);
+    return report;
+}
+
+TestReport CFHE_Test::TestPCmpLT(uint n_digits) {
+    TestReport report;
+    int64_t n1 = CreateRandomNumber();
+    int64_t n2 = CreateRandomNumber();
+    FixedPoint ct_n1 = cfhe_base->EncryptInt(n1, n_digits, GetTestFresh());
+    FixedPoint pt_n2 = cfhe_base->GetConstantInt(n2, n_digits);
+    int64_t bound = 1UL << n_digits;
+    int64_t max_val = (1UL << (n_digits - 1)) - 1;
+    n1 = (n1 > max_val) ? (n1 - bound) : n1;
+    n2 = (n2 > max_val) ? (n2 - bound) : n2;
+    uint expected = (n1 < n2) ? 1 : 0;
+    StartTimer();
+    BinaryDigit ct_result = cfhe_base->GetALU()->PCmpLT(ct_n1, pt_n2);
     report.delta_t = ReadTimer();
     uint result = cfhe_base->DecryptBool(ct_result);
     report.test_result = (result == expected) ? TR_SUCCESS : TR_FAIL;

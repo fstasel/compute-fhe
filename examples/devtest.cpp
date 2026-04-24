@@ -643,7 +643,42 @@ void test_plaintext() {
         s->ResetStats();
     }
 
-    cout << "b >= 2000: " << (b >= 2000) << endl;
+    cout << "b > (1<<25)-1: " << (b > (1 << 25) - 1) << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+
+    cout << "b >= (1<<25)-1: " << (b >= (1 << 25) - 1) << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+
+    cout << "b < (1<<25)-1: " << (b < (1 << 25) - 1) << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+
+    cout << "b <= (1<<25)-1: " << (b <= (1 << 25) - 1) << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+
+    cout << "b == (1<<25)-1: " << (b == (1 << 25) - 1) << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+
+    cout << "b != (1<<25)-1: " << (b != (1 << 25) - 1) << endl;
 
     if (s) {
         s->PrintStats();

@@ -198,7 +198,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PCMPNOTEQ:
-            // report = TestPCmpNotEq(n_digits);
+            report = TestPCmpNotEq(n_digits);
             break;
 
         case TT_CMPEQ:
@@ -206,7 +206,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PCMPEQ:
-            // report = TestPCmpEq(n_digits);
+            report = TestPCmpEq(n_digits);
             break;
 
         case TT_CMPLTEQ_U:
@@ -214,7 +214,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PCMPLTEQ_U:
-            // report = TestPCmpLTEq_U(n_digits);
+            report = TestPCmpLTEq_U(n_digits);
             break;
 
         case TT_CMPGT_U:
@@ -222,7 +222,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PCMPGT_U:
-            // report = TestPCmpGT_U(n_digits);
+            report = TestPCmpGT_U(n_digits);
             break;
 
         case TT_CMPGTEQ_U:
@@ -230,7 +230,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PCMPGTEQ_U:
-            // report = TestPCmpGTEq_U(n_digits);
+            report = TestPCmpGTEq_U(n_digits);
             break;
 
         case TT_CMPLT_U:
@@ -238,7 +238,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PCMPLT_U:
-            // report = TestPCmpLT_U(n_digits);
+            report = TestPCmpLT_U(n_digits);
             break;
 
         case TT_CMPLTEQ:
@@ -246,7 +246,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PCMPLTEQ:
-            // report = TestPCmpLTEq(n_digits);
+            report = TestPCmpLTEq(n_digits);
             break;
 
         case TT_CMPGT:
@@ -254,7 +254,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PCMPGT:
-            // report = TestPCmpGT(n_digits);
+            report = TestPCmpGT(n_digits);
             break;
 
         case TT_CMPGTEQ:
@@ -262,7 +262,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PCMPGTEQ:
-            // report = TestPCmpGTEq(n_digits);
+            report = TestPCmpGTEq(n_digits);
             break;
 
         case TT_CMPLT:
@@ -270,7 +270,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PCMPLT:
-            // report = TestPCmpLT(n_digits);
+            report = TestPCmpLT(n_digits);
             break;
 
         case TT_FULLMUL:

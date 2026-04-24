@@ -559,3 +559,80 @@ FixedPoint ALUStandard::CPSubNC(const FixedPoint &a, const FixedPoint &pb) {
 FixedPoint ALUStandard::CPSubCNC(const FixedPoint &a, const FixedPoint &pb) {
     return PAddCNC(a, Not(pb));
 }
+
+BinaryDigit ALUStandard::PCmpNotEq(const FixedPoint &a, const FixedPoint &pb) {
+    if (a.size() != pb.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = a.size();
+
+    BinaryDigit out = Gate_XOR(a[0], pb[0]);
+    for (size_t i = 1; i < n_digit; i++) {
+        out = Gate_OR(out, Gate_XOR(a[i], pb[i]));
+    }
+    return out;
+}
+
+BinaryDigit ALUStandard::PCmpEq(const FixedPoint &a, const FixedPoint &pb) {
+    if (a.size() != pb.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = a.size();
+
+    BinaryDigit out = Gate_XNOR(a[0], pb[0]);
+    for (size_t i = 1; i < n_digit; i++) {
+        out = Gate_AND(out, Gate_XNOR(a[i], pb[i]));
+    }
+    return out;
+}
+
+BinaryDigit ALUStandard::PCmpLTEq_U(const FixedPoint &a, const FixedPoint &pb) {
+    if (a.size() != pb.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = a.size();
+
+    BinaryDigit out = pb[0].p ? Constant1() : Gate_NOT(a[0]);
+    for (size_t i = 1; i < n_digit; i++) {
+        out = pb[i].p ? Gate_OR(out, Gate_NOT(a[i]))
+                      : Gate_AND(out, Gate_NOT(a[i]));
+    }
+    return out;
+}
+
+BinaryDigit ALUStandard::PCmpGT_U(const FixedPoint &a, const FixedPoint &pb) {
+    if (a.size() != pb.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = a.size();
+
+    BinaryDigit out = pb[0].p ? Constant0() : a[0];
+    for (size_t i = 1; i < n_digit; i++) {
+        out = pb[i].p ? Gate_AND(out, a[i]) : Gate_OR(out, a[i]);
+    }
+    return out;
+}
+
+BinaryDigit ALUStandard::PCmpGTEq_U(const FixedPoint &a, const FixedPoint &pb) {
+    return PCmpLTEq_U(Not(a), Not(pb));
+}
+
+BinaryDigit ALUStandard::PCmpLT_U(const FixedPoint &a, const FixedPoint &pb) {
+    return PCmpGT_U(Not(a), Not(pb));
+}
+
+BinaryDigit ALUStandard::PCmpLTEq(const FixedPoint &a, const FixedPoint &pb) {
+    return PCmpLTEq_U(ToggleMSB(a), ToggleMSB(pb));
+}
+
+BinaryDigit ALUStandard::PCmpGT(const FixedPoint &a, const FixedPoint &pb) {
+    return PCmpGT_U(ToggleMSB(a), ToggleMSB(pb));
+}
+
+BinaryDigit ALUStandard::PCmpGTEq(const FixedPoint &a, const FixedPoint &pb) {
+    return PCmpGTEq_U(ToggleMSB(a), ToggleMSB(pb));
+}
+
+BinaryDigit ALUStandard::PCmpLT(const FixedPoint &a, const FixedPoint &pb) {
+    return PCmpLT_U(ToggleMSB(a), ToggleMSB(pb));
+}

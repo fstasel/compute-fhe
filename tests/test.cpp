@@ -6,23 +6,20 @@ int main() {
     // CFHE_Test::TestAll();
     // CFHE_Test::TestAllNoise();
 
-    CFHE_Test t(CCPARAM_TOY, ALU_OPTIMIZED, true);
+    CFHE_Test t(CCPARAM_TOY, ALU_STANDARD, false);
     t.SetRegenerateKeys(false);
-    t.SetNumTest(10);
-    t.SetVerbosity(4);
-    // t.Test(TestType::TT_PADD);
-    // t.Test(TestType::TT_PADDC);
-    // t.Test(TestType::TT_PADD_NC);
-    // t.Test(TestType::TT_PADDC_NC);
-    // t.Test(TestType::TT_PSUB);
-    // t.Test(TestType::TT_PSUBC);
-    // t.Test(TestType::TT_PSUB_NC);
-    // t.Test(TestType::TT_PSUBC_NC);
-    // t.Test(TestType::TT_CPSUB);
-    // t.Test(TestType::TT_CPSUBC);
-    // t.Test(TestType::TT_CPSUB_NC);
-    // t.Test(TestType::TT_CPSUBC_NC);
-    t.Test(TestType::TT_NEG);
+    t.SetNumTest(100);
+    t.SetVerbosity(0);
+    t.Test(TT_PCMPEQ, 4);
+    t.Test(TT_PCMPNOTEQ, 4);
+    t.Test(TT_PCMPGT_U, 4);
+    t.Test(TT_PCMPGTEQ_U, 4);
+    t.Test(TT_PCMPLT_U, 4);
+    t.Test(TT_PCMPLTEQ_U, 4);
+    t.Test(TT_PCMPGT, 4);
+    t.Test(TT_PCMPGTEQ, 4);
+    t.Test(TT_PCMPLT, 4);
+    t.Test(TT_PCMPLTEQ, 4);
 
     return 0;
 }

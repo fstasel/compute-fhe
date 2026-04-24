@@ -628,6 +628,27 @@ void test_plaintext() {
         s->PrintStats();
         s->ResetStats();
     }
+
+    cout << "b - 512: " << b - 512 << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+    cfhe_base->setAutoEncryptMode(false);
+    cout << "512 - b: " << (Eint32)512 - b << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+
+    cout << "b >= 2000: " << (b >= 2000) << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
 }
 
 int main() {
@@ -649,8 +670,8 @@ int main() {
     // test_fp_custom();
     // test_div();
     // test_simulation();
-    test_auto_enc();
-    // test_plaintext();
+    // test_auto_enc();
+    test_plaintext();
 
     computefhe::Finalize();
 

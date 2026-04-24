@@ -269,14 +269,16 @@ const Einteger Einteger::operator+=(const Einteger &other) {
 const Einteger Einteger::operator-(const Einteger &other) const {
     FixedPoint a, b;
     bool s = promote(*this, other, a, b);
-    FixedPoint fp(cfhe_base->GetALU()->SubNC(a, b));
+    FixedPoint fp(b.is_ct() ? cfhe_base->GetALU()->SubNC(a, b)
+                            : cfhe_base->GetALU()->CPSubNC(a, b));
     return Einteger(fp, s);
 }
 
 const Einteger Einteger::operator-=(const Einteger &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
-    data = cfhe_base->GetALU()->SubNC(data, o);
+    data = o.is_ct() ? cfhe_base->GetALU()->SubNC(data, o)
+                     : cfhe_base->GetALU()->CPSubNC(data, o);
     _sync_var();
     return *this;
 }
@@ -404,12 +406,10 @@ const Einteger Einteger::operator+=(uint64_t other) {
 }
 
 const Einteger Einteger::operator-(uint64_t other) const {
-    // TODO: optimize this by using ciphertext-plaintext arithmetic
     return *this - Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
 const Einteger Einteger::operator-=(uint64_t other) {
-    // TODO: optimize this by using ciphertext-plaintext arithmetic
     return *this -= Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 

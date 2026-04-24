@@ -12,8 +12,8 @@ void computefhe::Init(CryptoContextParam cc_param, ALUType alu_type,
                       bool client_mode, bool simulation_mode) {
     if (cfhe_base != nullptr)
         delete cfhe_base;
-    cfhe_base = new ComputeFHE(cc_param, alu_type, simulation_mode);
     CLIENT_MODE = client_mode;
+    cfhe_base = new ComputeFHE(cc_param, alu_type, simulation_mode);
 }
 
 void computefhe::Finalize() {
@@ -144,7 +144,9 @@ ComputeFHE::ComputeFHE(CryptoContextParam param, ALUType alu_type,
     : cc_param(param), alu_type(alu_type), sim_mode(simulation_mode) {
     setAutoEncryptMode();
     createCC();
-    generateKeys();
+    if (CLIENT_MODE) {
+        generateKeys();
+    }
     createALU();
 }
 

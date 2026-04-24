@@ -27,7 +27,10 @@ template <typename T> T isqrt(T N) {
 int main() {
     computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, SIMULATOR_MODE);
 
-    Euint32 N = 4000000000U;
+    cfhe_base->setAutoEncryptMode(true);  // Auto-encrypt data
+    Euint32 N = 4000000000U;              // Encrypted input
+    cfhe_base->setAutoEncryptMode(false); // Back to server-side behavior
+
     cout << "N: " << N << endl;
     cout << "sqrt(N): " << isqrt(N) << endl;
 

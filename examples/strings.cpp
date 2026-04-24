@@ -46,7 +46,9 @@ int main() {
     computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, SIMULATOR_MODE);
 
     string str0 = "Lorem ipsum, dolor sit amet.";
-    Evector<Echar> e_str(str0.begin(), str0.end());
+    cfhe_base->setAutoEncryptMode(true);            // Auto-encrypt data
+    Evector<Echar> e_str(str0.begin(), str0.end()); // Encrypted string
+    cfhe_base->setAutoEncryptMode(false); // Back to server-side behavior
 
     cout << "Original string: " << str0 << endl;
 

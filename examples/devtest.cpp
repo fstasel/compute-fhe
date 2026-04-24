@@ -684,28 +684,45 @@ void test_plaintext() {
         s->PrintStats();
         s->ResetStats();
     }
+
+    cfhe_base->setAutoEncryptMode(true);
+    Efixedpoint f(-2.25, 8, 4, true);
+    cout << "f: " << f << endl;
+    cout << "f + 1.5: " << f + 1.5 << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
+
+    cout << "f / 0.5: " << f / 0.5 << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
 }
 
 int main() {
     computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, true);
 
-    // test_arithmetic_operators();
-    // test_arithmetic_assignment_operators();
-    // test_comparison_operators();
-    // test_logic_operators();
-    // test_logic_assignment_operators();
-    // test_shift_operators();
-    // test_shift_assign_operators();
-    // test_condition();
-    // test_inc_dec();
-    // test_vector();
-    // test_vector_custom();
-    // test_fp();
-    // test_fp_vector();
-    // test_fp_custom();
-    // test_div();
-    // test_simulation();
-    // test_auto_enc();
+    test_arithmetic_operators();
+    test_arithmetic_assignment_operators();
+    test_comparison_operators();
+    test_logic_operators();
+    test_logic_assignment_operators();
+    test_shift_operators();
+    test_shift_assign_operators();
+    test_condition();
+    test_inc_dec();
+    test_vector();
+    test_vector_custom();
+    test_fp();
+    test_fp_vector();
+    test_fp_custom();
+    test_div();
+    test_simulation();
+    test_auto_enc();
     test_plaintext();
 
     computefhe::Finalize();

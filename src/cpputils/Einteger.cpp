@@ -148,124 +148,50 @@ bool Einteger::isSigned() const { return sign; }
 const Einteger Einteger::operator==(const Einteger &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    if (b.is_ct()) {
-        if (a.is_ct()) {
-            FixedPoint fp(
-                (vector<BinaryDigit>){cfhe_base->GetALU()->CmpEq(a, b)});
-            return Einteger(fp, false);
-        } else {
-            FixedPoint fp(
-                (vector<BinaryDigit>){cfhe_base->GetALU()->PCmpEq(b, a)});
-            return Einteger(fp, false);
-        }
-    }
-    FixedPoint fp((vector<BinaryDigit>){cfhe_base->GetALU()->PCmpEq(a, b)});
+    FixedPoint fp((vector<BinaryDigit>){cfhe_base->GetALU()->CmpEq(a, b)});
     return Einteger(fp, false);
 }
 
 const Einteger Einteger::operator!=(const Einteger &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    if (b.is_ct()) {
-        if (a.is_ct()) {
-            FixedPoint fp(
-                (vector<BinaryDigit>){cfhe_base->GetALU()->CmpNotEq(a, b)});
-            return Einteger(fp, false);
-        } else {
-            FixedPoint fp(
-                (vector<BinaryDigit>){cfhe_base->GetALU()->PCmpNotEq(b, a)});
-            return Einteger(fp, false);
-        }
-    }
-    FixedPoint fp((vector<BinaryDigit>){cfhe_base->GetALU()->PCmpNotEq(a, b)});
+    FixedPoint fp((vector<BinaryDigit>){cfhe_base->GetALU()->CmpNotEq(a, b)});
     return Einteger(fp, false);
 }
 
 const Einteger Einteger::operator>(const Einteger &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    if (b.is_ct()) {
-        if (a.is_ct()) {
-            FixedPoint fp((vector<BinaryDigit>){
-                (sign && other.sign) ? cfhe_base->GetALU()->CmpGT(a, b)
-                                     : cfhe_base->GetALU()->CmpGT_U(a, b)});
-            return Einteger(fp, false);
-        } else {
-            FixedPoint fp((vector<BinaryDigit>){
-                (sign && other.sign) ? cfhe_base->GetALU()->PCmpLT(b, a)
-                                     : cfhe_base->GetALU()->PCmpLT_U(b, a)});
-            return Einteger(fp, false);
-        }
-    }
     FixedPoint fp((vector<BinaryDigit>){
-        (sign && other.sign) ? cfhe_base->GetALU()->PCmpGT(a, b)
-                             : cfhe_base->GetALU()->PCmpGT_U(a, b)});
+        (sign && other.sign) ? cfhe_base->GetALU()->CmpGT(a, b)
+                             : cfhe_base->GetALU()->CmpGT_U(a, b)});
     return Einteger(fp, false);
 }
 
 const Einteger Einteger::operator>=(const Einteger &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    if (b.is_ct()) {
-        if (a.is_ct()) {
-            FixedPoint fp((vector<BinaryDigit>){
-                (sign && other.sign) ? cfhe_base->GetALU()->CmpGTEq(a, b)
-                                     : cfhe_base->GetALU()->CmpGTEq_U(a, b)});
-            return Einteger(fp, false);
-        } else {
-            FixedPoint fp((vector<BinaryDigit>){
-                (sign && other.sign) ? cfhe_base->GetALU()->PCmpLTEq(b, a)
-                                     : cfhe_base->GetALU()->PCmpLTEq_U(b, a)});
-            return Einteger(fp, false);
-        }
-    }
     FixedPoint fp((vector<BinaryDigit>){
-        (sign && other.sign) ? cfhe_base->GetALU()->PCmpGTEq(a, b)
-                             : cfhe_base->GetALU()->PCmpGTEq_U(a, b)});
+        (sign && other.sign) ? cfhe_base->GetALU()->CmpGTEq(a, b)
+                             : cfhe_base->GetALU()->CmpGTEq_U(a, b)});
     return Einteger(fp, false);
 }
 
 const Einteger Einteger::operator<(const Einteger &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    if (b.is_ct()) {
-        if (a.is_ct()) {
-            FixedPoint fp((vector<BinaryDigit>){
-                (sign && other.sign) ? cfhe_base->GetALU()->CmpLT(a, b)
-                                     : cfhe_base->GetALU()->CmpLT_U(a, b)});
-            return Einteger(fp, false);
-        } else {
-            FixedPoint fp((vector<BinaryDigit>){
-                (sign && other.sign) ? cfhe_base->GetALU()->PCmpGT(b, a)
-                                     : cfhe_base->GetALU()->PCmpGT_U(b, a)});
-            return Einteger(fp, false);
-        }
-    }
     FixedPoint fp((vector<BinaryDigit>){
-        (sign && other.sign) ? cfhe_base->GetALU()->PCmpLT(a, b)
-                             : cfhe_base->GetALU()->PCmpLT_U(a, b)});
+        (sign && other.sign) ? cfhe_base->GetALU()->CmpLT(a, b)
+                             : cfhe_base->GetALU()->CmpLT_U(a, b)});
     return Einteger(fp, false);
 }
 
 const Einteger Einteger::operator<=(const Einteger &other) const {
     FixedPoint a, b;
     promote(*this, other, a, b);
-    if (b.is_ct()) {
-        if (a.is_ct()) {
-            FixedPoint fp((vector<BinaryDigit>){
-                (sign && other.sign) ? cfhe_base->GetALU()->CmpLTEq(a, b)
-                                     : cfhe_base->GetALU()->CmpLTEq_U(a, b)});
-            return Einteger(fp, false);
-        } else {
-            FixedPoint fp((vector<BinaryDigit>){
-                (sign && other.sign) ? cfhe_base->GetALU()->PCmpGTEq(b, a)
-                                     : cfhe_base->GetALU()->PCmpGTEq_U(b, a)});
-            return Einteger(fp, false);
-        }
-    }
     FixedPoint fp((vector<BinaryDigit>){
-        (sign && other.sign) ? cfhe_base->GetALU()->PCmpLTEq(a, b)
-                             : cfhe_base->GetALU()->PCmpLTEq_U(a, b)});
+        (sign && other.sign) ? cfhe_base->GetALU()->CmpLTEq(a, b)
+                             : cfhe_base->GetALU()->CmpLTEq_U(a, b)});
     return Einteger(fp, false);
 }
 

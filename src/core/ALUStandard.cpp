@@ -350,6 +350,7 @@ BinaryDigit ALUStandard::CmpNotEq(const FixedPoint &a, const FixedPoint &b) {
     }
     size_t n_digit = a.size();
 
+    // Auto-reduced while comparing plaintext
     BinaryDigit out = Gate_XOR(a[0], b[0]);
     for (uint8_t i = 1; i < n_digit; i++) {
         BinaryDigit eq = Gate_XOR(a[i], b[i]);
@@ -364,6 +365,7 @@ BinaryDigit ALUStandard::CmpEq(const FixedPoint &a, const FixedPoint &b) {
     }
     size_t n_digit = a.size();
 
+    // Auto-reduced while comparing plaintext
     BinaryDigit out = Gate_XNOR(a[0], b[0]);
     for (uint8_t i = 1; i < n_digit; i++) {
         BinaryDigit eq = Gate_XNOR(a[i], b[i]);
@@ -378,6 +380,7 @@ BinaryDigit ALUStandard::CmpLTEq_U(const FixedPoint &a, const FixedPoint &b) {
     }
     size_t n_digit = a.size();
 
+    // Auto-reduced while comparing plaintext
     BinaryDigit inv_a = Gate_NOT(a[0]);
     BinaryDigit out = Gate_OR(inv_a, b[0]);
     for (uint8_t i = 1; i < n_digit; i++) {
@@ -396,6 +399,7 @@ BinaryDigit ALUStandard::CmpGT_U(const FixedPoint &a, const FixedPoint &b) {
     }
     size_t n_digit = a.size();
 
+    // Auto-reduced while comparing plaintext
     BinaryDigit inv_b = Gate_NOT(b[0]);
     BinaryDigit out = Gate_AND(a[0], inv_b);
     for (uint8_t i = 1; i < n_digit; i++) {
@@ -558,81 +562,4 @@ FixedPoint ALUStandard::CPSubNC(const FixedPoint &a, const FixedPoint &pb) {
 
 FixedPoint ALUStandard::CPSubCNC(const FixedPoint &a, const FixedPoint &pb) {
     return PAddCNC(a, Not(pb));
-}
-
-BinaryDigit ALUStandard::PCmpNotEq(const FixedPoint &a, const FixedPoint &pb) {
-    if (a.size() != pb.size()) {
-        OPENFHE_THROW("Input numbers should be of the same bit length.");
-    }
-    size_t n_digit = a.size();
-
-    BinaryDigit out = Gate_XOR(a[0], pb[0]);
-    for (size_t i = 1; i < n_digit; i++) {
-        out = Gate_OR(out, Gate_XOR(a[i], pb[i]));
-    }
-    return out;
-}
-
-BinaryDigit ALUStandard::PCmpEq(const FixedPoint &a, const FixedPoint &pb) {
-    if (a.size() != pb.size()) {
-        OPENFHE_THROW("Input numbers should be of the same bit length.");
-    }
-    size_t n_digit = a.size();
-
-    BinaryDigit out = Gate_XNOR(a[0], pb[0]);
-    for (size_t i = 1; i < n_digit; i++) {
-        out = Gate_AND(out, Gate_XNOR(a[i], pb[i]));
-    }
-    return out;
-}
-
-BinaryDigit ALUStandard::PCmpLTEq_U(const FixedPoint &a, const FixedPoint &pb) {
-    if (a.size() != pb.size()) {
-        OPENFHE_THROW("Input numbers should be of the same bit length.");
-    }
-    size_t n_digit = a.size();
-
-    BinaryDigit out = pb[0].p ? Constant1() : Gate_NOT(a[0]);
-    for (size_t i = 1; i < n_digit; i++) {
-        out = pb[i].p ? Gate_OR(out, Gate_NOT(a[i]))
-                      : Gate_AND(out, Gate_NOT(a[i]));
-    }
-    return out;
-}
-
-BinaryDigit ALUStandard::PCmpGT_U(const FixedPoint &a, const FixedPoint &pb) {
-    if (a.size() != pb.size()) {
-        OPENFHE_THROW("Input numbers should be of the same bit length.");
-    }
-    size_t n_digit = a.size();
-
-    BinaryDigit out = pb[0].p ? Constant0() : a[0];
-    for (size_t i = 1; i < n_digit; i++) {
-        out = pb[i].p ? Gate_AND(out, a[i]) : Gate_OR(out, a[i]);
-    }
-    return out;
-}
-
-BinaryDigit ALUStandard::PCmpGTEq_U(const FixedPoint &a, const FixedPoint &pb) {
-    return PCmpLTEq_U(Not(a), Not(pb));
-}
-
-BinaryDigit ALUStandard::PCmpLT_U(const FixedPoint &a, const FixedPoint &pb) {
-    return PCmpGT_U(Not(a), Not(pb));
-}
-
-BinaryDigit ALUStandard::PCmpLTEq(const FixedPoint &a, const FixedPoint &pb) {
-    return PCmpLTEq_U(ToggleMSB(a), ToggleMSB(pb));
-}
-
-BinaryDigit ALUStandard::PCmpGT(const FixedPoint &a, const FixedPoint &pb) {
-    return PCmpGT_U(ToggleMSB(a), ToggleMSB(pb));
-}
-
-BinaryDigit ALUStandard::PCmpGTEq(const FixedPoint &a, const FixedPoint &pb) {
-    return PCmpGTEq_U(ToggleMSB(a), ToggleMSB(pb));
-}
-
-BinaryDigit ALUStandard::PCmpLT(const FixedPoint &a, const FixedPoint &pb) {
-    return PCmpLT_U(ToggleMSB(a), ToggleMSB(pb));
 }

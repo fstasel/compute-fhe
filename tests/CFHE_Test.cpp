@@ -295,7 +295,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PMUL:
-            // report = TestPMul(n_digits);
+            report = TestPMul(n_digits);
             break;
 
         case TT_PMUL_FAST:

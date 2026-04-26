@@ -703,27 +703,83 @@ void test_plaintext() {
     }
 }
 
+void test_friend_functions() {
+    Eint32 a = 7, b = -7;
+    Eint32 c = false, d = true;
+
+    cout << "a    : 7" << endl;
+    cout << "b    : -7" << endl;
+    cout << "3+a  : " << 3 + a << endl;
+    cout << "15-a : " << 15 - a << endl;
+    cout << "4-a  : " << 4 - a << endl;
+    cout << "15-b : " << 15 - b << endl;
+    cout << "3*a  : " << 3 * a << endl;
+    cout << "22/a : " << 22 / a << endl;
+    cout << "22%a : " << 22 % a << endl << endl;
+
+    cout << "7==a : " << (7 == a) << endl;
+    cout << "7!=a : " << (7 != a) << endl;
+    cout << "7<a  : " << (7 < a) << endl;
+    cout << "7<=a : " << (7 <= a) << endl;
+    cout << "7>a  : " << (7 > a) << endl;
+    cout << "7>=a : " << (7 >= a) << endl;
+    cout << "-7==a: " << (-7 == a) << endl;
+    cout << "-7!=a: " << (-7 != a) << endl;
+    cout << "-7<a : " << (-7 < a) << endl;
+    cout << "-7<=a: " << (-7 <= a) << endl;
+    cout << "-7>a : " << (-7 > a) << endl;
+    cout << "-7>=a: " << (-7 >= a) << endl << endl;
+
+    cout << "7==b : " << (7 == b) << endl;
+    cout << "7!=b : " << (7 != b) << endl;
+    cout << "7<b  : " << (7 < b) << endl;
+    cout << "7<=b : " << (7 <= b) << endl;
+    cout << "7>b  : " << (7 > b) << endl;
+    cout << "7>=b : " << (7 >= b) << endl;
+    cout << "-7==b: " << (-7 == b) << endl;
+    cout << "-7!=b: " << (-7 != b) << endl;
+    cout << "-7<b : " << (-7 < b) << endl;
+    cout << "-7<=b: " << (-7 <= b) << endl;
+    cout << "-7>b : " << (-7 > b) << endl;
+    cout << "-7>=b: " << (-7 >= b) << endl << endl;
+
+    cout << "10&a : " << (10 & a) << endl;
+    cout << "8|a  : " << (8 | a) << endl;
+    cout << "10^a : " << (10 ^ a) << endl << endl;
+
+    cout << "0  && c : " << (0 && c) << endl;
+    cout << "0  && d : " << (0 && d) << endl;
+    cout << "10 && c : " << (10 && c) << endl;
+    cout << "10 && d : " << (10 && d) << endl << endl;
+
+    cout << "0  || c : " << (0 || c) << endl;
+    cout << "0  || d : " << (0 || d) << endl;
+    cout << "10 || c : " << (10 || c) << endl;
+    cout << "10 || d : " << (10 || d) << endl;
+}
+
 int main() {
     computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, true);
 
-    test_arithmetic_operators();
-    test_arithmetic_assignment_operators();
-    test_comparison_operators();
-    test_logic_operators();
-    test_logic_assignment_operators();
-    test_shift_operators();
-    test_shift_assign_operators();
-    test_condition();
-    test_inc_dec();
-    test_vector();
-    test_vector_custom();
-    test_fp();
-    test_fp_vector();
-    test_fp_custom();
-    test_div();
-    test_simulation();
-    test_auto_enc();
-    test_plaintext();
+    // test_arithmetic_operators();
+    // test_arithmetic_assignment_operators();
+    // test_comparison_operators();
+    // test_logic_operators();
+    // test_logic_assignment_operators();
+    // test_shift_operators();
+    // test_shift_assign_operators();
+    // test_condition();
+    // test_inc_dec();
+    // test_vector();
+    // test_vector_custom();
+    // test_fp();
+    // test_fp_vector();
+    // test_fp_custom();
+    // test_div();
+    // test_simulation();
+    // test_auto_enc();
+    // test_plaintext();
+    test_friend_functions();
 
     computefhe::Finalize();
 

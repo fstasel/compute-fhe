@@ -100,6 +100,8 @@ namespace computefhe {
         virtual const Einteger operator||(const Einteger &) const;
         virtual const Einteger operator||(uint64_t) const;
 
+        // TODO: logical and/or for bool-type
+
         // Increment & Decrement operators
         const Einteger operator++();
         const Einteger operator++(int);
@@ -130,16 +132,46 @@ namespace computefhe {
 
         // Friend functions
         friend ostream &operator<<(ostream &out, const Einteger &obj);
+        friend const Einteger operator==(uint64_t a, const Einteger &b);
+        friend const Einteger operator!=(uint64_t a, const Einteger &b);
+        friend const Einteger operator>(uint64_t a, const Einteger &b);
+        friend const Einteger operator>=(uint64_t a, const Einteger &b);
+        friend const Einteger operator<(uint64_t a, const Einteger &b);
+        friend const Einteger operator<=(uint64_t a, const Einteger &b);
+        friend const Einteger operator+(uint64_t a, const Einteger &b);
+        friend const Einteger operator-(uint64_t a, const Einteger &b);
+        friend const Einteger operator*(uint64_t a, const Einteger &b);
         friend const Einteger operator/(uint64_t a, const Einteger &b);
         friend const Einteger operator%(uint64_t a, const Einteger &b);
+        friend const Einteger operator&(uint64_t a, const Einteger &b);
+        friend const Einteger operator|(uint64_t a, const Einteger &b);
+        friend const Einteger operator^(uint64_t a, const Einteger &b);
+        friend const Einteger operator&&(uint64_t a, const Einteger &b);
+        friend const Einteger operator||(uint64_t a, const Einteger &b);
 
-        // TODO: Arithmetic friend operators for integral types
-        // TODO: Comparison friend operators for integral types
+        // TODO: friend shift operators for integral types
+        // TODO: friend logical and/or for bool-type
     };
 
     ostream &operator<<(ostream &out, const Einteger &obj);
+    const Einteger operator==(uint64_t a, const Einteger &b);
+    const Einteger operator!=(uint64_t a, const Einteger &b);
+    const Einteger operator>(uint64_t a, const Einteger &b);
+    const Einteger operator>=(uint64_t a, const Einteger &b);
+    const Einteger operator<(uint64_t a, const Einteger &b);
+    const Einteger operator<=(uint64_t a, const Einteger &b);
+
+    const Einteger operator+(uint64_t a, const Einteger &b);
+    const Einteger operator-(uint64_t a, const Einteger &b);
+    const Einteger operator*(uint64_t a, const Einteger &b);
     const Einteger operator/(uint64_t a, const Einteger &b);
     const Einteger operator%(uint64_t a, const Einteger &b);
+
+    const Einteger operator&(uint64_t a, const Einteger &b);
+    const Einteger operator|(uint64_t a, const Einteger &b);
+    const Einteger operator^(uint64_t a, const Einteger &b);
+    const Einteger operator&&(uint64_t a, const Einteger &b);
+    const Einteger operator||(uint64_t a, const Einteger &b);
 
     template <typename T, size_t BITS, bool SIGNED>
     class EInt : public Einteger {

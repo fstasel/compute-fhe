@@ -499,6 +499,62 @@ const Einteger Einteger::operator%=(uint64_t other) {
     return *this;
 }
 
+const Einteger computefhe::operator==(uint64_t a, const Einteger &b) {
+    return b == a;
+}
+
+const Einteger computefhe::operator!=(uint64_t a, const Einteger &b) {
+    return b != a;
+}
+
+const Einteger computefhe::operator>(uint64_t a, const Einteger &b) {
+    return b < a;
+}
+
+const Einteger computefhe::operator>=(uint64_t a, const Einteger &b) {
+    return b <= a;
+}
+
+const Einteger computefhe::operator<(uint64_t a, const Einteger &b) {
+    return b > a;
+}
+
+const Einteger computefhe::operator<=(uint64_t a, const Einteger &b) {
+    return b >= a;
+}
+
+const Einteger computefhe::operator+(uint64_t a, const Einteger &b) {
+    return b + a;
+}
+const Einteger computefhe::operator-(uint64_t a, const Einteger &b) {
+    return Einteger(cfhe_base->GetALU()->PSubNC(
+                        cfhe_base->GetConstantInt(a, b.size), b.data),
+                    b.sign);
+}
+const Einteger computefhe::operator*(uint64_t a, const Einteger &b) {
+    return b * a;
+}
+
+const Einteger computefhe::operator&(uint64_t a, const Einteger &b) {
+    return b & a;
+}
+
+const Einteger computefhe::operator|(uint64_t a, const Einteger &b) {
+    return b | a;
+}
+
+const Einteger computefhe::operator^(uint64_t a, const Einteger &b) {
+    return b ^ a;
+}
+
+const Einteger computefhe::operator&&(uint64_t a, const Einteger &b) {
+    return b && a;
+}
+
+const Einteger computefhe::operator||(uint64_t a, const Einteger &b) {
+    return b || a;
+}
+
 const Einteger computefhe::operator/(uint64_t a, const Einteger &b) {
     if (Einteger::div_cache(a, b.data)) {
         return Einteger(Einteger::cached_quotient, b.sign);

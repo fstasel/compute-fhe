@@ -24,7 +24,8 @@ int main() {
     // t.Test(TT_FA_CCP, 1);
     // t.Test(TT_FA_CPP, 1);
     // t.Test(TT_PFIXP_ENCRYPT_DECRYPT, 8);
-    t.Test(TT_PFULLMUL, 8);
+    // t.Test(TT_PFULLMUL, 8);
+    t.Test(TT_PMUL, 8);
 
     return 0;
 }

@@ -623,7 +623,37 @@ FixedPoint ALUStandard::PBoothsMul(const FixedPoint &a, const FixedPoint &pb) {
 }
 
 FixedPoint ALUStandard::PMul(const FixedPoint &a, const FixedPoint &pb) {
-    return Mul(a, pb);
+    if (a.size() == 0 || pb.size() == 0 ||
+        cfhe_base->ConvertConstantInt(pb) == 0) {
+        FixedPoint zero(1);
+        zero[0] = Constant0();
+        return zero;
+    }
+    if (a.size() != pb.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    size_t n_digit = a.size();
+
+    FixedPoint out(n_digit);
+    for (size_t i = 0; i < n_digit; i++) {
+        out[i] = Constant0();
+    }
+    bool acc = false;
+    for (size_t i = 0; i < n_digit; i++) {
+        if (pb[i].p == 1 && !acc) {
+            for (size_t j = i; j < n_digit; j++) {
+                out[j] = a[j - i];
+            }
+            acc = true;
+        } else if (pb[i].p == 1 && acc) {
+            FixedPoint r = AddNC(FixedPoint(a.begin(), a.begin() + n_digit - i),
+                                 FixedPoint(out.begin() + i, out.end()));
+            for (size_t j = 0; j < r.size(); j++) {
+                out[i + j] = r[j];
+            }
+        }
+    }
+    return out;
 }
 
 FixedPoint ALUStandard::PMulFast(const FixedPoint &a, const FixedPoint &pb) {

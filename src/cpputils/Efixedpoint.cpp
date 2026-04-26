@@ -326,12 +326,6 @@ const Efixedpoint Efixedpoint::operator/=(double other) {
            Efixedpoint(double2fp(other, size, frac_size), frac_size, sign);
 }
 
-const Efixedpoint computefhe::operator/(double a, const Efixedpoint &b) {
-    return Efixedpoint(Efixedpoint::double2fp(a, b.size, b.frac_size),
-                       b.frac_size, b.sign) /
-           b;
-}
-
 const Efixedpoint Efixedpoint::operator-() const {
     return Efixedpoint(Einteger::operator-().getData(), frac_size, sign);
 }
@@ -423,4 +417,58 @@ ostream &computefhe::operator<<(ostream &out, const Efixedpoint &obj) {
                    (1 << obj.frac_size);
     }
     return out;
+}
+
+const Einteger computefhe::operator==(double a, const Efixedpoint &b) {
+    return Efixedpoint(Efixedpoint::double2fp(a, b.size, b.frac_size),
+                       b.frac_size, b.sign) == b;
+}
+
+const Einteger computefhe::operator!=(double a, const Efixedpoint &b) {
+    return Efixedpoint(Efixedpoint::double2fp(a, b.size, b.frac_size),
+                       b.frac_size, b.sign) != b;
+}
+
+const Einteger computefhe::operator>(double a, const Efixedpoint &b) {
+    return Efixedpoint(Efixedpoint::double2fp(a, b.size, b.frac_size),
+                       b.frac_size, b.sign) > b;
+}
+
+const Einteger computefhe::operator>=(double a, const Efixedpoint &b) {
+    return Efixedpoint(Efixedpoint::double2fp(a, b.size, b.frac_size),
+                       b.frac_size, b.sign) >= b;
+}
+
+const Einteger computefhe::operator<(double a, const Efixedpoint &b) {
+    return Efixedpoint(Efixedpoint::double2fp(a, b.size, b.frac_size),
+                       b.frac_size, b.sign) < b;
+}
+
+const Einteger computefhe::operator<=(double a, const Efixedpoint &b) {
+    return Efixedpoint(Efixedpoint::double2fp(a, b.size, b.frac_size),
+                       b.frac_size, b.sign) <= b;
+}
+
+const Efixedpoint computefhe::operator+(double a, const Efixedpoint &b) {
+    return Efixedpoint(Efixedpoint::double2fp(a, b.size, b.frac_size),
+                       b.frac_size, b.sign) +
+           b;
+}
+
+const Efixedpoint computefhe::operator-(double a, const Efixedpoint &b) {
+    return Efixedpoint(Efixedpoint::double2fp(a, b.size, b.frac_size),
+                       b.frac_size, b.sign) -
+           b;
+}
+
+const Efixedpoint computefhe::operator*(double a, const Efixedpoint &b) {
+    return Efixedpoint(Efixedpoint::double2fp(a, b.size, b.frac_size),
+                       b.frac_size, b.sign) *
+           b;
+}
+
+const Efixedpoint computefhe::operator/(double a, const Efixedpoint &b) {
+    return Efixedpoint(Efixedpoint::double2fp(a, b.size, b.frac_size),
+                       b.frac_size, b.sign) /
+           b;
 }

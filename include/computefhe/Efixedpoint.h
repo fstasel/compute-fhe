@@ -105,12 +105,30 @@ namespace computefhe {
 
         // Friend functions
         friend ostream &operator<<(ostream &out, const Efixedpoint &obj);
+        friend const Einteger operator==(double a, const Efixedpoint &b);
+        friend const Einteger operator!=(double a, const Efixedpoint &b);
+        friend const Einteger operator>(double a, const Efixedpoint &b);
+        friend const Einteger operator>=(double a, const Efixedpoint &b);
+        friend const Einteger operator<(double a, const Efixedpoint &b);
+        friend const Einteger operator<=(double a, const Efixedpoint &b);
+        friend const Efixedpoint operator+(double a, const Efixedpoint &b);
+        friend const Efixedpoint operator-(double a, const Efixedpoint &b);
+        friend const Efixedpoint operator*(double a, const Efixedpoint &b);
         friend const Efixedpoint operator/(double a, const Efixedpoint &b);
 
         // TODO: Arithmetic friend operators for double type
         // TODO: Comparison friend operators for double type
     };
     ostream &operator<<(ostream &out, const Efixedpoint &obj);
+    const Einteger operator==(double a, const Efixedpoint &b);
+    const Einteger operator!=(double a, const Efixedpoint &b);
+    const Einteger operator>(double a, const Efixedpoint &b);
+    const Einteger operator>=(double a, const Efixedpoint &b);
+    const Einteger operator<(double a, const Efixedpoint &b);
+    const Einteger operator<=(double a, const Efixedpoint &b);
+    const Efixedpoint operator+(double a, const Efixedpoint &b);
+    const Efixedpoint operator-(double a, const Efixedpoint &b);
+    const Efixedpoint operator*(double a, const Efixedpoint &b);
     const Efixedpoint operator/(double a, const Efixedpoint &b);
 
     template <size_t TOTAL_BITS, size_t FRAC_BITS, bool SIGNED>

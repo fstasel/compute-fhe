@@ -715,7 +715,7 @@ void test_plaintext() {
     }
 }
 
-void test_friend_functions() {
+void test_einteger_friend_functions() {
     Eint32 a = 7, b = -7;
     Eint32 c = false, d = true;
 
@@ -770,6 +770,48 @@ void test_friend_functions() {
     cout << "10 || d : " << (10 || d) << endl;
 }
 
+void test_efixedpoint_friend_functions() {
+    Efixedpoint a(4.125, 8, 4, true);
+    Efixedpoint b(-5.625, 8, 4, true);
+
+    cout << "a          : 4.125" << endl;
+    cout << "b          : -5.625" << endl << endl;
+
+    cout << "2.125  +  a: " << 2.125 + a << endl;
+    cout << "4.5    -  a: " << 4.5 - a << endl << endl;
+
+    cout << "9.75   +  b: " << 9.75 + b << endl;
+    cout << "2.125  -  b: " << 2.125 - b << endl << endl;
+
+    cout << "4.125  == a: " << (4.125 == a) << endl;
+    cout << "4.125  != a: " << (4.125 != a) << endl;
+    cout << "4.125  <  a: " << (4.125 < a) << endl;
+    cout << "4.125  <= a: " << (4.125 <= a) << endl;
+    cout << "4.125  >  a: " << (4.125 > a) << endl;
+    cout << "4.125  >= a: " << (4.125 >= a) << endl << endl;
+
+    cout << "4.25   == a: " << (4.25 == a) << endl;
+    cout << "4.25   != a: " << (4.25 != a) << endl;
+    cout << "4.25   <  a: " << (4.25 < a) << endl;
+    cout << "4.25   <= a: " << (4.25 <= a) << endl;
+    cout << "4.25   >  a: " << (4.25 > a) << endl;
+    cout << "4.25   >= a: " << (4.25 >= a) << endl << endl;
+
+    cout << "-5.625 == b: " << (-5.625 == b) << endl;
+    cout << "-5.625 != b: " << (-5.625 != b) << endl;
+    cout << "-5.625 <  b: " << (-5.625 < b) << endl;
+    cout << "-5.625 <= b: " << (-5.625 <= b) << endl;
+    cout << "-5.625 >  b: " << (-5.625 > b) << endl;
+    cout << "-5.625 >= b: " << (-5.625 >= b) << endl << endl;
+
+    cout << "-5.75  == b: " << (-5.75 == b) << endl;
+    cout << "-5.75  != b: " << (-5.75 != b) << endl;
+    cout << "-5.75  <  b: " << (-5.75 < b) << endl;
+    cout << "-5.75  <= b: " << (-5.75 <= b) << endl;
+    cout << "-5.75  >  b: " << (-5.75 > b) << endl;
+    cout << "-5.75  >= b: " << (-5.75 >= b) << endl;
+}
+
 int main() {
     computefhe::Init(CCPARAM_TOY, ALU_STANDARD, true, true);
 
@@ -791,7 +833,8 @@ int main() {
     // test_simulation();
     // test_auto_enc();
     test_plaintext();
-    // test_friend_functions();
+    // test_einteger_friend_functions();
+    // test_efixedpoint_friend_functions();
 
     computefhe::Finalize();
 

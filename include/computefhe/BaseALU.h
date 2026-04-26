@@ -144,5 +144,14 @@ namespace computefhe {
                                    const FixedPoint &pb) = 0;
         virtual FixedPoint CPSubCNC(const FixedPoint &a,
                                     const FixedPoint &pb) = 0;
+        virtual FixedPoint PFullMul(const FixedPoint &a,
+                                    const FixedPoint &pb) = 0;
+        virtual FixedPoint PFullMulFast(const FixedPoint &a,
+                                        const FixedPoint &pb) = 0;
+        virtual FixedPoint PBoothsMul(const FixedPoint &a,
+                                      const FixedPoint &pb) = 0;
+        virtual FixedPoint PMul(const FixedPoint &a, const FixedPoint &pb) = 0;
+        virtual FixedPoint PMulFast(const FixedPoint &a,
+                                    const FixedPoint &pb) = 0;
     };
 } // namespace computefhe

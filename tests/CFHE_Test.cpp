@@ -279,7 +279,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PFULLMUL:
-            // report = TestPFullMul(n_digits);
+            report = TestPFullMul(n_digits);
             break;
 
         case TT_PFULLMUL_FAST:
@@ -313,6 +313,11 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
         case TT_PPMUX:
             report = TestPPMux();
             break;
+
+        case TT_DIVU:
+            report = TestDivU(n_digits);
+            break;
+
         default:
             report = TestReport();
         }

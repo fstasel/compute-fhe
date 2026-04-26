@@ -124,14 +124,16 @@ void ALUStandard::Swap_if(const BinaryDigit &cond, FixedPoint &a,
 
 void ALUStandard::HalfAdder(const BinaryDigit &a, const BinaryDigit &b,
                             BinaryDigit &sum, BinaryDigit &carry_out) {
-    sum = Gate_XOR(a, b);
+    BinaryDigit s = Gate_XOR(a, b);
     carry_out = Gate_AND(a, b);
+    sum = s;
 }
 
 void ALUStandard::HalfSubtractor(const BinaryDigit &a, const BinaryDigit &b,
                                  BinaryDigit &sum, BinaryDigit &carry_out) {
-    sum = Gate_XOR(a, b);
+    BinaryDigit s = Gate_XOR(a, b);
     carry_out = Gate_OR(a, Gate_NOT(b));
+    sum = s;
 }
 
 void ALUStandard::FullAdder(const BinaryDigit &a, const BinaryDigit &b,
@@ -148,44 +150,42 @@ void ALUStandard::FullAdder(const BinaryDigit &a, const BinaryDigit &b,
         // P-P-P
         sum = (a.p + b.p + c.p) % 2 ? Constant1() : Constant0();
         carry_out = (a.p + b.p + c.p) >= 2 ? Constant1() : Constant0();
-    } else {
-        if (a.is_ct + b.is_ct + c.is_ct == 2) {
-            // C-C-P
-            BinaryDigit p, e1, e2;
-            if (!a.is_ct) {
-                p = a;
-                e1 = b;
-                e2 = c;
-            } else if (!b.is_ct) {
-                p = b;
-                e1 = a;
-                e2 = c;
-            } else {
-                p = c;
-                e1 = a;
-                e2 = b;
-            }
-            sum = Gate_XOR(p, Gate_XOR(e1, e2));
-            carry_out = p.p ? Gate_OR(e1, e2) : Gate_AND(e1, e2);
-        } else { // a.is_ct + b.is_ct + c.is_ct == 1
-            // C-P-P
-            BinaryDigit p1, p2, e;
-            if (a.is_ct) {
-                p1 = b;
-                p2 = c;
-                e = a;
-            } else if (b.is_ct) {
-                p1 = a;
-                p2 = c;
-                e = b;
-            } else {
-                p1 = a;
-                p2 = b;
-                e = c;
-            }
-            sum = (p1.p == p2.p) ? e : Gate_NOT(e);
-            carry_out = (p1.p == p2.p) ? p1 : e;
+    } else if (a.is_ct + b.is_ct + c.is_ct == 2) {
+        // C-C-P
+        BinaryDigit p, e1, e2;
+        if (!a.is_ct) {
+            p = a;
+            e1 = b;
+            e2 = c;
+        } else if (!b.is_ct) {
+            p = b;
+            e1 = a;
+            e2 = c;
+        } else {
+            p = c;
+            e1 = a;
+            e2 = b;
         }
+        sum = Gate_XOR(p, Gate_XOR(e1, e2));
+        carry_out = p.p ? Gate_OR(e1, e2) : Gate_AND(e1, e2);
+    } else { // a.is_ct + b.is_ct + c.is_ct == 1
+        // C-P-P
+        BinaryDigit p1, p2, e;
+        if (a.is_ct) {
+            p1 = b;
+            p2 = c;
+            e = a;
+        } else if (b.is_ct) {
+            p1 = a;
+            p2 = c;
+            e = b;
+        } else {
+            p1 = a;
+            p2 = b;
+            e = c;
+        }
+        sum = (p1.p == p2.p) ? e : Gate_NOT(e);
+        carry_out = (p1.p == p2.p) ? p1 : e;
     }
 }
 
@@ -562,4 +562,92 @@ FixedPoint ALUStandard::CPSubNC(const FixedPoint &a, const FixedPoint &pb) {
 
 FixedPoint ALUStandard::CPSubCNC(const FixedPoint &a, const FixedPoint &pb) {
     return PAddCNC(a, Not(pb));
+}
+
+FixedPoint ALUStandard::PFullMul(const FixedPoint &a, const FixedPoint &pb) {
+    FixedPoint out, acc;
+    uint num_zeros = 0;
+    if (a.size() == 0 || pb.size() == 0) {
+        out.push_back(Constant0());
+        return out;
+    }
+    for (size_t i = 0; i < pb.size(); i++) {
+        if (pb[i].p == 0) {
+            if (acc.size() == 0) {
+                num_zeros++;
+            } else {
+                out.push_back(acc.front());
+                acc.erase(acc.begin());
+            }
+        } else if (acc.size() == 0) {
+            for (size_t j = 0; j < num_zeros; j++) {
+                out.push_back(Constant0());
+            }
+            num_zeros = 0;
+            out.push_back(a[0]);
+            for (size_t j = 1; j < a.size(); j++) {
+                acc.push_back(a[j]);
+            }
+        } else {
+            size_t s = acc.size();
+            acc = Add(acc, FixedPoint(a.begin(), a.begin() + s));
+            out.push_back(acc.front());
+            acc.erase(acc.begin());
+            if (a.size() > s) {
+                FixedPoint sum = AddC(
+                    FixedPoint(a.begin() + s, a.end()),
+                    FixedPoint(vector<BinaryDigit>(a.size() - s, Constant0())));
+                for (size_t j = 0; j < sum.size(); j++) {
+                    acc.push_back(sum[j]);
+                }
+            }
+            acc.push_back(carry);
+        }
+    }
+    for (size_t j = 0; j < acc.size(); j++) {
+        out.push_back(acc[j]);
+    }
+    if (out.size() == 0) {
+        out.push_back(Constant0());
+    }
+    return out;
+}
+
+FixedPoint ALUStandard::PFullMulFast(const FixedPoint &a,
+                                     const FixedPoint &pb) {
+    return PFullMul(a, pb);
+}
+
+FixedPoint ALUStandard::PBoothsMul(const FixedPoint &a, const FixedPoint &pb) {
+    return PFullMul(a, pb);
+}
+
+FixedPoint ALUStandard::PMul(const FixedPoint &a, const FixedPoint &pb) {
+    return Mul(a, pb);
+}
+
+FixedPoint ALUStandard::PMulFast(const FixedPoint &a, const FixedPoint &pb) {
+    return PMul(a, pb);
+}
+
+uint ALUStandard::Get_CtCtAdd_Cost(size_t n_bits) { return 0; }
+uint ALUStandard::Get_CtCtAddNC_Cost(size_t n_bits) { return 0; }
+uint ALUStandard::Get_CtCtSubC_Cost(size_t n_bits) { return 0; }
+uint ALUStandard::Get_CtCtSubNC_Cost(size_t n_bits) { return 0; }
+uint ALUStandard::Get_CtPtAddC_Cost(size_t n_bits) { return 0; }
+uint ALUStandard::Get_PtCtSub_Cost(size_t n_bits) { return 0; }
+uint ALUStandard::Get_CtPtSubCNC_Cost(size_t n_bits) { return 0; }
+uint ALUStandard::Get_CtNeg_Cost(size_t n_bits) { return 0; }
+uint ALUStandard::Get_PtFullMul_Cost(const FixedPoint &pt, size_t ct_n_bits,
+                                     size_t &out_n_bits) {
+    return 0;
+}
+uint ALUStandard::Get_Pt2sCompFullMul_Cost(const FixedPoint &pt,
+                                           size_t ct_n_bits) {
+    return 0;
+}
+uint ALUStandard::Get_PtMul_Cost(const FixedPoint &pt) { return 0; }
+uint ALUStandard::Get_Pt2sCompMul_Cost(const FixedPoint &pt) { return 0; }
+uint ALUStandard::Get_BoothsMul_Cost(const FixedPoint &pt, size_t ct_n_bits) {
+    return 0;
 }

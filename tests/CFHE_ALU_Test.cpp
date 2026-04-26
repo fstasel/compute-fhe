@@ -29,6 +29,28 @@ TestReport CFHE_Test::TestHalfAdder() {
     return report;
 }
 
+TestReport CFHE_Test::TestHalfAdder_CP() {
+    TestReport report;
+    BinaryDigit result_sum, result_carry;
+    uint n1 = CreateRandomNumber() % 2;
+    uint n2 = CreateRandomNumber() % 2;
+    BinaryDigit ct_n1 = cfhe_base->EncryptBool(n1, GetTestFresh());
+    BinaryDigit pt_n2 = n2;
+    uint expected_sum = n1 ^ n2;
+    uint expected_carry = n1 & n2;
+    StartTimer();
+    cfhe_base->GetALU()->HalfAdder(ct_n1, pt_n2, result_sum, result_carry);
+    report.delta_t = ReadTimer();
+    uint sum = cfhe_base->DecryptBool(result_sum);
+    uint carry = result_carry.is_ct ? cfhe_base->DecryptBool(result_carry)
+                                    : result_carry.p;
+    report.test_result =
+        (sum == expected_sum && carry == expected_carry) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, result_sum + (result_carry << 1),
+                    expected_sum + (expected_carry << 1));
+    return report;
+}
+
 TestReport CFHE_Test::TestFullAdder() {
     TestReport report;
     BinaryDigit ct_result_sum, ct_result_carry;
@@ -42,6 +64,57 @@ TestReport CFHE_Test::TestFullAdder() {
     uint expected_carry = (n1 & n2) | (n1 & n3) | (n2 & n3);
     StartTimer();
     cfhe_base->GetALU()->FullAdder(ct_n1, ct_n2, ct_n3, ct_result_sum,
+                                   ct_result_carry);
+    report.delta_t = ReadTimer();
+    uint result_sum = cfhe_base->DecryptBool(ct_result_sum);
+    uint result_carry = cfhe_base->DecryptBool(ct_result_carry);
+    report.test_result =
+        (result_sum == expected_sum && result_carry == expected_carry)
+            ? TR_SUCCESS
+            : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result_sum + (result_carry << 1),
+                    expected_sum + (expected_carry << 1));
+    return report;
+}
+
+TestReport CFHE_Test::TestFullAdder_CPP() {
+    TestReport report;
+    BinaryDigit result_sum, result_carry;
+    uint n1 = CreateRandomNumber() % 2;
+    uint n2 = CreateRandomNumber() % 2;
+    uint n3 = CreateRandomNumber() % 2;
+    BinaryDigit ct_n1 = cfhe_base->EncryptBool(n1, GetTestFresh());
+    BinaryDigit pt_n2 = n2;
+    BinaryDigit pt_n3 = n3;
+    uint expected_sum = n1 ^ n2 ^ n3;
+    uint expected_carry = (n1 & n2) | (n1 & n3) | (n2 & n3);
+    StartTimer();
+    cfhe_base->GetALU()->FullAdder(ct_n1, pt_n2, pt_n3, result_sum,
+                                   result_carry);
+    report.delta_t = ReadTimer();
+    uint sum = cfhe_base->DecryptBool(result_sum);
+    uint carry = result_carry.is_ct ? cfhe_base->DecryptBool(result_carry)
+                                    : result_carry.p;
+    report.test_result =
+        (sum == expected_sum && carry == expected_carry) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n1, n2, n3, result_sum + (result_carry << 1),
+                    expected_sum + (expected_carry << 1));
+    return report;
+}
+
+TestReport CFHE_Test::TestFullAdder_CCP() {
+    TestReport report;
+    BinaryDigit ct_result_sum, ct_result_carry;
+    uint n1 = CreateRandomNumber() % 2;
+    uint n2 = CreateRandomNumber() % 2;
+    uint n3 = CreateRandomNumber() % 2;
+    BinaryDigit ct_n1 = cfhe_base->EncryptBool(n1, GetTestFresh());
+    BinaryDigit ct_n2 = cfhe_base->EncryptBool(n2, GetTestFresh());
+    BinaryDigit pt_n3 = n3;
+    uint expected_sum = n1 ^ n2 ^ n3;
+    uint expected_carry = (n1 & n2) | (n1 & n3) | (n2 & n3);
+    StartTimer();
+    cfhe_base->GetALU()->FullAdder(ct_n1, ct_n2, pt_n3, ct_result_sum,
                                    ct_result_carry);
     report.delta_t = ReadTimer();
     uint result_sum = cfhe_base->DecryptBool(ct_result_sum);

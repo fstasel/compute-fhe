@@ -57,5 +57,13 @@ namespace computefhe {
         virtual FixedPoint PSubNC(const FixedPoint &pa, const FixedPoint &b);
         virtual FixedPoint PSubCNC(const FixedPoint &pa, const FixedPoint &b);
         virtual FixedPoint Neg(const FixedPoint &a);
+
+        virtual uint Get_CtCtAdd_Cost(size_t n_bits);
+        virtual uint Get_CtCtAddNC_Cost(size_t n_bits);
+        virtual uint Get_CtCtSubC_Cost(size_t n_bits);
+        virtual uint Get_CtPtAddC_Cost(size_t n_bits);
+        virtual uint Get_PtCtSub_Cost(size_t n_bits);
+        virtual uint Get_CtPtSubCNC_Cost(size_t n_bits);
+        virtual uint Get_CtNeg_Cost(size_t n_bits);
     };
 } // namespace computefhe

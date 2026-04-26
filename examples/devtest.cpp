@@ -813,7 +813,7 @@ void test_efixedpoint_friend_functions() {
 }
 
 int main() {
-    computefhe::Init(CCPARAM_TOY, ALU_OPTIMIZED, true, true);
+    computefhe::Init(CCPARAM_TOY, ALU_STANDARD, true, true);
 
     // test_arithmetic_operators();
     // test_arithmetic_assignment_operators();

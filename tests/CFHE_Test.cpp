@@ -28,6 +28,7 @@ CFHE_Test::CFHE_Test(CryptoContextParam param, ALUType alu_type,
                      bool simulation_mode) {
     initRandomGenerator(UINT32_MAX);
     cout << "Creating ComputeFHE instance..." << endl;
+    computefhe::CLIENT_MODE = true;
     cfhe_base = new ComputeFHE(param, alu_type, simulation_mode);
     cout << "done!" << endl;
 }
@@ -86,7 +87,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_HA_CP:
-            // report = TestHalfAdder_CP();
+            report = TestHalfAdder_CP();
             break;
 
         case TT_FA:
@@ -94,11 +95,11 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_FA_CPP:
-            // report = TestFullAdder_CPP();
+            report = TestFullAdder_CPP();
             break;
 
         case TT_FA_CCP:
-            // report = TestFullAdder_CCP();
+            report = TestFullAdder_CCP();
             break;
 
         case TT_XOR3:

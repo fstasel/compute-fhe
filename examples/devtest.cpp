@@ -701,6 +701,18 @@ void test_plaintext() {
         s->PrintStats();
         s->ResetStats();
     }
+
+    cfhe_base->setAutoEncryptMode(true);
+    Eint32 ct = 15;
+    cfhe_base->setAutoEncryptMode(false);
+    Eint32 pt = 17;
+    cout << "ct: " << ct << ", pt: " << pt << endl;
+    cout << "ct * pt: " << ct * pt << endl;
+
+    if (s) {
+        s->PrintStats();
+        s->ResetStats();
+    }
 }
 
 void test_einteger_friend_functions() {
@@ -822,7 +834,8 @@ int main() {
     // test_auto_enc();
     // test_plaintext();
     // test_einteger_friend_functions();
-    test_efixedpoint_friend_functions();
+    // test_efixedpoint_friend_functions();
+    test_plaintext();
 
     computefhe::Finalize();
 

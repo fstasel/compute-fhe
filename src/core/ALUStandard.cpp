@@ -124,14 +124,16 @@ void ALUStandard::Swap_if(const BinaryDigit &cond, FixedPoint &a,
 
 void ALUStandard::HalfAdder(const BinaryDigit &a, const BinaryDigit &b,
                             BinaryDigit &sum, BinaryDigit &carry_out) {
-    sum = Gate_XOR(a, b);
+    BinaryDigit s = Gate_XOR(a, b);
     carry_out = Gate_AND(a, b);
+    sum = s;
 }
 
 void ALUStandard::HalfSubtractor(const BinaryDigit &a, const BinaryDigit &b,
                                  BinaryDigit &sum, BinaryDigit &carry_out) {
-    sum = Gate_XOR(a, b);
+    BinaryDigit s = Gate_XOR(a, b);
     carry_out = Gate_OR(a, Gate_NOT(b));
+    sum = s;
 }
 
 void ALUStandard::FullAdder(const BinaryDigit &a, const BinaryDigit &b,

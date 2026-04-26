@@ -49,7 +49,7 @@ namespace computefhe_test {
 
         void Test(TestType tt, size_t n_digits = 8);
         TestReport TestEncryptDecrypt(size_t n_digits);
-        // TestReport TestPFixedPointEncryptDecrypt(size_t n_digits);
+        TestReport TestPFixedPointEncryptDecrypt(size_t n_digits);
 
         void PrintTestReport(TestReport report, int64_t n, int64_t result);
         void PrintTestReport(TestReport report, int64_t n, int64_t result,

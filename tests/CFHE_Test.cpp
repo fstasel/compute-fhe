@@ -79,7 +79,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PFIXP_ENCRYPT_DECRYPT:
-            // report = TestPFixedPointEncryptDecrypt(n_digits);
+            report = TestPFixedPointEncryptDecrypt(n_digits);
             break;
 
         case TT_HA:
@@ -338,6 +338,18 @@ TestReport CFHE_Test::TestEncryptDecrypt(size_t n_digits) {
     StartTimer();
     FixedPoint ct = cfhe_base->EncryptInt(n, n_digits, test_fresh);
     uint result = cfhe_base->DecryptInt(ct);
+    report.delta_t = ReadTimer();
+    report.test_result = (n == result) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n, result);
+    return report;
+}
+
+TestReport CFHE_Test::TestPFixedPointEncryptDecrypt(size_t n_digits) {
+    TestReport report;
+    uint n = CreateRandomNumber();
+    StartTimer();
+    FixedPoint ct = cfhe_base->GetConstantInt(n, n_digits);
+    uint result = cfhe_base->DecryptInt(ct, n_digits);
     report.delta_t = ReadTimer();
     report.test_result = (n == result) ? TR_SUCCESS : TR_FAIL;
     PrintTestReport(report, n, result);

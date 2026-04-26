@@ -832,9 +832,9 @@ int main() {
     // test_div();
     // test_simulation();
     // test_auto_enc();
-    test_plaintext();
     // test_einteger_friend_functions();
     // test_efixedpoint_friend_functions();
+    test_plaintext();
 
     computefhe::Finalize();
 

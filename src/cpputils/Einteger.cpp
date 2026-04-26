@@ -526,11 +526,11 @@ const Einteger computefhe::operator<=(uint64_t a, const Einteger &b) {
 const Einteger computefhe::operator+(uint64_t a, const Einteger &b) {
     return b + a;
 }
+
 const Einteger computefhe::operator-(uint64_t a, const Einteger &b) {
-    return Einteger(cfhe_base->GetALU()->PSubNC(
-                        cfhe_base->GetConstantInt(a, b.size), b.data),
-                    b.sign);
+    return Einteger(cfhe_base->GetConstantInt(a, b.size), b.sign) - b;
 }
+
 const Einteger computefhe::operator*(uint64_t a, const Einteger &b) {
     return b * a;
 }

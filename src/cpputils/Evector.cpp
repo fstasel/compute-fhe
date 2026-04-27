@@ -29,7 +29,6 @@ Eitem<T, U>::Eitem(Evector<T> &vec, const size_t idx)
 
 template <typename T, typename U> Eitem<T, U>::operator T() const {
     if (encrypted_index) {
-        // TODO: optimize this by using ciphertext-plaintext comparison
         BinaryDigit c = cfhe_base->GetALU()->CmpEq(
             index, cfhe_base->GetConstantInt(0, index.size()));
         size_t n = data.at(0).getData().size();
@@ -40,7 +39,6 @@ template <typename T, typename U> Eitem<T, U>::operator T() const {
                 cfhe_base->GetALU()->Gate_AND(c, data.at(0).getData()[d]);
         }
         for (size_t i = 1; i < data.size(); ++i) {
-            // TODO: optimize this by using ciphertext-plaintext comparison
             c = cfhe_base->GetALU()->CmpEq(
                 index, cfhe_base->GetConstantInt(i, index.size()));
             for (size_t d = 0; d < n; ++d) {
@@ -55,7 +53,6 @@ template <typename T, typename U> Eitem<T, U>::operator T() const {
 
 template <> Eitem<Efixedpoint, double>::operator Efixedpoint() const {
     if (encrypted_index) {
-        // TODO: optimize this by using ciphertext-plaintext comparison
         BinaryDigit c = cfhe_base->GetALU()->CmpEq(
             index, cfhe_base->GetConstantInt(0, index.size()));
         size_t n = data.at(0).getData().size();
@@ -66,7 +63,6 @@ template <> Eitem<Efixedpoint, double>::operator Efixedpoint() const {
                 cfhe_base->GetALU()->Gate_AND(c, data.at(0).getData()[d]);
         }
         for (size_t i = 1; i < data.size(); ++i) {
-            // TODO: optimize this by using ciphertext-plaintext comparison
             c = cfhe_base->GetALU()->CmpEq(
                 index, cfhe_base->GetConstantInt(i, index.size()));
             for (size_t d = 0; d < n; ++d) {
@@ -85,7 +81,6 @@ const T &Eitem<T, U>::operator=(const T &value) {
     if (encrypted_index) {
         size_t n = data.at(0).getData().size();
         for (size_t i = 0; i < data.size(); ++i) {
-            // TODO: optimize this by using ciphertext-plaintext comparison
             BinaryDigit c = cfhe_base->GetALU()->CmpEq(
                 index, cfhe_base->GetConstantInt(i, index.size()));
             FixedPoint &target_fp = const_cast<FixedPoint &>(data[i].getData());

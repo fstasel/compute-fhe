@@ -62,6 +62,12 @@ BinaryDigit ALUOptimized::FHE_DigitSum(const BinaryDigit &e1,
 
 BinaryDigit ALUOptimized::Gate_MAJ(const BinaryDigit &a, const BinaryDigit &b,
                                    const BinaryDigit &c) {
+    if (a.id == b.id || a.id == c.id) {
+        return a;
+    }
+    if (b.id == c.id) {
+        return b;
+    }
     if (a.is_ct && b.is_ct && c.is_ct) {
         return FHE_MAJ(a, b, c);
     }
@@ -91,6 +97,15 @@ BinaryDigit ALUOptimized::Gate_MAJ(const BinaryDigit &a, const BinaryDigit &b,
 
 BinaryDigit ALUOptimized::Gate_XOR3(const BinaryDigit &a, const BinaryDigit &b,
                                     const BinaryDigit &c) {
+    if (a.id == b.id) {
+        return c;
+    }
+    if (a.id == c.id) {
+        return b;
+    }
+    if (b.id == c.id) {
+        return a;
+    }
     if (a.is_ct && b.is_ct && c.is_ct) {
         return FHE_XOR3(a, b, c);
     }
@@ -101,6 +116,12 @@ BinaryDigit ALUOptimized::Gate_MulAdd(const BinaryDigit &m,
                                       const BinaryDigit &a,
                                       const BinaryDigit &b,
                                       BinaryDigit *carry_out) {
+    if (m.id == a.id && m.id == b.id) {
+        if (carry_out) {
+            *carry_out = m;
+        }
+        return Constant0();
+    }
     if (m.is_ct && a.is_ct && b.is_ct) {
         return FHE_MulAdd(m, a, b, carry_out);
     }
@@ -114,6 +135,9 @@ BinaryDigit ALUOptimized::Gate_MulAdd(const BinaryDigit &m,
 BinaryDigit ALUOptimized::Gate_DigitSum(const BinaryDigit &e1,
                                         const BinaryDigit &e0,
                                         const BinaryDigit &s0) {
+    if (e0.id == s0.id) {
+        return e1;
+    }
     if (e0.is_ct && e1.is_ct && s0.is_ct) {
         return FHE_DigitSum(e1, e0, s0);
     }

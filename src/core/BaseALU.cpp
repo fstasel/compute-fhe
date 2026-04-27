@@ -70,6 +70,8 @@ BinaryDigit BaseALU::Constant0() {
 BinaryDigit BaseALU::Constant1() { return BinaryDigit(FHE_True().c, 1, false); }
 
 BinaryDigit BaseALU::Gate_AND(const BinaryDigit &a, const BinaryDigit &b) {
+    if (a.id == b.id)
+        return a;
     if (a.is_ct && b.is_ct)
         return FHE_AND(a, b);
     if (a.is_ct && !b.is_ct)
@@ -80,6 +82,8 @@ BinaryDigit BaseALU::Gate_AND(const BinaryDigit &a, const BinaryDigit &b) {
 }
 
 BinaryDigit BaseALU::Gate_NAND(const BinaryDigit &a, const BinaryDigit &b) {
+    if (a.id == b.id)
+        return Gate_NOT(a);
     if (a.is_ct && b.is_ct)
         return FHE_NAND(a, b);
     if (a.is_ct && !b.is_ct)
@@ -90,6 +94,8 @@ BinaryDigit BaseALU::Gate_NAND(const BinaryDigit &a, const BinaryDigit &b) {
 }
 
 BinaryDigit BaseALU::Gate_OR(const BinaryDigit &a, const BinaryDigit &b) {
+    if (a.id == b.id)
+        return a;
     if (a.is_ct && b.is_ct)
         return FHE_OR(a, b);
     if (a.is_ct && !b.is_ct)
@@ -100,6 +106,8 @@ BinaryDigit BaseALU::Gate_OR(const BinaryDigit &a, const BinaryDigit &b) {
 }
 
 BinaryDigit BaseALU::Gate_NOR(const BinaryDigit &a, const BinaryDigit &b) {
+    if (a.id == b.id)
+        return Gate_NOT(a);
     if (a.is_ct && b.is_ct)
         return FHE_NOR(a, b);
     if (a.is_ct && !b.is_ct)
@@ -110,6 +118,8 @@ BinaryDigit BaseALU::Gate_NOR(const BinaryDigit &a, const BinaryDigit &b) {
 }
 
 BinaryDigit BaseALU::Gate_XOR(const BinaryDigit &a, const BinaryDigit &b) {
+    if (a.id == b.id)
+        return Constant0();
     if (a.is_ct && b.is_ct)
         return FHE_XOR(a, b);
     if (a.is_ct && !b.is_ct)
@@ -120,6 +130,8 @@ BinaryDigit BaseALU::Gate_XOR(const BinaryDigit &a, const BinaryDigit &b) {
 }
 
 BinaryDigit BaseALU::Gate_XNOR(const BinaryDigit &a, const BinaryDigit &b) {
+    if (a.id == b.id)
+        return Constant1();
     if (a.is_ct && b.is_ct)
         return FHE_XNOR(a, b);
     if (a.is_ct && !b.is_ct)
@@ -137,6 +149,8 @@ BinaryDigit BaseALU::Gate_NOT(const BinaryDigit &a) {
 
 BinaryDigit BaseALU::Gate_MUX(const BinaryDigit &s, const BinaryDigit &a,
                               const BinaryDigit &b) {
+    if (a.id == b.id)
+        return a;
     if (s.is_ct) {
         if (a.is_ct && b.is_ct) {
             return FHE_MUX(s, a, b);

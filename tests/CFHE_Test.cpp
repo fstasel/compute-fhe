@@ -283,11 +283,11 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PFULLMUL_FAST:
-            // report = TestPFullMulFast(n_digits);
+            report = TestPFullMulFast(n_digits);
             break;
 
-        case TT_BOOTHSMUL:
-            // report = TestBoothsMul(n_digits);
+        case TT_PBOOTHSMUL:
+            report = TestPBoothsMul(n_digits);
             break;
 
         case TT_MUL:
@@ -299,7 +299,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PMUL_FAST:
-            // report = TestPMulFast(n_digits);
+            report = TestPMulFast(n_digits);
             break;
 
         case TT_MUX:
@@ -499,37 +499,6 @@ void CFHE_Test::StartTest() {
         Test(TT_CMPLT, d);
         Test(TT_FULLMUL, d);
         Test(TT_MUL, d);
-    }
-
-    SetNumTest(P_NUM_TEST);
-    for (uint d = 4; d <= 32U; d <<= 1) {
-        Test(TT_PADD, d);
-        Test(TT_PADDC, d);
-        Test(TT_PADD_NC, d);
-        Test(TT_PADDC_NC, d);
-        Test(TT_CPSUB, d);
-        Test(TT_PSUB, d);
-        Test(TT_CPSUBC, d);
-        Test(TT_PSUBC, d);
-        Test(TT_CPSUB_NC, d);
-        Test(TT_PSUB_NC, d);
-        Test(TT_CPSUBC_NC, d);
-        Test(TT_PSUBC_NC, d);
-        Test(TT_PCMPNOTEQ, d);
-        Test(TT_PCMPEQ, d);
-        Test(TT_PCMPLTEQ_U, d);
-        Test(TT_PCMPGT_U, d);
-        Test(TT_PCMPGTEQ_U, d);
-        Test(TT_PCMPLT_U, d);
-        Test(TT_PCMPLTEQ, d);
-        Test(TT_PCMPGT, d);
-        Test(TT_PCMPGTEQ, d);
-        Test(TT_PCMPLT, d);
-        Test(TT_PFULLMUL, d);
-        Test(TT_PFULLMUL_FAST, d);
-        Test(TT_BOOTHSMUL, d);
-        Test(TT_PMUL, d);
-        Test(TT_PMUL_FAST, d);
         Test(TT_DIVU, d);
     }
 
@@ -559,7 +528,7 @@ void CFHE_Test::StartTest() {
         Test(TT_PCMPLT, d);
         Test(TT_PFULLMUL, d);
         Test(TT_PFULLMUL_FAST, d);
-        Test(TT_BOOTHSMUL, d);
+        Test(TT_PBOOTHSMUL, d);
         Test(TT_PMUL, d);
         Test(TT_PMUL_FAST, d);
     }

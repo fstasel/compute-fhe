@@ -567,7 +567,8 @@ FixedPoint ALUStandard::CPSubCNC(const FixedPoint &a, const FixedPoint &pb) {
 FixedPoint ALUStandard::PFullMul(const FixedPoint &a, const FixedPoint &pb) {
     FixedPoint out, acc;
     uint num_zeros = 0;
-    if (a.size() == 0 || pb.size() == 0) {
+    if (a.size() == 0 || pb.size() == 0 ||
+        cfhe_base->ConvertConstantInt(pb) == 0) {
         out.push_back(Constant0());
         return out;
     }
@@ -615,11 +616,88 @@ FixedPoint ALUStandard::PFullMul(const FixedPoint &a, const FixedPoint &pb) {
 
 FixedPoint ALUStandard::PFullMulFast(const FixedPoint &a,
                                      const FixedPoint &pb) {
-    return PFullMul(a, pb);
+    if (a.size() == 0 || pb.size() == 0 ||
+        cfhe_base->ConvertConstantInt(pb) == 0) {
+        FixedPoint zero(1);
+        zero[0] = Constant0();
+        return zero;
+    }
+    size_t out_n_bits = 0;
+    if (Get_PtFullMul_Cost(pb, a.size(), out_n_bits) <=
+        Get_Pt2sCompFullMul_Cost(pb, a.size())) {
+        return PFullMul(a, pb);
+    }
+    FixedPoint b_neg = Neg(pb);
+    FixedPoint res_neg = PFullMul(a, b_neg);
+    FixedPoint out_lo, out_mid, out_hi;
+    if (res_neg.size() <= pb.size()) {
+        out_lo =
+            Sub(FixedPoint(vector<BinaryDigit>(res_neg.size(), Constant0())),
+                res_neg);
+        for (size_t i = 0; i < pb.size() - res_neg.size(); i++) {
+            out_mid.push_back(Gate_NOT(carry));
+        }
+        out_hi =
+            SubCNC(a, FixedPoint(vector<BinaryDigit>(a.size(), Constant0())));
+    } else {
+        out_lo = Sub(FixedPoint(vector<BinaryDigit>(pb.size(), Constant0())),
+                     FixedPoint(res_neg.begin(), res_neg.begin() + pb.size()));
+        out_mid = SubC(
+            FixedPoint(a.begin(), a.begin() + (res_neg.size() - pb.size())),
+            FixedPoint(res_neg.begin() + pb.size(), res_neg.end()));
+        if (a.size() > res_neg.size() - pb.size()) {
+            out_hi = SubCNC(
+                FixedPoint(a.begin() + (res_neg.size() - pb.size()), a.end()),
+                FixedPoint(vector<BinaryDigit>(
+                    a.size() - (res_neg.size() - pb.size()), Constant0())));
+        }
+    }
+    FixedPoint out(out_lo.size() + out_mid.size() + out_hi.size());
+    for (size_t i = 0; i < out_lo.size(); i++) {
+        out[i] = out_lo[i];
+    }
+    for (size_t i = 0; i < out_mid.size(); i++) {
+        out[i + out_lo.size()] = out_mid[i];
+    }
+    for (size_t i = 0; i < out_hi.size(); i++) {
+        out[i + out_lo.size() + out_mid.size()] = out_hi[i];
+    }
+    return out;
 }
 
 FixedPoint ALUStandard::PBoothsMul(const FixedPoint &a, const FixedPoint &pb) {
-    return PFullMul(a, pb);
+    if (a.size() == 0 || pb.size() == 0 ||
+        cfhe_base->ConvertConstantInt(pb) == 0) {
+        FixedPoint zero(1);
+        zero[0] = Constant0();
+        return zero;
+    }
+    FixedPoint aa = a;
+    aa.push_back(a.back()); // The most negative number correction
+    FixedPoint acc(aa.size());
+    FixedPoint buffer;
+    for (size_t i = 0; i < acc.size(); i++) {
+        acc[i] = Constant0();
+    }
+    for (size_t i = 0; i < pb.size(); i++) {
+        uint k = (pb[i].p << 1) + ((i > 0) ? pb[i - 1].p : 0);
+        switch (k) {
+        case 1:
+            acc = AddNC(acc, aa);
+            break;
+        case 2:
+            acc = SubNC(acc, aa);
+            break;
+        default:
+            break;
+        }
+        buffer.push_back(acc[0]);
+        for (size_t j = 1; j < acc.size(); j++) {
+            acc[j - 1] = acc[j];
+        }
+    }
+    buffer.insert(buffer.end(), acc.begin(), acc.end() - 1);
+    return buffer;
 }
 
 FixedPoint ALUStandard::PMul(const FixedPoint &a, const FixedPoint &pb) {
@@ -657,27 +735,150 @@ FixedPoint ALUStandard::PMul(const FixedPoint &a, const FixedPoint &pb) {
 }
 
 FixedPoint ALUStandard::PMulFast(const FixedPoint &a, const FixedPoint &pb) {
-    return PMul(a, pb);
+    if (a.size() == 0 || pb.size() == 0 ||
+        cfhe_base->ConvertConstantInt(pb) == 0) {
+        FixedPoint zero(1);
+        zero[0] = Constant0();
+        return zero;
+    }
+    if (a.size() != pb.size()) {
+        OPENFHE_THROW("Input numbers should be of the same bit length.");
+    }
+    if (Get_PtMul_Cost(pb) <= Get_Pt2sCompMul_Cost(pb)) {
+        return Mul(a, pb);
+    }
+    return Neg(Mul(a, Neg(pb)));
 }
 
-uint ALUStandard::Get_CtCtAdd_Cost(size_t n_bits) { return 0; }
-uint ALUStandard::Get_CtCtAddNC_Cost(size_t n_bits) { return 0; }
-uint ALUStandard::Get_CtCtSubC_Cost(size_t n_bits) { return 0; }
-uint ALUStandard::Get_CtCtSubNC_Cost(size_t n_bits) { return 0; }
-uint ALUStandard::Get_CtPtAddC_Cost(size_t n_bits) { return 0; }
-uint ALUStandard::Get_PtCtSub_Cost(size_t n_bits) { return 0; }
-uint ALUStandard::Get_CtPtSubCNC_Cost(size_t n_bits) { return 0; }
-uint ALUStandard::Get_CtNeg_Cost(size_t n_bits) { return 0; }
+uint ALUStandard::Get_CtCtAdd_Cost(size_t n_bits) {
+    return (n_bits > 0) ? 5 * n_bits - 3 : 0;
+}
+
+uint ALUStandard::Get_CtCtAddNC_Cost(size_t n_bits) {
+    return (n_bits > 1) ? 5 * n_bits - 6 : ((n_bits == 1) ? 1 : 0);
+}
+
+uint ALUStandard::Get_CtCtSubC_Cost(size_t n_bits) {
+    return (n_bits > 0) ? 5 * n_bits : 0;
+}
+
+uint ALUStandard::Get_CtCtSubNC_Cost(size_t n_bits) {
+    return Get_CtCtAddNC_Cost(n_bits);
+}
+
+uint ALUStandard::Get_CtPtAddC_Cost(size_t n_bits) {
+    return (n_bits > 0) ? 2 * n_bits : 0;
+}
+
+uint ALUStandard::Get_PtCtSub_Cost(size_t n_bits) {
+    return (n_bits > 0) ? 2 * n_bits - 2 : 0;
+}
+
+uint ALUStandard::Get_CtPtSubCNC_Cost(size_t n_bits) {
+    return (n_bits > 0) ? 2 * n_bits - 1 : 0;
+}
+
+uint ALUStandard::Get_CtNeg_Cost(size_t n_bits) {
+    return (n_bits > 1) ? 2 * n_bits - 3 : 0;
+}
+
 uint ALUStandard::Get_PtFullMul_Cost(const FixedPoint &pt, size_t ct_n_bits,
                                      size_t &out_n_bits) {
-    return 0;
+    uint cost = 0;
+    size_t num_carry = 0;
+    size_t r = 1;
+    size_t start = 0;
+    out_n_bits = 1;
+    for (start = 0; start < pt.size(); start++) {
+        if (pt[start].p == 0) {
+            continue;
+        } else {
+            out_n_bits = start + ct_n_bits;
+            start++;
+            break;
+        }
+    }
+    for (size_t i = start; i < pt.size(); i++) {
+        if (pt[i].p == 0) {
+            r++;
+            continue;
+        } else if (r >= ct_n_bits + num_carry) {
+            out_n_bits = i + ct_n_bits;
+            num_carry = 0;
+            r = 1;
+        } else {
+            out_n_bits = i + ct_n_bits + 1;
+            cost += Get_CtCtAdd_Cost(ct_n_bits + num_carry - r);
+            cost += Get_CtPtAddC_Cost(r - num_carry);
+            num_carry = 1;
+            r = 1;
+        }
+    }
+    return cost;
 }
+
 uint ALUStandard::Get_Pt2sCompFullMul_Cost(const FixedPoint &pt,
                                            size_t ct_n_bits) {
-    return 0;
+    size_t out_n_bits = 0;
+    size_t pt_n_bits = pt.size();
+    uint cost = Get_PtFullMul_Cost(Neg(pt), ct_n_bits, out_n_bits);
+    if (out_n_bits <= pt_n_bits) {
+        cost += Get_PtCtSub_Cost(out_n_bits);
+        cost += Get_CtPtSubCNC_Cost(ct_n_bits);
+    } else {
+        cost += Get_PtCtSub_Cost(pt_n_bits);
+        cost += Get_CtCtSubC_Cost(out_n_bits - pt_n_bits);
+        cost += Get_CtPtSubCNC_Cost(ct_n_bits - out_n_bits + pt_n_bits);
+    }
+
+    return cost;
 }
-uint ALUStandard::Get_PtMul_Cost(const FixedPoint &pt) { return 0; }
-uint ALUStandard::Get_Pt2sCompMul_Cost(const FixedPoint &pt) { return 0; }
+
+uint ALUStandard::Get_PtMul_Cost(const FixedPoint &pt) {
+    uint cost = 0;
+    size_t start = 0;
+    for (start = 0; start < pt.size(); start++) {
+        if (pt[start].p == 0) {
+            continue;
+        } else {
+            start++;
+            break;
+        }
+    }
+    for (size_t i = start; i < pt.size(); i++) {
+        if (pt[i].p == 1) {
+            cost += Get_CtCtAddNC_Cost(pt.size() - i);
+        }
+    }
+    return cost;
+}
+
+uint ALUStandard::Get_Pt2sCompMul_Cost(const FixedPoint &pt) {
+    uint cost = Get_PtMul_Cost(Neg(pt));
+    cost += Get_CtNeg_Cost(pt.size());
+    return cost;
+}
+
 uint ALUStandard::Get_BoothsMul_Cost(const FixedPoint &pt, size_t ct_n_bits) {
-    return 0;
+    uint cost = 0;
+    if (pt.size() == 0 || ct_n_bits == 0 ||
+        cfhe_base->ConvertConstantInt(pt) == 0) {
+        return 0;
+    }
+    ct_n_bits++; // Expanded ct for the most negative number correction
+    for (size_t i = 0; i < pt.size(); i++) {
+        uint k = (pt[i].p << 1) + ((i > 0) ? pt[i - 1].p : 0);
+        switch (k) {
+        case 1:
+            cost += Get_CtCtAddNC_Cost(ct_n_bits);
+            break;
+        case 2:
+            cost += Get_CtCtSubNC_Cost(ct_n_bits);
+            break;
+        default:
+            break;
+        }
+    }
+
+    return cost;
 }

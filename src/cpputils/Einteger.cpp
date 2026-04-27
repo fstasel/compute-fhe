@@ -304,14 +304,28 @@ const Einteger Einteger::operator-=(const Einteger &other) {
 const Einteger Einteger::operator*(const Einteger &other) const {
     FixedPoint a, b;
     bool s = promote(*this, other, a, b);
-    FixedPoint fp(cfhe_base->GetALU()->Mul(a, b));
-    return Einteger(fp, s);
+    if (b.is_ct()) {
+        if (a.is_ct()) {
+            return Einteger(cfhe_base->GetALU()->Mul(a, b), s);
+        } else {
+            return Einteger(cfhe_base->GetALU()->PMulFast(b, a), s);
+        }
+    }
+    return Einteger(cfhe_base->GetALU()->PMulFast(a, b), s);
 }
 
 const Einteger Einteger::operator*=(const Einteger &other) {
     _sync_var();
     FixedPoint o = promote(other, size);
-    data = cfhe_base->GetALU()->Mul(data, o);
+    if (o.is_ct()) {
+        if (data.is_ct()) {
+            data = cfhe_base->GetALU()->Mul(data, o);
+        } else {
+            data = cfhe_base->GetALU()->PMulFast(o, data);
+        }
+    } else {
+        data = cfhe_base->GetALU()->PMulFast(data, o);
+    }
     _sync_var();
     return *this;
 }
@@ -432,12 +446,10 @@ const Einteger Einteger::operator-=(uint64_t other) {
 }
 
 const Einteger Einteger::operator*(uint64_t other) const {
-    // TODO: optimize this by using ciphertext-plaintext arithmetic
     return *this * Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 
 const Einteger Einteger::operator*=(uint64_t other) {
-    // TODO: optimize this by using ciphertext-plaintext arithmetic
     return *this *= Einteger(cfhe_base->GetConstantInt(other, size), sign);
 }
 

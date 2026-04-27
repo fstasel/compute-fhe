@@ -7,6 +7,12 @@ ALUStandard::ALUStandard(ComputeFHE *cfhe) : BaseALU(cfhe) {}
 
 BinaryDigit ALUStandard::Gate_MAJ(const BinaryDigit &a, const BinaryDigit &b,
                                   const BinaryDigit &c) {
+    if (a.id == b.id || a.id == c.id) {
+        return a;
+    }
+    if (b.id == c.id) {
+        return b;
+    }
     if (a.is_ct && b.is_ct && c.is_ct) {
         return Gate_OR(Gate_OR(Gate_AND(a, b), Gate_AND(a, c)), Gate_AND(b, c));
     }
@@ -36,6 +42,15 @@ BinaryDigit ALUStandard::Gate_MAJ(const BinaryDigit &a, const BinaryDigit &b,
 
 BinaryDigit ALUStandard::Gate_XOR3(const BinaryDigit &a, const BinaryDigit &b,
                                    const BinaryDigit &c) {
+    if (a.id == b.id) {
+        return c;
+    }
+    if (a.id == c.id) {
+        return b;
+    }
+    if (b.id == c.id) {
+        return a;
+    }
     BinaryDigit sum = Gate_XOR(a, b);
     sum = Gate_XOR(sum, c);
     return sum;
@@ -44,6 +59,12 @@ BinaryDigit ALUStandard::Gate_XOR3(const BinaryDigit &a, const BinaryDigit &b,
 BinaryDigit ALUStandard::Gate_MulAdd(const BinaryDigit &m, const BinaryDigit &a,
                                      const BinaryDigit &b,
                                      BinaryDigit *carry_out) {
+    if (m.id == a.id && m.id == b.id) {
+        if (carry_out) {
+            *carry_out = m;
+        }
+        return Constant0();
+    }
     BinaryDigit ma = Gate_AND(m, a);
     BinaryDigit sum = Gate_XOR(ma, b);
     if (carry_out) {
@@ -55,6 +76,9 @@ BinaryDigit ALUStandard::Gate_MulAdd(const BinaryDigit &m, const BinaryDigit &a,
 BinaryDigit ALUStandard::Gate_DigitSum(const BinaryDigit &e1,
                                        const BinaryDigit &e0,
                                        const BinaryDigit &s0) {
+    if (e0.id == s0.id) {
+        return e1;
+    }
     BinaryDigit t = Gate_AND(e0, Gate_NOT(s0));
     BinaryDigit s1 = Gate_XOR(e1, t);
     return s1;

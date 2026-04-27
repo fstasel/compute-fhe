@@ -80,5 +80,28 @@ namespace computefhe {
         virtual FixedPoint CPSubC(const FixedPoint &a, const FixedPoint &pb);
         virtual FixedPoint CPSubNC(const FixedPoint &a, const FixedPoint &pb);
         virtual FixedPoint CPSubCNC(const FixedPoint &a, const FixedPoint &pb);
+        virtual FixedPoint PFullMul(const FixedPoint &a, const FixedPoint &pb);
+        virtual FixedPoint PFullMulFast(const FixedPoint &a,
+                                        const FixedPoint &pb);
+        virtual FixedPoint PBoothsMul(const FixedPoint &a,
+                                      const FixedPoint &pb);
+        virtual FixedPoint PMul(const FixedPoint &a, const FixedPoint &pb);
+        virtual FixedPoint PMulFast(const FixedPoint &a, const FixedPoint &pb);
+
+        virtual uint Get_CtCtAdd_Cost(size_t n_bits);
+        virtual uint Get_CtCtAddNC_Cost(size_t n_bits);
+        virtual uint Get_CtCtSubC_Cost(size_t n_bits);
+        virtual uint Get_CtCtSubNC_Cost(size_t n_bits);
+        virtual uint Get_CtPtAddC_Cost(size_t n_bits);
+        virtual uint Get_PtCtSub_Cost(size_t n_bits);
+        virtual uint Get_CtPtSubCNC_Cost(size_t n_bits);
+        virtual uint Get_CtNeg_Cost(size_t n_bits);
+        virtual uint Get_PtFullMul_Cost(const FixedPoint &pt, size_t ct_n_bits,
+                                        size_t &out_n_bits);
+        virtual uint Get_Pt2sCompFullMul_Cost(const FixedPoint &pt,
+                                              size_t ct_n_bits);
+        virtual uint Get_PtMul_Cost(const FixedPoint &pt);
+        virtual uint Get_Pt2sCompMul_Cost(const FixedPoint &pt);
+        virtual uint Get_BoothsMul_Cost(const FixedPoint &pt, size_t ct_n_bits);
     };
 } // namespace computefhe

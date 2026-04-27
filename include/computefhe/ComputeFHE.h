@@ -63,6 +63,7 @@ namespace computefhe {
         BinaryDigit EncryptBool(bool pt, bool fresh = true);
         bool DecryptBool(const BinaryDigit &ct);
         FixedPoint GetConstantInt(uint64_t pt, size_t n_digits = 8);
+        uint64_t ConvertConstantInt(const FixedPoint &pt);
 
         double extractNoise(ConstLWECiphertext &ct);
 

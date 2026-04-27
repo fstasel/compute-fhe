@@ -407,3 +407,31 @@ FixedPoint ALUOptimized::PSubCNC(const FixedPoint &pa, const FixedPoint &b) {
 FixedPoint ALUOptimized::Neg(const FixedPoint &a) {
     return PSubNC(a.size(), a);
 }
+
+uint ALUOptimized::Get_CtCtAdd_Cost(size_t n_bits) {
+    return (n_bits > 0) ? 2 * n_bits : 0;
+}
+
+uint ALUOptimized::Get_CtCtAddNC_Cost(size_t n_bits) {
+    return (n_bits > 0) ? 2 * n_bits - 1 : 0;
+}
+
+uint ALUOptimized::Get_CtCtSubC_Cost(size_t n_bits) {
+    return (n_bits > 0) ? 2 * n_bits : 0;
+}
+
+uint ALUOptimized::Get_CtPtAddC_Cost(size_t n_bits) {
+    return (n_bits > 0) ? n_bits + 2 : 0;
+}
+
+uint ALUOptimized::Get_PtCtSub_Cost(size_t n_bits) {
+    return (n_bits > 0) ? n_bits : 0;
+}
+
+uint ALUOptimized::Get_CtPtSubCNC_Cost(size_t n_bits) {
+    return (n_bits > 0) ? n_bits + 1 : 0;
+}
+
+uint ALUOptimized::Get_CtNeg_Cost(size_t n_bits) {
+    return (n_bits > 1) ? n_bits - 1 : 0;
+}

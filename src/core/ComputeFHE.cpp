@@ -220,12 +220,19 @@ bool ComputeFHE::DecryptBool(const BinaryDigit &ct) {
     return (bool)result;
 }
 
-FixedPoint computefhe::ComputeFHE::GetConstantInt(uint64_t pt,
-                                                  size_t n_digits) {
+FixedPoint ComputeFHE::GetConstantInt(uint64_t pt, size_t n_digits) {
     FixedPoint out(n_digits);
     for (size_t i = 0; i < n_digits; i++) {
         out[i] = (pt % 2) ? alu->Constant1() : alu->Constant0();
         pt /= 2;
+    }
+    return out;
+}
+
+uint64_t ComputeFHE::ConvertConstantInt(const FixedPoint &pt) {
+    uint64_t out = 0;
+    for (size_t i = 0; i < pt.size(); i++) {
+        out += (pt[i].p % 2) * (1UL << i);
     }
     return out;
 }

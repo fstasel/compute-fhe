@@ -56,7 +56,7 @@ namespace computefhe_test {
         TT_FULLMUL,
         TT_PFULLMUL,
         TT_PFULLMUL_FAST,
-        TT_BOOTHSMUL,
+        TT_PBOOTHSMUL,
         TT_MUL,
         TT_PMUL,
         TT_PMUL_FAST,
@@ -174,8 +174,8 @@ namespace computefhe_test {
             return "PFULLMUL";
         case TT_PFULLMUL_FAST:
             return "PFULLMUL_FAST";
-        case TT_BOOTHSMUL:
-            return "BOOTHSMUL";
+        case TT_PBOOTHSMUL:
+            return "PBOOTHSMUL";
         case TT_MUL:
             return "MUL";
         case TT_PMUL:

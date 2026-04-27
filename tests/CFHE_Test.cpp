@@ -28,6 +28,7 @@ CFHE_Test::CFHE_Test(CryptoContextParam param, ALUType alu_type,
                      bool simulation_mode) {
     initRandomGenerator(UINT32_MAX);
     cout << "Creating ComputeFHE instance..." << endl;
+    computefhe::CLIENT_MODE = true;
     cfhe_base = new ComputeFHE(param, alu_type, simulation_mode);
     cout << "done!" << endl;
 }
@@ -78,7 +79,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PFIXP_ENCRYPT_DECRYPT:
-            // report = TestPFixedPointEncryptDecrypt(n_digits);
+            report = TestPFixedPointEncryptDecrypt(n_digits);
             break;
 
         case TT_HA:
@@ -86,7 +87,7 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_HA_CP:
-            // report = TestHalfAdder_CP();
+            report = TestHalfAdder_CP();
             break;
 
         case TT_FA:
@@ -94,11 +95,11 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_FA_CPP:
-            // report = TestFullAdder_CPP();
+            report = TestFullAdder_CPP();
             break;
 
         case TT_FA_CCP:
-            // report = TestFullAdder_CCP();
+            report = TestFullAdder_CCP();
             break;
 
         case TT_XOR3:
@@ -278,15 +279,15 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PFULLMUL:
-            // report = TestPFullMul(n_digits);
+            report = TestPFullMul(n_digits);
             break;
 
         case TT_PFULLMUL_FAST:
-            // report = TestPFullMulFast(n_digits);
+            report = TestPFullMulFast(n_digits);
             break;
 
-        case TT_BOOTHSMUL:
-            // report = TestBoothsMul(n_digits);
+        case TT_PBOOTHSMUL:
+            report = TestPBoothsMul(n_digits);
             break;
 
         case TT_MUL:
@@ -294,11 +295,11 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
             break;
 
         case TT_PMUL:
-            // report = TestPMul(n_digits);
+            report = TestPMul(n_digits);
             break;
 
         case TT_PMUL_FAST:
-            // report = TestPMulFast(n_digits);
+            report = TestPMulFast(n_digits);
             break;
 
         case TT_MUX:
@@ -312,6 +313,11 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
         case TT_PPMUX:
             report = TestPPMux();
             break;
+
+        case TT_DIVU:
+            report = TestDivU(n_digits);
+            break;
+
         default:
             report = TestReport();
         }
@@ -337,6 +343,18 @@ TestReport CFHE_Test::TestEncryptDecrypt(size_t n_digits) {
     StartTimer();
     FixedPoint ct = cfhe_base->EncryptInt(n, n_digits, test_fresh);
     uint result = cfhe_base->DecryptInt(ct);
+    report.delta_t = ReadTimer();
+    report.test_result = (n == result) ? TR_SUCCESS : TR_FAIL;
+    PrintTestReport(report, n, result);
+    return report;
+}
+
+TestReport CFHE_Test::TestPFixedPointEncryptDecrypt(size_t n_digits) {
+    TestReport report;
+    uint n = CreateRandomNumber();
+    StartTimer();
+    FixedPoint ct = cfhe_base->GetConstantInt(n, n_digits);
+    uint result = cfhe_base->DecryptInt(ct, n_digits);
     report.delta_t = ReadTimer();
     report.test_result = (n == result) ? TR_SUCCESS : TR_FAIL;
     PrintTestReport(report, n, result);
@@ -481,37 +499,6 @@ void CFHE_Test::StartTest() {
         Test(TT_CMPLT, d);
         Test(TT_FULLMUL, d);
         Test(TT_MUL, d);
-    }
-
-    SetNumTest(P_NUM_TEST);
-    for (uint d = 4; d <= 32U; d <<= 1) {
-        Test(TT_PADD, d);
-        Test(TT_PADDC, d);
-        Test(TT_PADD_NC, d);
-        Test(TT_PADDC_NC, d);
-        Test(TT_CPSUB, d);
-        Test(TT_PSUB, d);
-        Test(TT_CPSUBC, d);
-        Test(TT_PSUBC, d);
-        Test(TT_CPSUB_NC, d);
-        Test(TT_PSUB_NC, d);
-        Test(TT_CPSUBC_NC, d);
-        Test(TT_PSUBC_NC, d);
-        Test(TT_PCMPNOTEQ, d);
-        Test(TT_PCMPEQ, d);
-        Test(TT_PCMPLTEQ_U, d);
-        Test(TT_PCMPGT_U, d);
-        Test(TT_PCMPGTEQ_U, d);
-        Test(TT_PCMPLT_U, d);
-        Test(TT_PCMPLTEQ, d);
-        Test(TT_PCMPGT, d);
-        Test(TT_PCMPGTEQ, d);
-        Test(TT_PCMPLT, d);
-        Test(TT_PFULLMUL, d);
-        Test(TT_PFULLMUL_FAST, d);
-        Test(TT_BOOTHSMUL, d);
-        Test(TT_PMUL, d);
-        Test(TT_PMUL_FAST, d);
         Test(TT_DIVU, d);
     }
 
@@ -541,7 +528,7 @@ void CFHE_Test::StartTest() {
         Test(TT_PCMPLT, d);
         Test(TT_PFULLMUL, d);
         Test(TT_PFULLMUL_FAST, d);
-        Test(TT_BOOTHSMUL, d);
+        Test(TT_PBOOTHSMUL, d);
         Test(TT_PMUL, d);
         Test(TT_PMUL_FAST, d);
     }

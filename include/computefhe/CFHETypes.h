@@ -1,7 +1,27 @@
 #pragma once
 
+/**
+ * @file CFHETypes.h
+ * @brief Defines core enumerations and helper functions for ComputeFHE
+ * configuration.
+ */
+
 namespace computefhe {
 
+    /**
+     * @enum CryptoContextParam
+     * @brief Supported cryptographic context parameters for OpenFHE.
+     *
+     * These values correspond to specific security levels and bootstrapping
+     * configurations in OpenFHE.
+     *
+     * - **GINX**: Entries without 'LMKCDEY' use the GINX bootstrapping method
+     *   (Gama-Izabachène-Nguyen-Xie).
+     * - **LMKCDEY**: Refers to the bootstrapping scheme proposed by
+     *   Lee-Micciancio-Kim-Choi-Deryabin-Eom-Yoo.
+     * - **3-input logic**: Parameters ending in '_3' enable 3-input gate
+     * optimizations.
+     */
     enum CryptoContextParam {
         CCPARAM_STD128,
         CCPARAM_STD128_3,
@@ -18,6 +38,11 @@ namespace computefhe {
         CCPARAM_TOY
     };
 
+    /**
+     * @brief Converts a CryptoContextParam value to a human-readable string.
+     * @param v The cryptographic context parameter enum.
+     * @return A string representation of the parameter set name.
+     */
     inline const char *ToString(CryptoContextParam v) {
         switch (v) {
         case CCPARAM_STD128:
@@ -51,8 +76,21 @@ namespace computefhe {
         }
     }
 
+    /**
+     * @enum ALUType
+     * @brief Specifies the logic gate implementation strategy.
+     *
+     * - ALU_STANDARD: Uses basic FHE gates for logic operations.
+     * - ALU_OPTIMIZED: Uses specialized multi-input gates (like MAJ or XOR3)
+     *   to reduce the multiplicative depth and noise growth.
+     */
     enum ALUType { ALU_STANDARD, ALU_OPTIMIZED };
 
+    /**
+     * @brief Converts an ALUType value to a human-readable string.
+     * @param v The ALU type enum.
+     * @return A string representation ("STANDARD" or "OPTIMIZED").
+     */
     inline const char *ToString(ALUType v) {
         switch (v) {
         case ALU_STANDARD:

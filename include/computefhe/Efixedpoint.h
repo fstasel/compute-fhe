@@ -1,3 +1,9 @@
+/**
+ * @file Efixedpoint.h
+ * @brief Defines the encrypted fixed-point number representation and
+ * operations.
+ */
+
 #pragma once
 
 #include <computefhe/Einteger.h>

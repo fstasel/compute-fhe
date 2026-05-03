@@ -1,3 +1,9 @@
+/**
+ * @file FixedPoint.h
+ * @brief Defines the fundamental bit-level and bit-vector data structures for
+ * FHE operations.
+ */
+
 #pragma once
 #include <openfhe/binfhe/binfhecontext.h>
 #include <vector>

@@ -1,3 +1,8 @@
+/**
+ * @file Einteger.h
+ * @brief Defines the encrypted integer representation and operations.
+ */
+
 #pragma once
 
 #include <computefhe/CFHETypes.h>

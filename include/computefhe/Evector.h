@@ -1,3 +1,9 @@
+/**
+ * @file Evector.h
+ * @brief Provides vector containers with support for oblivious, encrypted
+ * indexing.
+ */
+
 #pragma once
 
 #include <computefhe/Efixedpoint.h>

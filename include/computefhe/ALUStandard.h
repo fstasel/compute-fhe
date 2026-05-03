@@ -1,8 +1,21 @@
+/**
+ * @file ALUStandard.h
+ * @brief Defines the standard ALU implementation using fundamental FHE logic
+ * gates.
+ */
+
 #pragma once
 #include <computefhe/BaseALU.h>
 
 namespace computefhe {
 
+    /**
+     * @class ALUStandard
+     * @brief Standard ALU implementation using fundamental FHE logic gates.
+     *
+     * Provides the baseline implementation for homomorphic arithmetic and logic
+     * operations using standard two-input gates.
+     */
     class ALUStandard : virtual public BaseALU {
       public:
         ALUStandard(ComputeFHE *cfhe);

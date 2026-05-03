@@ -1,3 +1,8 @@
+/**
+ * @file BaseALUSimulator.h
+ * @brief Defines the abstract base class for functional ALU simulators.
+ */
+
 #pragma once
 
 #include <computefhe/BaseALU.h>
@@ -8,6 +13,13 @@ using namespace lbcrypto;
 namespace computefhe {
     class ComputeFHE;
 
+    /**
+     * @class BaseALUSimulator
+     * @brief Abstract base class for functional ALU simulators.
+     *
+     * Simulators allow for high-speed logic verification and the collection of
+     * gate-level statistics without the computational cost of FHE operations.
+     */
     class BaseALUSimulator : virtual public BaseALU {
       protected:
         uint num_bs = 0;

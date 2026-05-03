@@ -1,3 +1,8 @@
+/**
+ * @file ComputeFHE.h
+ * @brief Primary management class and entry point for the ComputeFHE library.
+ */
+
 #pragma once
 
 #include <openfhe/binfhe/binfhecontext.h>

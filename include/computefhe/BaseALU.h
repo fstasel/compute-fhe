@@ -1,3 +1,8 @@
+/**
+ * @file BaseALU.h
+ * @brief Defines the abstract base class for FHE-based Arithmetic Logic Units.
+ */
+
 #pragma once
 
 #include <computefhe/Einteger.h>

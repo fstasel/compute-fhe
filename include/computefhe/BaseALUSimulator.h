@@ -3,7 +3,6 @@
  * @brief Defines the abstract base class for functional ALU simulators.
  */
 
-
 #pragma once
 
 #include <computefhe/BaseALU.h>

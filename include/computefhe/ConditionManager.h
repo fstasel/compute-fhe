@@ -45,10 +45,11 @@ using namespace std;
 namespace computefhe {
     /**
      * @struct ConditionalVar
-     * @brief Internal tracking structure for encrypted variables in conditional blocks.
+     * @brief Internal tracking structure for encrypted variables in conditional
+     * blocks.
      *
-     * Stores the previous, 'if', and 'else' branch values of a variable to facilitate
-     * homomorphic multiplexing at the end of a conditional scope.
+     * Stores the previous, 'if', and 'else' branch values of a variable to
+     * facilitate homomorphic multiplexing at the end of a conditional scope.
      */
     typedef struct {
         FixedPoint prev_value;
@@ -61,9 +62,9 @@ namespace computefhe {
      * @class ConditionManager
      * @brief Manages conditional execution state and variable multiplexing.
      *
-     * This class tracks which encrypted variables are modified within an Eif block
-     * and ensures that their final values are correctly computed based on the
-     * encrypted condition.
+     * This class tracks which encrypted variables are modified within an Eif
+     * block and ensures that their final values are correctly computed based on
+     * the encrypted condition.
      */
     class ConditionManager {
       private:

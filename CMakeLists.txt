@@ -126,3 +126,16 @@ if(CLANG_FORMAT)
 else()
     message(WARNING "clang-format not found. The 'format' target will not be available.")
 endif()
+
+find_program(DOXYGEN_EXECUTABLE "doxygen")
+if(DOXYGEN_EXECUTABLE)
+    message(STATUS "Found doxygen: ${DOXYGEN_EXECUTABLE}")
+    add_custom_target(doc
+        COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Doxyfile
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+        COMMENT "Generating API documentation with Doxygen"
+        VERBATIM
+    )
+else()
+    message(WARNING "doxygen not found. The 'doc' target will not be available.")
+endif()

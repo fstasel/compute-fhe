@@ -1,9 +1,22 @@
+/**
+ * @file ALUOptimized.h
+ * @brief Defines the optimized ALU implementation using specialized multi-input
+ * FHE gates.
+ */
+
 #pragma once
 
 #include <computefhe/ALUStandard.h>
 
 namespace computefhe {
-
+    
+    /**
+     * @class ALUOptimized
+     * @brief Optimized ALU implementation using specialized multi-input FHE gates.
+     *
+     * This class extends ALUStandard to provide faster arithmetic operations by utilizing
+     * 3-input kernels like MAJ and XOR3, and reduces bootstrapping overhead.
+     */
     class ALUOptimized : virtual public ALUStandard {
       public:
         ALUOptimized(ComputeFHE *cfhe);

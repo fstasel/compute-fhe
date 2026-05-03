@@ -1,0 +1,110 @@
+/**
+ * @mainpage ComputeFHE: Privacy-Preserving General-Purpose Computation Library for TFHE
+ *
+ * @section intro_sec Introduction
+ * ComputeFHE is a powerful C++ library designed to simplify the development of applications 
+ * using Fully Homomorphic Encryption (FHE). It acts as a high-level abstraction layer over 
+ * OpenFHE's BinFHE, which is an open source implementation of TFHE (FHE over the Torus). It
+ * provides developers with a syntax that closely resembles standard C++ while maintaining
+ * complete data privacy through encrypted computation.
+ *
+ * @section features_sec Key Features
+ * - **Intuitive Encrypted Types:** Use @ref computefhe::Einteger and @ref computefhe::Efixedpoint 
+ *   just like standard `int` or `double`.
+ * - **Arithmetic & Logic:** Supports overloaded arithmetic and logic operators for 
+ *   seamless homomorphic execution.
+ * - **Oblivious Array Access:** The @ref computefhe::Evector container enables 
+ *   "Oblivious RAM" style indexing that allows accessing elements using encrypted indices.
+ * - **Encrypted Control Flow:** Branch on encrypted results using the `Eif` macro, that
+ *   handles internal state management and multiplexing automatically.
+ * - **Execution Strategies:** Choose between @ref computefhe::ALUStandard for two-input
+ *   logic or @ref computefhe::ALUOptimized for utilizing FHE-friendly, multi-input gate performance.
+ *
+ * @section arch_sec Architecture Overview
+ * The library is built on a modular architecture:
+ * 1. **Context Management:** Managed by @ref computefhe::ComputeFHE, which provides access to low-level 
+ *    OpenFHE APIs via @ref computefhe::ComputeFHE::GetBinFHEContext and allows cryptographic key management.
+ * 2. **ALU Layer:** An abstract interface (@ref computefhe::BaseALU) that defines core capabilities for logic gates, 
+ *    arithmetic operations, and word-level manipulations on encrypted data.
+ * 3. **C++ Tools:** Support for global C-style utility functions, such as @ref computefhe::Init and 
+ *    @ref computefhe::Finalize, to simplify the setup and teardown of the global cryptographic environment.
+ * 4. **Simulation:** Provides high-speed functional simulation through @ref computefhe::BaseALUSimulator, 
+ *    that enables the generation of gate and bootstrapping statistics for the underlying circuit without
+ *    the computational cost of FHE.
+ *
+ * @section example_sec Quick Start Example
+ * @code{.cpp}
+ * #include <computefhe/ComputeFHE.h>
+ * using namespace computefhe;
+ * using namespace std;
+ * 
+ * int main() {
+ *     // initialize with toy security and optimized ALU logic
+ *     Init(CCPARAM_TOY, ALU_OPTIMIZED, true);
+ * 
+ *     // encrypt some values
+ *     Euint8 a = 42;
+ *     Euint8 b = 10;
+ * 
+ *     // perform homomorphic addition
+ *     Euint8 sum = a + b;
+ * 
+ *     // use encrypted conditional branching
+ *     Eif(sum > 50) { sum -= 5; }
+ *     else {
+ *         sum += 5;
+ *     }
+ * 
+ *     // decrypt and print
+ *     // (conversion to primitive types triggers decryption)
+ *     cout << "Result: " << (uint32_t)sum << endl;
+ * 
+ *     // terminate cfhe-context
+ *     Finalize();
+ * 
+ *     return 0;
+ * }
+ * @endcode
+ *
+ * @section selection_sec Security Parameters
+ * Configuration is handled via the @ref computefhe::CryptoContextParam enum (provided by OpenFHE).
+ * - **STD128/STD192/STD256:** Defines the target security bit-level.
+ *   Uses GINX (Gama-Izabachene-Nguyen-Xie) bootstrapping.
+ * - **STD128_3/STD192_3/STD256_3:** Enables optimized FHE operations (required for @ref computefhe::ALUOptimized).
+ *   Uses GINX (Gama-Izabachene-Nguyen-Xie) bootstrapping.
+ * - **STD*_LMKCDEY:** Uses the Lee-Micciancio-Kim-Choi-Deryabin-Eom-Yoo bootstrapping method 
+ *   for significantly faster performance in many scenarios.
+ *
+ * @section optimization_sec Optimization Parameters
+ * Computational efficiency and noise management are controlled via the @ref computefhe::ALUType enum.
+ * - **ALU_STANDARD:** Uses fundamental two-input logic gates for all operations.
+ *   Recommended for debugging or when using parameter sets that do not support multi-input gates.
+ * - **ALU_OPTIMIZED:** Implements arithmetic logic using specialized FHE kernels (such as MAJ and XOR3).
+ *   This strategy significantly reduces the multiplicative depth and the total number of 
+ *   bootstrapping operations required, which results in faster execution.
+ *
+ * **Basic Usage:** Select the desired strategy during initialization via @ref computefhe::Init. 
+ * Note that `ALU_OPTIMIZED` requires a 3-input enabled security parameter (marked with `_3`).
+ *
+ * **Example Initializations:**
+ * @code{.cpp}
+ * Init(CCPARAM_STD128, ALU_STANDARD);            // Standard 2-input logic
+ * Init(CCPARAM_STD192_3, ALU_OPTIMIZED);         // Optimized 3-input logic
+ * Init(CCPARAM_STD256_3_LMKCDEY, ALU_OPTIMIZED); // Optimized logic with LMKCDEY bootstrapping
+ * @endcode
+ *
+ * @see @ref computefhe::ComputeFHE for the main API.
+ * @see @ref computefhe::ConditionManager for details on encrypted branching.
+ * @see @ref computefhe::Evector for oblivious indexing.
+ *
+ * @section authors_sec Authors
+ * - Faris Serdar Taşel <fst@@cankaya.edu.tr>
+ * - Efe Çiftci <efeciftci@@cankaya.edu.tr>
+ *
+ * @section citations_sec Citations
+ * If you use ComputeFHE in your research, please cite the following work:
+ *
+ * Taşel, F. S., & Saran, A. N. (2025). Improved arithmetic efficiency in TFHE through gate-level optimizations. 
+ * *The Journal of Supercomputing*, 81(18), 1633. 
+ * [https://doi.org/10.1007/s11227-025-08107-8](https://doi.org/10.1007/s11227-025-08107-8)
+ */

@@ -1,3 +1,9 @@
+/**
+ * @file ConditionManager.h
+ * @brief Manages conditional execution state and branch tracking for encrypted
+ * operations.
+ */
+
 #pragma once
 #include <computefhe/FixedPoint.h>
 #include <stack>
@@ -37,6 +43,13 @@ using namespace std;
         if (_m.if_state())
 
 namespace computefhe {
+    /**
+     * @struct ConditionalVar
+     * @brief Internal tracking structure for encrypted variables in conditional blocks.
+     *
+     * Stores the previous, 'if', and 'else' branch values of a variable to facilitate
+     * homomorphic multiplexing at the end of a conditional scope.
+     */
     typedef struct {
         FixedPoint prev_value;
         FixedPoint if_value;
@@ -44,6 +57,14 @@ namespace computefhe {
         FixedPoint *data;
     } ConditionalVar;
 
+    /**
+     * @class ConditionManager
+     * @brief Manages conditional execution state and variable multiplexing.
+     *
+     * This class tracks which encrypted variables are modified within an Eif block
+     * and ensures that their final values are correctly computed based on the
+     * encrypted condition.
+     */
     class ConditionManager {
       private:
         int state;

@@ -1,3 +1,8 @@
+/**
+ * @file SimOptimized.h
+ * @brief Simulator implementation for optimized ALU operations.
+ */
+
 #pragma once
 
 #include <computefhe/ALUOptimized.h>
@@ -5,6 +10,12 @@
 
 namespace computefhe {
 
+    /**
+     * @class SimOptimized
+     * @brief Simulator implementation for optimized ALU operations.
+     *
+     * Tracks statistics and simulates the behavior of the ALUOptimized class.
+     */
     class SimOptimized : public SimStandard, public ALUOptimized {
       public:
         SimOptimized(ComputeFHE *cfhe);

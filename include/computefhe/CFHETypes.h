@@ -1,10 +1,17 @@
-#pragma once
+/*
+ *  SPDX-FileCopyrightText: 2026 Faris Serdar Taşel <fst@cankaya.edu.tr>
+ *  SPDX-FileCopyrightText: 2026 Efe Çiftci <efeciftci@cankaya.edu.tr>
+ *
+ *  SPDX-License-Identifier: MIT
+ */
 
 /**
  * @file CFHETypes.h
  * @brief Defines core enumerations and helper functions for ComputeFHE
  * configuration.
  */
+
+#pragma once
 
 namespace computefhe {
 

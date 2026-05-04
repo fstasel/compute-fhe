@@ -1,3 +1,10 @@
+/*
+ *  SPDX-FileCopyrightText: 2026 Faris Serdar Taşel <fst@cankaya.edu.tr>
+ *  SPDX-FileCopyrightText: 2026 Efe Çiftci <efeciftci@cankaya.edu.tr>
+ *
+ *  SPDX-License-Identifier: MIT
+ */
+
 /**
  * @file Efixedpoint.h
  * @brief Defines the encrypted fixed-point number representation and
@@ -5,7 +12,6 @@
  */
 
 #pragma once
-
 #include <computefhe/Einteger.h>
 
 namespace computefhe {

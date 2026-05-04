@@ -1,6 +1,12 @@
+/*
+ *  SPDX-FileCopyrightText: 2026 Faris Serdar Taşel <fst@cankaya.edu.tr>
+ *  SPDX-FileCopyrightText: 2026 Efe Çiftci <efeciftci@cankaya.edu.tr>
+ *
+ *  SPDX-License-Identifier: MIT
+ */
+
 #include <computefhe/ComputeFHE.h>
 #include <computefhe/Einteger.h>
-
 using namespace computefhe;
 
 namespace computefhe {

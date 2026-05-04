@@ -1,6 +1,12 @@
+/*
+ *  SPDX-FileCopyrightText: 2026 Faris Serdar Taşel <fst@cankaya.edu.tr>
+ *  SPDX-FileCopyrightText: 2026 Efe Çiftci <efeciftci@cankaya.edu.tr>
+ *
+ *  SPDX-License-Identifier: MIT
+ */
+
 #include <computefhe/ComputeFHE.h>
 #include <computefhe/Efixedpoint.h>
-
 using namespace computefhe;
 
 FixedPoint Efixedpoint::double2fp(double d, size_t n_digits, size_t n_frac) {

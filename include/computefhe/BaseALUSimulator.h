@@ -1,10 +1,16 @@
+/*
+ *  SPDX-FileCopyrightText: 2026 Faris Serdar Taşel <fst@cankaya.edu.tr>
+ *  SPDX-FileCopyrightText: 2026 Efe Çiftci <efeciftci@cankaya.edu.tr>
+ *
+ *  SPDX-License-Identifier: MIT
+ */
+
 /**
  * @file BaseALUSimulator.h
  * @brief Defines the abstract base class for functional ALU simulators.
  */
 
 #pragma once
-
 #include <computefhe/BaseALU.h>
 #include <computefhe/FixedPoint.h>
 

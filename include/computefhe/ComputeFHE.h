@@ -1,13 +1,16 @@
+/*
+ *  SPDX-FileCopyrightText: 2026 Faris Serdar Taşel <fst@cankaya.edu.tr>
+ *  SPDX-FileCopyrightText: 2026 Efe Çiftci <efeciftci@cankaya.edu.tr>
+ *
+ *  SPDX-License-Identifier: MIT
+ */
+
 /**
  * @file ComputeFHE.h
  * @brief Primary management class and entry point for the ComputeFHE library.
  */
 
 #pragma once
-
-#include <openfhe/binfhe/binfhecontext.h>
-#include <vector>
-
 #include <computefhe/ALUOptimized.h>
 #include <computefhe/ALUStandard.h>
 #include <computefhe/BaseALU.h>
@@ -20,6 +23,8 @@
 #include <computefhe/FixedPoint.h>
 #include <computefhe/SimOptimized.h>
 #include <computefhe/SimStandard.h>
+#include <openfhe/binfhe/binfhecontext.h>
+#include <vector>
 
 using namespace lbcrypto;
 using namespace std;

@@ -1,10 +1,16 @@
+/*
+ *  SPDX-FileCopyrightText: 2026 Faris Serdar Taşel <fst@cankaya.edu.tr>
+ *  SPDX-FileCopyrightText: 2026 Efe Çiftci <efeciftci@cankaya.edu.tr>
+ *
+ *  SPDX-License-Identifier: MIT
+ */
+
 /**
  * @file Einteger.h
  * @brief Defines the encrypted integer representation and operations.
  */
 
 #pragma once
-
 #include <computefhe/CFHETypes.h>
 #include <computefhe/FixedPoint.h>
 #include <iostream>

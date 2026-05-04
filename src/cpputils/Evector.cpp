@@ -1,7 +1,13 @@
+/*
+ *  SPDX-FileCopyrightText: 2026 Faris Serdar Taşel <fst@cankaya.edu.tr>
+ *  SPDX-FileCopyrightText: 2026 Efe Çiftci <efeciftci@cankaya.edu.tr>
+ *
+ *  SPDX-License-Identifier: MIT
+ */
+
 #include <cmath>
 #include <computefhe/ComputeFHE.h>
 #include <computefhe/Evector.h>
-
 using namespace computefhe;
 
 template <typename T, typename U>

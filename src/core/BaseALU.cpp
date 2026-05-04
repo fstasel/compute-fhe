@@ -1,6 +1,12 @@
+/*
+ *  SPDX-FileCopyrightText: 2026 Faris Serdar Taşel <fst@cankaya.edu.tr>
+ *  SPDX-FileCopyrightText: 2026 Efe Çiftci <efeciftci@cankaya.edu.tr>
+ *
+ *  SPDX-License-Identifier: MIT
+ */
+
 #include <computefhe/BaseALU.h>
 #include <computefhe/ComputeFHE.h>
-
 using namespace computefhe;
 
 BaseALU::BaseALU(ComputeFHE *cfhe) : cfhe_base(cfhe) { ResetCarry(); }

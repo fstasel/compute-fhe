@@ -1,3 +1,10 @@
+/*
+ *  SPDX-FileCopyrightText: 2026 Faris Serdar Taşel <fst@cankaya.edu.tr>
+ *  SPDX-FileCopyrightText: 2026 Efe Çiftci <efeciftci@cankaya.edu.tr>
+ *
+ *  SPDX-License-Identifier: MIT
+ */
+
 /**
  * @file ALUOptimized.h
  * @brief Defines the optimized ALU implementation using specialized multi-input
@@ -5,7 +12,6 @@
  */
 
 #pragma once
-
 #include <computefhe/ALUStandard.h>
 
 namespace computefhe {

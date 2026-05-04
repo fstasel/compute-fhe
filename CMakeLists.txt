@@ -3,6 +3,11 @@ cmake_minimum_required (VERSION 3.5.1)
 project(computefhe CXX)
 set(CMAKE_CXX_STANDARD 17)
 option( BUILD_STATIC "Set to ON to include static versions of the library" OFF)
+option( WITH_HEXL "Enable Intel HEXL support" OFF)
+
+if(WITH_HEXL)
+    find_package(HEXL REQUIRED)
+endif()
 
 find_package(OpenFHE CONFIG REQUIRED)
 if (OpenFHE_FOUND)

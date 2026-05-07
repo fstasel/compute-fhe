@@ -1,23 +1,40 @@
-FROM ubuntu:latest
+FROM ubuntu:22.04
 
-#install pre-requisites for OpenFHE
-RUN apt update && apt install -y git build-essential gdb cmake autoconf
+ENV DEBIAN_FRONTEND=noninteractive
 
-#install pre-requisites for ComputeFHE
-RUN apt install -y clang-format doxygen graphviz
+# Install prerequisites
+RUN apt update && apt install -y \
+    git build-essential gdb cmake autoconf \
+    clang-format doxygen graphviz nano tmux \
+    libtool python3 && \
+    rm -rf /var/lib/apt/lists/*
 
-#install tools
-RUN apt install -y nano tmux
-
-#git clone the openfhe-development configurator
+# Clone the OpenFHE Configurator
 RUN git clone https://github.com/openfheorg/openfhe-configurator.git
 
-#building and installing OpenFHE-Hexl
-RUN cd openfhe-configurator && ./scripts/stage-openfhe-development-hexl.sh && ./scripts/build-openfhe-development.sh
+# Modify the script to use nproc instead of unbound -j
+# The script has 'make -j', we replace it with 'make -j$(nproc)'
+RUN sed -i 's/make -j/make -j$(nproc)/g' openfhe-configurator/scripts/build-openfhe-development.sh
+
+# Inject environment variables
+ENV OPENFHE_INSTALL_DIR=/usr/local
+ENV CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=Release"
+
+# Stage and build OpenFHE [hexl-enabled]
+RUN cd openfhe-configurator && \
+    ./scripts/stage-openfhe-development-hexl.sh && \
+    ./scripts/build-openfhe-development.sh
+
+# Update system library cache
 RUN ldconfig
 
-#git clone the compute-fhe-dev repository
-RUN git clone https://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@github.com/fstasel/compute-fhe-dev.git
+# Clone, build, and install ComputeFHE
+RUN git clone https://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@github.com/fstasel/compute-fhe-dev.git && \
+    cd compute-fhe-dev && \
+    mkdir build && cd build && \
+    cmake -DWITH_HEXL=ON -DCMAKE_BUILD_TYPE=Release .. && \
+    make -j$(nproc) && \
+    make doc && \
+    ldconfig
 
-#building and installing compute-fhe
-RUN cd compute-fhe-dev && mkdir build && cd build && cmake -DWITH_HEXL=ON -DHEXL_DIR=/openfhe-configurator/openfhe-staging/install/lib/cmake/hexl-1.2.6 -DCMAKE_PREFIX_PATH=/openfhe-configurator/openfhe-staging/install .. && make -j && make doc
+WORKDIR /workspace

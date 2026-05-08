@@ -3,11 +3,6 @@ cmake_minimum_required (VERSION 3.5.1)
 project(computefhe CXX)
 set(CMAKE_CXX_STANDARD 17)
 option( BUILD_STATIC "Set to ON to include static versions of the library" OFF)
-option( WITH_HEXL "Enable Intel HEXL support" OFF)
-
-if(WITH_HEXL)
-    find_package(HEXL REQUIRED)
-endif()
 
 find_package(OpenFHE CONFIG REQUIRED)
 if (OpenFHE_FOUND)
@@ -20,6 +15,18 @@ if (OpenFHE_FOUND)
 else()
     message(FATAL_ERROR "PACKAGE OpenFHE NOT FOUND")
 endif ()
+
+if("HEXL::hexl" IN_LIST OpenFHE_SHARED_LIBRARIES)
+    option( WITH_HEXL "Enable Intel HEXL support" ON)
+    message(STATUS "Intel HEXL detected in OpenFHE. Setting WITH_HEXL to ON.")
+else()
+    option( WITH_HEXL "Enable Intel HEXL support" OFF)
+    message(STATUS "Intel HEXL not found. Setting WITH_HEXL to OFF.")
+endif()
+
+if(WITH_HEXL)
+    find_package(HEXL REQUIRED)
+endif()
 
 set( CMAKE_CXX_FLAGS ${OpenFHE_CXX_FLAGS} )
 

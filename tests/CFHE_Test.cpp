@@ -335,8 +335,9 @@ void CFHE_Test::Test(TestType tt, size_t n_digits) {
         err_rate = (double)n_error / (trial + 1);
         if (verbosity >= 1) {
             cout << "Trial #" << (trial + 1) << ": delta_t: " << report.delta_t
-                 << " ms" << " error_rate: " << err_rate
-                 << " avg_time: " << avg_t << " ms" << endl;
+                 << " ms"
+                 << " error_rate: " << err_rate << " avg_time: " << avg_t
+                 << " ms" << endl;
         }
     }
     cout << "error_rate: " << err_rate << " avg_time: " << avg_t << " ms"
@@ -428,7 +429,8 @@ void CFHE_Test::PrintTestReport(TestReport report, int64_t n1, int64_t n2,
 void CFHE_Test::StartNoiseTest() {
     cout << "cc_param: " << ToString(cfhe_base->GetCryptoContextParam())
          << " alu_type: " << ToString(cfhe_base->GetALUType())
-         << " test_type: NOISE" << " trials: " << num_test << endl;
+         << " test_type: NOISE"
+         << " trials: " << num_test << endl;
 
     double sum_fresh = 0, sum_bs = 0, noise, noise_bs;
     double delta_t = 0, t_time = 0, avg_t = 0;

@@ -29,7 +29,7 @@ include_directories( ${OpenFHE_INCLUDE}/third-party/include )
 include_directories( ${OpenFHE_INCLUDE}/core )
 include_directories( ${OpenFHE_INCLUDE}/pke )
 include_directories( ${OpenFHE_INCLUDE}/binfhe )
-include_directories( ${PROJECT_SOURCE_DIR}/include )
+include_directories( ${PROJECT_SOURCE_DIR}/src/include )
 
 link_directories( ${OpenFHE_LIBDIR} )
 link_directories( ${OPENMP_LIBRARIES} )
@@ -85,7 +85,7 @@ target_include_directories(computefhe
     PRIVATE
         ${PROJECT_SOURCE_DIR}/src
     PUBLIC
-        ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/src/include
 )
 
 foreach(EXAMPLE_FILE ${EXAMPLE_SOURCES})
@@ -116,7 +116,7 @@ if(CLANG_FORMAT)
     message(STATUS "Found clang-format: ${CLANG_FORMAT}")
     file(GLOB_RECURSE FORMAT_SOURCES
         ${PROJECT_SOURCE_DIR}/examples/*.cpp
-        ${PROJECT_SOURCE_DIR}/include/*.h
+        ${PROJECT_SOURCE_DIR}/src/include/*.h
         ${PROJECT_SOURCE_DIR}/src/*.cpp
         ${PROJECT_SOURCE_DIR}/src/*.h
         ${PROJECT_SOURCE_DIR}/tests/*.cpp

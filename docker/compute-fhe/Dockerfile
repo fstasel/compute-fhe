@@ -35,6 +35,7 @@ RUN git clone https://github_pat_11AC4CUHQ0t08vRFu2pFhk_4jbsWLdHMZa1Pf1Wj62AGGD8
     cmake -DCMAKE_BUILD_TYPE=Release .. && \
     make -j$(nproc) && \
     make doc && \
+    make install && \
     ldconfig
 
 WORKDIR /workspace

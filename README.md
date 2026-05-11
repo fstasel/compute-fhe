@@ -29,6 +29,7 @@ sudo apt install -y build-essential cmake git doxygen graphviz clang-format
 ## Building
 
 1. **Install OpenFHE**:
+   **Standard Installation:**
    ```bash
    git clone https://github.com/openfheorg/openfhe-development.git
    cd openfhe-development
@@ -36,6 +37,23 @@ sudo apt install -y build-essential cmake git doxygen graphviz clang-format
    cmake ..
    make -j$(nproc)
    sudo make install
+   ```
+
+   **Recommended for HEXL (Intel Hardware Acceleration) Support:**
+   Building with the [OpenFHE Configurator](https://github.com/openfheorg/openfhe-configurator) is recommended for enabling Intel HEXL:
+   ```bash
+   git clone https://github.com/openfheorg/openfhe-configurator.git
+   cd openfhe-configurator
+
+   # (Optional) Tweak the build process using all available cores
+   sed -i 's/make -j/make -j$(nproc)/g' scripts/build-openfhe-development.sh
+
+   # Configure installation environment
+   export OPENFHE_INSTALL_DIR=/usr/local
+   export CMAKE_FLAGS="-DCMAKE_BUILD_TYPE=Release"
+
+   ./scripts/stage-openfhe-development-hexl.sh
+   ./scripts/build-openfhe-development.sh
    ```
 
 2. **Build ComputeFHE**:
@@ -52,6 +70,25 @@ sudo apt install -y build-essential cmake git doxygen graphviz clang-format
    # Install library (optional)
    sudo make install
    ```
+
+### Using Docker
+
+Alternatively, you can build and run ComputeFHE using Docker. The provided Dockerfiles automate the process of installing OpenFHE and its dependencies.
+
+**Standard Build:**
+```bash
+docker build -t computefhe -f docker/compute-fhe/Dockerfile .
+```
+
+**Build with Intel HEXL Support:**
+```bash
+docker build -t computefhe -f docker/compute-fhe-hexl/Dockerfile .
+```
+
+**Run the Container:**
+```bash
+docker run -it computefhe
+```
 
 ## Quickstart Example
 

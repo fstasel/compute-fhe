@@ -89,7 +89,7 @@ namespace computefhe {
      *
      * - ALU_STANDARD: Uses basic FHE gates for logic operations.
      * - ALU_OPTIMIZED: Uses specialized multi-input gates (like MAJ or XOR3)
-     *   to reduce the multiplicative depth and noise growth.
+     *   to reduce the number of bootstrapping operations.
      */
     enum ALUType { ALU_STANDARD, ALU_OPTIMIZED };
 

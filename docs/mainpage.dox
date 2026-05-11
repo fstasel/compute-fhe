@@ -80,7 +80,7 @@
  * - **ALU_STANDARD:** Uses fundamental two-input logic gates for all operations.
  *   Recommended for debugging or when using parameter sets that do not support multi-input gates.
  * - **ALU_OPTIMIZED:** Implements arithmetic logic using specialized FHE kernels (such as MAJ and XOR3).
- *   This strategy significantly reduces the multiplicative depth and the total number of 
+ *   This strategy significantly reduces the total number of 
  *   bootstrapping operations required, which results in faster execution.
  *
  * **Basic Usage:** Select the desired strategy during initialization via @ref computefhe::Init. 

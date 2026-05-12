@@ -89,13 +89,14 @@ const T &Eitem<T, U>::operator=(const T &value) {
         for (size_t i = 0; i < data.size(); ++i) {
             BinaryDigit c = cfhe_base->GetALU()->CmpEq(
                 index, cfhe_base->GetConstantInt(i, index.size()));
-            FixedPoint &target_fp = const_cast<FixedPoint &>(data[i].getData());
+            T temp = data[i];
+            FixedPoint &out_fp = const_cast<FixedPoint &>(temp.getData());
             for (size_t d = 0; d < n; ++d) {
                 BinaryDigit v = const_cast<T &>(value).getData()[d];
                 // TODO: try optimizing below logic
-                target_fp[d] =
-                    cfhe_base->GetALU()->Gate_MUX(c, target_fp[d], v);
+                out_fp[d] = cfhe_base->GetALU()->Gate_MUX(c, out_fp[d], v);
             }
+            data[i] = temp;
         }
     } else {
         data[p_index] = value;

@@ -1,0 +1,11 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(OpenFHE)
+if(@WITH_HEXL@)
+    find_dependency(HEXL)
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/ComputeFHETargets.cmake")
+
+check_required_components(ComputeFHE)

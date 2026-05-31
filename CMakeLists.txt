@@ -98,10 +98,12 @@ target_include_directories(computefhe
     PRIVATE
         ${PROJECT_SOURCE_DIR}
     PUBLIC
-        ${PROJECT_SOURCE_DIR}/include
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 install(TARGETS computefhe
+    EXPORT computefheTargets
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -111,9 +113,34 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
+install(EXPORT computefheTargets
+    FILE ComputeFHETargets.cmake
+    NAMESPACE ComputeFHE::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ComputeFHE
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/ComputeFHEConfigVersion.cmake"
+    VERSION 1.0.0
+    COMPATIBILITY AnyNewerVersion
+)
+
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/computefheConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/ComputeFHEConfig.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ComputeFHE
+)
+
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/ComputeFHEConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/ComputeFHEConfigVersion.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/ComputeFHE
+)
+
 if(NOT TARGET uninstall)
     configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
         "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
         IMMEDIATE @ONLY)
 

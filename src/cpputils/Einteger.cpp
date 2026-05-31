@@ -897,16 +897,18 @@ ostream &computefhe::operator<<(ostream &out, const Einteger &obj) {
     return out;
 }
 
-// Explicitly instantiate EInt variants for standard types
-template class EInt<bool, 1, false>;
-template class EInt<int8_t, 8, true>;
-template class EInt<uint8_t, 8, false>;
-template class EInt<int16_t, 16, true>;
-template class EInt<uint16_t, 16, false>;
-template class EInt<int32_t, 32, true>;
-template class EInt<uint32_t, 32, false>;
-template class EInt<int64_t, 64, true>;
-template class EInt<uint64_t, 64, false>;
+namespace computefhe {
+    // Explicitly instantiate EInt variants for standard types
+    template class EInt<bool, 1, false>;
+    template class EInt<int8_t, 8, true>;
+    template class EInt<uint8_t, 8, false>;
+    template class EInt<int16_t, 16, true>;
+    template class EInt<uint16_t, 16, false>;
+    template class EInt<int32_t, 32, true>;
+    template class EInt<uint32_t, 32, false>;
+    template class EInt<int64_t, 64, true>;
+    template class EInt<uint64_t, 64, false>;
+} // namespace computefhe
 
 // TODO: Ebool operators must behave differently
 // bool op integral_t -> (int)bool op integral_t -> Promoted ->

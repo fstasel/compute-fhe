@@ -386,7 +386,7 @@ template <typename T, typename U> T Eitem<T, U>::operator--(int) {
     return old;
 }
 
-template class Evector<Einteger>;
-template class Eitem<Einteger, uint64_t>;
-template class Evector<Efixedpoint>;
-template class Eitem<Efixedpoint, double>;
+namespace computefhe {
+    template class Eitem<Einteger, uint64_t>;
+    template class Eitem<Efixedpoint, double>;
+} // namespace computefhe

@@ -23,7 +23,15 @@ Please cite the above paper if you use ComputeFHE in your research or commercial
 ### Dependencies (Ubuntu/Debian)
 ```bash
 sudo apt update
-sudo apt install -y build-essential cmake git doxygen graphviz clang-format
+
+# for compiling ComputeFHE
+sudo apt install -y build-essential cmake git
+
+# for generating documentation
+sudo apt install -y doxygen graphviz
+
+# for formatting source codes
+sudo apt install -y clang-format
 ```
 
 ## Building
@@ -140,6 +148,23 @@ Eint8 secret_index = 2; // Index is encrypted
 
 Eint16 value = encrypted_data[secret_index]; 
 // 'value' now contains an encrypted 300
+```
+
+## Integrating ComputeFHE into Your Project
+ComputeFHE can be integrated into projects using the CMake build system by adding the following lines to the CMakeLists.txt file of the project:
+
+```cmake
+find_package(OpenFHE CONFIG REQUIRED)
+find_package(ComputeFHE REQUIRED)
+
+include_directories( ${OpenFHE_INCLUDE} )
+include_directories( ${OpenFHE_INCLUDE}/third-party/include )
+include_directories( ${OpenFHE_INCLUDE}/core )
+include_directories( ${OpenFHE_INCLUDE}/pke )
+include_directories( ${OpenFHE_INCLUDE}/binfhe )
+link_directories( ${OpenFHE_LIBDIR} )
+
+target_link_libraries(YOUR_PROJECT ComputeFHE::computefhe)
 ```
 
 ## License

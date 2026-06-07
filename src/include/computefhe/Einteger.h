@@ -45,7 +45,6 @@ namespace computefhe {
         void _desync_var();
         static bool promote(const Einteger &a, const Einteger &b,
                             FixedPoint &a_out, FixedPoint &b_out);
-        static FixedPoint promote(const Einteger &a, size_t s);
 
       public:
         /**
@@ -53,6 +52,14 @@ namespace computefhe {
          * encrypted integer.
          */
         Einteger();
+
+        /**
+         * @brief Promotes or truncates an Einteger to a specific bit size.
+         * @param a The source integer.
+         * @param s The target bit size.
+         * @return A FixedPoint representing the promoted/truncated bits.
+         */
+        static FixedPoint promote(const Einteger &a, size_t s);
 
         /**
          * @brief Constructs an Einteger from a plaintext `int64_t`.

@@ -85,14 +85,15 @@ template <> Eitem<Efixedpoint, double>::operator Efixedpoint() const {
 template <typename T, typename U>
 const T &Eitem<T, U>::operator=(const T &value) {
     if (encrypted_index) {
-        size_t n = data.at(0).getData().size();
+        size_t n = data.at(0).getSize();
+        FixedPoint v_fp = Einteger::promote(value, n);
         for (size_t i = 0; i < data.size(); ++i) {
             BinaryDigit c = cfhe_base->GetALU()->CmpEq(
                 index, cfhe_base->GetConstantInt(i, index.size()));
             T temp = data[i];
             FixedPoint &out_fp = const_cast<FixedPoint &>(temp.getData());
             for (size_t d = 0; d < n; ++d) {
-                BinaryDigit v = const_cast<T &>(value).getData()[d];
+                BinaryDigit v = v_fp[d];
                 // TODO: try optimizing below logic
                 out_fp[d] = cfhe_base->GetALU()->Gate_MUX(c, out_fp[d], v);
             }

@@ -88,7 +88,7 @@ FixedPoint Einteger::promote(const Einteger &a, size_t s) {
 
 Einteger::Einteger() : Einteger(8, false) {}
 
-Einteger::Einteger(int64_t d) : Einteger(d, 8) {}
+Einteger::Einteger(int64_t d) : Einteger(d, 64) {}
 
 Einteger::Einteger(size_t n_digits, bool is_signed) {
     if (cfhe_base == nullptr)

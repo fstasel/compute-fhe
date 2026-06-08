@@ -57,6 +57,16 @@ namespace computefhe {
 
         /** @brief Implicit conversion to the underlying encrypted type T. */
         operator T() const;
+
+        /** @brief Implicit conversion to any type constructible from T (e.g.,
+         * derived types like Euint64). */
+        template <typename V,
+                  typename = std::enable_if_t<std::is_constructible_v<V, T> &&
+                                              !std::is_same_v<V, T>>>
+        operator V() const {
+            return V(operator T());
+        }
+
         /** @brief Assignment operator: conditionally updates vector elements
          * based on the index. */
         const T &operator=(const T &value);

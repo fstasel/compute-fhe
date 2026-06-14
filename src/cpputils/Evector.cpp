@@ -105,6 +105,12 @@ const T &Eitem<T, U>::operator=(const T &value) {
     return value;
 }
 
+template <typename T, typename U> const T &Eitem<T, U>::operator=(U value) {
+    T temp = data.at(0);
+    temp = value;
+    return *this = temp;
+}
+
 template <typename T, typename U> T Eitem<T, U>::operator+(const T &b) const {
     return static_cast<T>(*this) + b;
 }

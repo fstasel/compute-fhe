@@ -71,6 +71,10 @@ namespace computefhe {
          * based on the index. */
         const T &operator=(const T &value);
 
+        /** @brief Assignment operator from a plaintext value: converts to T
+         * using vector element metadata and then updates elements. */
+        const T &operator=(U value);
+
         /** @name Arithmetic Operators */
         ///@{
         T operator+(const T &b) const;
@@ -157,6 +161,13 @@ namespace computefhe {
         T operator--();
         T operator--(int);
         ///@}
+
+        /** @brief Stream insertion operator to handle direct printing of proxy
+         * items. */
+        friend std::ostream &operator<<(std::ostream &out,
+                                        const Eitem<T, U> &item) {
+            return out << static_cast<T>(item);
+        }
     };
 
     /**

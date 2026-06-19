@@ -21,7 +21,7 @@ int main() {
     cfhe_base->GetSimulator()->PrintStats();
     cfhe_base->GetSimulator()->ResetStats();
 
-    Eint8 rem = a % b;  // Uses the precomputed result of a / b.
+    Eint8 rem = a % b; // Uses the precomputed result of a / b.
     cout << "Remainder: " << rem << endl;
     cfhe_base->GetSimulator()->PrintStats();
 

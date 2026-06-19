@@ -29,7 +29,7 @@ RUN cd openfhe-configurator && \
 RUN ldconfig
 
 # Clone, build, and install ComputeFHE
-RUN git clone https://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@github.com/fstasel/compute-fhe-dev.git && \
+RUN git clone https://github.com/fstasel/compute-fhe.git && \
     cd compute-fhe-dev && \
     mkdir build && cd build && \
     cmake -DWITH_HEXL=ON -DCMAKE_BUILD_TYPE=Release .. && \

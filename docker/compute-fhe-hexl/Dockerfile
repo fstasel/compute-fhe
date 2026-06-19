@@ -30,7 +30,7 @@ RUN ldconfig
 
 # Clone, build, and install ComputeFHE
 RUN git clone https://github.com/fstasel/compute-fhe.git && \
-    cd compute-fhe-dev && \
+    cd compute-fhe && \
     mkdir build && cd build && \
     cmake -DWITH_HEXL=ON -DCMAKE_BUILD_TYPE=Release .. && \
     make -j$(nproc) && \

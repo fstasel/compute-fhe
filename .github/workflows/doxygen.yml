@@ -31,9 +31,8 @@ jobs:
           sudo apt-get install -y doxygen graphviz
 
       - name: Run Doxygen
-        working-directory: ./docs
         run: |
-          doxygen Doxyfile
+          doxygen ./docs/Doxyfile
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -41,7 +40,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '${{ github.workspace }}/docs/html'
+          path: './docs/html' 
 
       - name: Deploy to GitHub Pages
         id: deployment

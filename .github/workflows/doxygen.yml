@@ -31,9 +31,9 @@ jobs:
           sudo apt-get install -y doxygen graphviz
 
       - name: Run Doxygen
+        working-directory: ./docs
         run: |
-          cd docs
-          doxygen ./docs/Doxyfile
+          doxygen Doxyfile
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

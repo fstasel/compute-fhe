@@ -172,6 +172,10 @@ ALUType ComputeFHE::GetALUType() { return alu_type; }
 
 const LWEPrivateKey &ComputeFHE::GetLWEPrivateKey() { return sk; }
 
+void computefhe::ComputeFHE::SetLWEPrivateKey(const LWEPrivateKey &sk) {
+    this->sk = sk;
+}
+
 FixedPoint ComputeFHE::EncryptInt(uint64_t pt, size_t n_digits, bool fresh) {
     FixedPoint out(n_digits);
     for (size_t i = 0; i < n_digits; i++) {

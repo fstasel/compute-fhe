@@ -32,7 +32,7 @@ namespace computefhe {
      * via the `is_ct` flag, allowing ALU operations to choose the appropriate
      * cryptographic kernels.
      */
-    struct BinaryDigit {
+    struct BinaryDigit : public Serializable {
         static uint
             new_id;      ///< Global static counter used to assign unique IDs.
         uint id = 0;     ///< Unique identifier for this bit instance.
@@ -77,6 +77,33 @@ namespace computefhe {
         operator ConstLWECiphertext() const;
         /** @brief Conversion operator to LWEPlaintext. */
         operator LWEPlaintext() const;
+
+        // Serialization support
+        template <class Archive>
+        void save(Archive &ar, std::uint32_t const version) const {
+            ar(cereal::make_nvp("c", c));
+            ar(cereal::make_nvp("p", p));
+            ar(cereal::make_nvp("is_ct", is_ct));
+        }
+
+        template <class Archive>
+        void load(Archive &ar, std::uint32_t const version) {
+            if (version > SerializedVersion()) {
+                OPENFHE_THROW("serialized object version " +
+                              std::to_string(version) +
+                              " is from a later version of the library");
+            }
+            ar(cereal::make_nvp("c", c));
+            ar(cereal::make_nvp("p", p));
+            ar(cereal::make_nvp("is_ct", is_ct));
+            this->id = new_id++;
+        }
+
+        std::string SerializedObjectName() const override {
+            return "BinaryDigit";
+        }
+
+        static uint32_t SerializedVersion() { return 1; }
     };
 
     /**

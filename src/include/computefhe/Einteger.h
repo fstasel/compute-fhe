@@ -24,7 +24,7 @@ namespace computefhe {
      * This class provides a high-level interface for performing arithmetic,
      * logical, and comparison operations on encrypted integer values.
      */
-    class Einteger {
+    class Einteger : public Serializable {
       private:
         static bool div_cache(const FixedPoint &a, const FixedPoint &b);
         static bool div_cache(const FixedPoint &a, uint64_t b);
@@ -704,6 +704,30 @@ namespace computefhe {
          * @return An Einteger representing the encrypted boolean result.
          */
         friend const Einteger operator||(uint64_t a, const Einteger &b);
+
+        // Serialization support
+        template <class Archive>
+        void save(Archive &ar, std::uint32_t const version) const {
+            ar(cereal::make_nvp("data", data));
+            ar(cereal::make_nvp("size", size));
+            ar(cereal::make_nvp("sign", sign));
+        }
+
+        template <class Archive>
+        void load(Archive &ar, std::uint32_t const version) {
+            if (version > SerializedVersion()) {
+                OPENFHE_THROW("serialized object version " +
+                              std::to_string(version) +
+                              " is from a later version of the library");
+            }
+            ar(cereal::make_nvp("data", data));
+            ar(cereal::make_nvp("size", size));
+            ar(cereal::make_nvp("sign", sign));
+        }
+
+        std::string SerializedObjectName() const override { return "Einteger"; }
+
+        static uint32_t SerializedVersion() { return 1; }
 
         // TODO: friend shift operators for integral types
         // TODO: friend logical and/or for bool-type

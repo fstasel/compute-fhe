@@ -135,6 +135,10 @@ namespace computefhe {
          */
         const LWEPrivateKey &GetLWEPrivateKey();
 
+        /** @brief Sets the LWE Private Key.
+         */
+        void SetLWEPrivateKey(const LWEPrivateKey &sk);
+
         /** @brief Generates the secret key and switching keys for the context.
          */
         void generateKeys();

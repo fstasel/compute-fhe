@@ -706,6 +706,11 @@ namespace computefhe {
         friend const Einteger operator||(uint64_t a, const Einteger &b);
 
         // Serialization support
+        /**
+         * @brief Serializes the Einteger object.
+         * @param ar The archive to serialize to.
+         * @param version The object version.
+         */
         template <class Archive>
         void save(Archive &ar, std::uint32_t const version) const {
             ar(cereal::make_nvp("data", data));
@@ -713,6 +718,11 @@ namespace computefhe {
             ar(cereal::make_nvp("sign", sign));
         }
 
+        /**
+         * @brief Deserializes an Einteger object.
+         * @param ar The archive to deserialize from.
+         * @param version The object version.
+         */
         template <class Archive>
         void load(Archive &ar, std::uint32_t const version) {
             if (version > SerializedVersion()) {
@@ -725,8 +735,16 @@ namespace computefhe {
             ar(cereal::make_nvp("sign", sign));
         }
 
+        /**
+         * @brief Returns the unique name for this serialized class.
+         * @return The class name.
+         */
         std::string SerializedObjectName() const override { return "Einteger"; }
 
+        /**
+         * @brief Returns the serialization version number.
+         * @return The version number.
+         */
         static uint32_t SerializedVersion() { return 1; }
 
         // TODO: friend shift operators for integral types

@@ -28,14 +28,14 @@ using namespace std;
  * ### Execution Mechanism
  * The macro expands into a `for` loop that uses a `ConditionManager` state
  * machine to execute **both** branches sequentially:
- * 1. **Iteration 1 (`if` branch):** `_m.if_state()` evaluates to `true`;
+ * 1. **Iteration 1** (`if` branch): `_m.if_state()` evaluates to `true`;
  * updates are tracked in the `if` context.
- * 2. **Iteration 2 (`else` branch):** `_m.if_state()` evaluates to `false`;
+ * 2. **Iteration 2** (`else` branch): `_m.if_state()` evaluates to `false`;
  * updates are tracked in the `else` context.
  * 3. **Scope Exit:** The loop terminates, triggering the `ConditionManager`
  * destructor to perform homomorphic multiplexing.
  *
- * @important This macro is strictly intended for modifying **encrypted types**
+ * @attention This macro is strictly intended for modifying **encrypted types**
  * (e.g., `Einteger`, `Efixedpoint`, `Euint8`). Standard C++ primitive types
  * (such as raw `int`, `float`, or `bool`) must not be modified inside an `Eif`
  * block.
@@ -79,7 +79,8 @@ namespace computefhe {
 
     /**
      * @class ConditionManager
-     * @brief Manages state tracking, branch evaluation, and homomorphic multiplexing.
+     * @brief Manages state tracking, branch evaluation, and homomorphic
+     * multiplexing.
      *
      * In Fully Homomorphic Encryption (FHE), standard branch jumping is
      * impossible without decrypting data. `ConditionManager` addresses this by

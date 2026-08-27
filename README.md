@@ -5,7 +5,9 @@ ComputeFHE is a high-level C++ library designed for performing efficient arithme
 The library is based on research proposed in:
 > **Taşel, F.S., Saran, A.N.** *Improved arithmetic efficiency in TFHE through gate-level optimizations.* J Supercomput 81, 1633 (2025). [https://doi.org/10.1007/s11227-025-08107-8](https://doi.org/10.1007/s11227-025-08107-8)
 
-Please cite the above paper if you use ComputeFHE in your research or commercial projects.
+> **Taşel, F.S., Çiftci E.** *ComputeFHE: A privacy-preserving general-purpose computation library.* SoftwareX, 102981 (2026). [https://doi.org/10.1016/j.softx.2026.102981](https://doi.org/10.1016/j.softx.2026.102981)
+
+Please cite above papers if you use ComputeFHE in your research or commercial projects.
 
 ## Features
 - **Encrypted Primitives**: Drop-in replacements for standard types (e.g. `Eint8`, `Euint32`, `Ebool`), and for fixed-point real numbers (e.g. `EFix<bits, frac, signed>`).

@@ -102,9 +102,12 @@
  * - Efe Çiftci <efeciftci@@cankaya.edu.tr>
  *
  * @section citations_sec Citations
- * If you use ComputeFHE in your research, please cite the following work:
+ * If you use ComputeFHE in your research, please cite following works:
  *
  * Taşel, F. S., & Saran, A. N. (2025). Improved arithmetic efficiency in TFHE through gate-level optimizations. 
  * *The Journal of Supercomputing*, 81(18), 1633. 
  * [https://doi.org/10.1007/s11227-025-08107-8](https://doi.org/10.1007/s11227-025-08107-8)
+ * Taşel, F. S., & Çiftci E. (2026). ComputeFHE: A privacy-preserving general-purpose computation library.
+ * *SoftwareX*, 35, 102981.
+ * [https://doi.org/10.1016/j.softx.2026.102981](https://doi.org/10.1016/j.softx.2026.102981)
  */

@@ -169,5 +169,34 @@ link_directories( ${OpenFHE_LIBDIR} )
 target_link_libraries(YOUR_PROJECT ComputeFHE::computefhe)
 ```
 
+## Python Bindings
+
+Optional Python bindings are available in [`python/`](python/README.md). Build
+and install OpenFHE and ComputeFHE first, then install from the repository root:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install ./python
+# For a non-system installation, set CMAKE_PREFIX_PATH=/path/to/prefix.
+```
+
+```python
+from computefhe import Context, Eint32, select
+
+with Context():
+    a, b = Eint32(42), Eint32(15)
+    print((a + b).decrypt())              # 57
+    print(select(a > b, a, b).decrypt())   # 42
+```
+
+Use `Context(simulation=True)` for the native plaintext simulator. The Python
+API supports fixed-width integers, booleans, fixed-point arithmetic, encrypted
+selection, and oblivious vector access. Decryption is explicit; use `select()`
+for encrypted conditions. See the [Python API documentation](python/README.md)
+for supported operations and limitations, and
+[development instructions](python/CONTRIBUTING.md) for testing. The C++ build
+remains independent of Python dependencies.
+
 ## License
 This project is licensed under the [MIT License](LICENSE).

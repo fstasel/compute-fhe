@@ -1,0 +1,20 @@
+[build-system]
+requires = ["scikit-build-core>=0.10", "pybind11>=2.13"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "compute-fhe-python"
+version = "0.1.0"
+description = "Python bindings for ComputeFHE encrypted arithmetic"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+
+[project.urls]
+Repository = "https://github.com/fstasel/compute-fhe"
+Documentation = "https://github.com/fstasel/compute-fhe/tree/master/python"
+
+[tool.scikit-build]
+cmake.version = ">=3.18"
+wheel.packages = ["src/computefhe"]
+sdist.include = ["native/**", "tests/**", "examples/**", "CMakeLists.txt"]
